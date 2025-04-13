@@ -42,6 +42,15 @@
         .login-container button:hover {
             background: #218838;
         }
+        .messages {
+         margin-bottom: 15px;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin: 5px 0;
+        }
     </style>
 </head>
 <body>
@@ -49,7 +58,7 @@
         <h2>Iniciar Sesión</h2>
         {% if messages %}
             {% for message in messages %}
-                <p style="color: red;">{{ message }}</p>
+                <p class="error-message">{{ message }}</p>
             {% endfor %}
         {% endif %}
         <form method="POST">
