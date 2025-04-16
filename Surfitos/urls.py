@@ -23,4 +23,5 @@ urlpatterns = [
     path('', views.login_view, name='login' ),
     path('playas/', views.playas_index_view, name='playas_index' ),
     path('api/agregar-playa/', views.agregar_playa, name='agregar_playa'),
+    path('api/eliminar-playa/', views.eliminar_playa, name='eliminar_playa'),
 ]
