@@ -4,14 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="33af6d6e-46bc-42b0-be3a-1e2130eaac91" name="Changes" comment="&quot;feat: creación de la vista inicial de playas&#10;&#10;- Se creó el archivo 'playas-index.html' que muestra el listado de playas registradas.&#10;- Se agregó el diseño básico con botones para obtener información y eliminar cada playa.&#10;- Se implementó la redirección automática al listado de playas tras un login exitoso.&#10;- Esta vista servirá como punto de entrada antes de acceder al dashboard detallado de cada playa.&quot;">
+    <list default="true" id="33af6d6e-46bc-42b0-be3a-1e2130eaac91" name="Changes" comment="&quot;feat: añadir nuevas playas y evitar duplicados&#10;&#10;- Se añadió la funcionalidad para agregar playas desde la interfaz web mediante un modal.&#10;- Los datos enviados (nombre y lugar) se geolocalizan con Geopy para obtener latitud y longitud.&#10;- La playa se guarda en la base de datos si la ubicación es válida y no está repetida.&#10;- Se agregó una validación para evitar duplicados usando una búsqueda insensible a mayúsculas.&#10;- Se mejoró el control de errores y se retorna información clara en cada caso.&quot;">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SurfApp/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/SurfApp/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SurfApp/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/SurfApp/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SurfApp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/SurfApp/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Surfitos/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/Surfitos/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Surfitos/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/Surfitos/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/playas-index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/playas-index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -60,7 +56,7 @@
     "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "django.template.preview.state": "SHOW_EDITOR_AND_PREVIEW",
+    "django.template.preview.state": "SHOW_EDITOR",
     "git-widget-placeholder": "feature/playas-index",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -114,7 +110,7 @@
       <option name="presentableId" value="Default" />
       <updated>1744538541440</updated>
       <workItem from="1744538542417" duration="8000" />
-      <workItem from="1744794059674" duration="3101000" />
+      <workItem from="1744794059674" duration="3981000" />
     </task>
     <task id="LOCAL-00001" summary="feat: crear rama feature/login y app SurfApp con vista y template de login&#10;&#10;- Se creó la rama feature/login para el desarrollo del sistema de autenticación.&#10;- Se generó la app SurfApp.&#10;- Se implementó la vista de login, se agregó el template y se conectó en urls.py.">
       <option name="closed" value="true" />
@@ -140,7 +136,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744795049385</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="&quot;feat: añadir nuevas playas y evitar duplicados&#10;&#10;- Se añadió la funcionalidad para agregar playas desde la interfaz web mediante un modal.&#10;- Los datos enviados (nombre y lugar) se geolocalizan con Geopy para obtener latitud y longitud.&#10;- La playa se guarda en la base de datos si la ubicación es válida y no está repetida.&#10;- Se agregó una validación para evitar duplicados usando una búsqueda insensible a mayúsculas.&#10;- Se mejoró el control de errores y se retorna información clara en cada caso.&quot;">
+      <option name="closed" value="true" />
+      <created>1744797770736</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1744797770736</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -150,6 +154,7 @@
     <MESSAGE value="feat: crear rama feature/login y app SurfApp con vista y template de login&#10;&#10;- Se creó la rama feature/login para el desarrollo del sistema de autenticación.&#10;- Se generó la app SurfApp.&#10;- Se implementó la vista de login, se agregó el template y se conectó en urls.py." />
     <MESSAGE value="feat: configuración del login y creación de superusuario&#10;&#10;- Se configuró el formulario de login en la vista `login_view`.&#10;- Se añadieron mensajes de error para la autenticación fallida.&#10;- Se verificó y ajustó la configuración de `INSTALLED_APPS` en `settings.py` para incluir `django.contrib.admin`.&#10;- Se realizaron las migraciones necesarias para asegurarse de que las tablas de la base de datos estén actualizadas.&#10;- Se configuró correctamente la URL para el panel de administración de Django." />
     <MESSAGE value="&quot;feat: creación de la vista inicial de playas&#10;&#10;- Se creó el archivo 'playas-index.html' que muestra el listado de playas registradas.&#10;- Se agregó el diseño básico con botones para obtener información y eliminar cada playa.&#10;- Se implementó la redirección automática al listado de playas tras un login exitoso.&#10;- Esta vista servirá como punto de entrada antes de acceder al dashboard detallado de cada playa.&quot;" />
-    <option name="LAST_COMMIT_MESSAGE" value="&quot;feat: creación de la vista inicial de playas&#10;&#10;- Se creó el archivo 'playas-index.html' que muestra el listado de playas registradas.&#10;- Se agregó el diseño básico con botones para obtener información y eliminar cada playa.&#10;- Se implementó la redirección automática al listado de playas tras un login exitoso.&#10;- Esta vista servirá como punto de entrada antes de acceder al dashboard detallado de cada playa.&quot;" />
+    <MESSAGE value="&quot;feat: añadir nuevas playas y evitar duplicados&#10;&#10;- Se añadió la funcionalidad para agregar playas desde la interfaz web mediante un modal.&#10;- Los datos enviados (nombre y lugar) se geolocalizan con Geopy para obtener latitud y longitud.&#10;- La playa se guarda en la base de datos si la ubicación es válida y no está repetida.&#10;- Se agregó una validación para evitar duplicados usando una búsqueda insensible a mayúsculas.&#10;- Se mejoró el control de errores y se retorna información clara en cada caso.&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="&quot;feat: añadir nuevas playas y evitar duplicados&#10;&#10;- Se añadió la funcionalidad para agregar playas desde la interfaz web mediante un modal.&#10;- Los datos enviados (nombre y lugar) se geolocalizan con Geopy para obtener latitud y longitud.&#10;- La playa se guarda en la base de datos si la ubicación es válida y no está repetida.&#10;- Se agregó una validación para evitar duplicados usando una búsqueda insensible a mayúsculas.&#10;- Se mejoró el control de errores y se retorna información clara en cada caso.&quot;" />
   </component>
 </project>

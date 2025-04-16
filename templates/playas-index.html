@@ -83,18 +83,22 @@
   </style>
 </head>
 <body>
-  <div class="container" id="contenedor-playas">
-    <!-- Ejemplo de playa -->
-    <div class="playa">
-      <div>
-        <div class="nombre-playa">Playa 1</div>
-        <div class="fecha">Fecha de actualización: 2025-04-15</div>
+   <div class="container" id="contenedor-playas">
+
+    {% for playa in playas %}
+      <div class="playa">
+        <div>
+          <div class="nombre-playa">{{ playa.nombre }}</div>
+          <div class="fecha">Lugar: {{ playa.lugar }}<br>Lat: {{ playa.latitud }} - Long: {{ playa.longitud }}</div>
+        </div>
+        <div class="acciones">
+          <button class="boton" onclick="solicitarInfo('{{ playa.nombre }}')">♻️</button>
+          <button class="boton" onclick="eliminarPlaya('{{ playa.nombre }}')">🗑️</button>
+        </div>
       </div>
-      <div class="acciones">
-        <button class="boton" onclick="solicitarInfo('Playa 1')">♻️</button>
-        <button class="boton" onclick="eliminarPlaya('Playa 1')">🗑️</button>
-      </div>
-    </div>
+    {% empty %}
+      <p>No hay playas registradas.</p>
+    {% endfor %}
 
     <!-- Botón para agregar más playas -->
     <div class="agregar" onclick="agregarPlaya()">+</div>

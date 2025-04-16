@@ -27,7 +27,8 @@ def login_view(request):
 
 @login_required
 def playas_index_view(request):
-    return render(request, 'playas-index.html')
+    playas = Playa.objects.all().order_by('nombre')
+    return render(request, 'playas-index.html', {'playas': playas})
 
 
 
