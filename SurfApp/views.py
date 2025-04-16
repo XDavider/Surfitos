@@ -14,12 +14,12 @@ def login_view(request):
 
         if user is not None:
             login(request, user)  # Inicia sesión al usuario
-            return redirect('home')  # Redirige a la página principal o a alguna vista protegida
+            return redirect('playas')  # Redirige a la página principal o a alguna vista protegida
         else:
             messages.error(request, 'Usuario o contraseña incorrectos.')
 
     return render(request, 'login.html')
 
 @login_required
-def home_view(request):
-    return render(request, 'home.html')
+def playas_index_view(request):
+    return render(request, 'playas-index.html')

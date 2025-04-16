@@ -21,5 +21,5 @@ from SurfApp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.login_view, name='login' ),
-    path('home/', views.home_view, name='home' ),
+    path('playas/', views.playas_index_view, name='playas' ),
 ]
