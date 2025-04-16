@@ -121,27 +121,25 @@
    }
 
   function eliminarPlaya(id) {
-  if (!confirm("¿Estás seguro de que querés eliminar esta playa?")) return;
+      if (!confirm("¿Estás seguro de que querés eliminar esta playa?")) return;
 
-  fetch(`/api/eliminar-playa/`, {
-    method: 'POST',
-    headers: {
-      'X-CSRFToken': getCookie('csrftoken'),
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ id: id })
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data.ok) {
-      alert("Playa eliminada correctamente");
-      location.reload(); // o quitá el elemento del DOM
-    } else {
-      alert("Error: " + data.error);
-    }
-  })
-  .catch(() => alert("Error al conectar con el servidor"));
-}
+      fetch(`/api/eliminar-playa/${id}`, {
+          method: 'DELETE',
+          headers: {
+              'X-CSRFToken': getCookie('csrftoken')
+          }
+      })
+          .then(res => res.json())
+          .then(data => {
+              if (data.ok) {
+                  alert("Playa eliminada correctamente");
+                  location.reload(); // o actualizás el DOM directamente
+              } else {
+                  alert("No se pudo eliminar la playa: " + data.error);
+              }
+          })
+          .catch(() => alert("Error al conectar con el servidor"));
+  }
 
   function agregarPlaya() {
     document.getElementById("modalAgregar").classList.add("show");

@@ -73,11 +73,11 @@ def agregar_playa(request):
     return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
 
 @csrf_exempt
-def eliminar_playa(request):
-    if request.method == 'POST':
+def eliminar_playa(request, playa_id):
+    if request.method == 'DELETE':
         try:
-            data = json.loads(request.body)
-            playa_id = data.get('id')
+            # data = json.loads(request.body)
+            # playa_id = data.get('id')
 
             playa = Playa.objects.get(id=playa_id)
             playa.delete()

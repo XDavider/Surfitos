@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="33af6d6e-46bc-42b0-be3a-1e2130eaac91" name="Changes" comment="&quot;feat: listado dinámico de playas desde la base de datos&#10;&#10;- Se implementó una vista en Django que obtiene todas las playas guardadas y las pasa a la plantilla.&#10;- Se modificó el HTML para que utilice el motor de templates de Django y liste dinámicamente cada playa.&#10;- Cada entrada incluye botones para solicitar información y eliminar la playa correspondiente.&#10;- Se eliminó el contenido estático (Playa 1) en favor de un bucle for con los datos reales de la base.&quot;">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+    <list default="true" id="33af6d6e-46bc-42b0-be3a-1e2130eaac91" name="Changes" comment="&quot;feat: eliminar playas desde la interfaz usando POST&#10;&#10;- Se implementó una vista que permite eliminar playas mediante una solicitud POST.&#10;- Se adaptó el botón 🗑️ en la plantilla para enviar el ID de la playa al backend.&#10;- Se agregó confirmación de usuario antes de eliminar, y se actualiza la vista tras la acción.&#10;- Se descartó el uso del método DELETE por simplicidad y compatibilidad con Django y CSRF.&quot;">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SurfApp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/SurfApp/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Surfitos/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/Surfitos/urls.py" afterDir="false" />
@@ -118,7 +117,7 @@
       <option name="presentableId" value="Default" />
       <updated>1744538541440</updated>
       <workItem from="1744538542417" duration="8000" />
-      <workItem from="1744794059674" duration="5035000" />
+      <workItem from="1744794059674" duration="6717000" />
     </task>
     <task id="LOCAL-00001" summary="feat: crear rama feature/login y app SurfApp con vista y template de login&#10;&#10;- Se creó la rama feature/login para el desarrollo del sistema de autenticación.&#10;- Se generó la app SurfApp.&#10;- Se implementó la vista de login, se agregó el template y se conectó en urls.py.">
       <option name="closed" value="true" />
@@ -160,7 +159,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744798342780</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="&quot;feat: eliminar playas desde la interfaz usando POST&#10;&#10;- Se implementó una vista que permite eliminar playas mediante una solicitud POST.&#10;- Se adaptó el botón 🗑️ en la plantilla para enviar el ID de la playa al backend.&#10;- Se agregó confirmación de usuario antes de eliminar, y se actualiza la vista tras la acción.&#10;- Se descartó el uso del método DELETE por simplicidad y compatibilidad con Django y CSRF.&quot;">
+      <option name="closed" value="true" />
+      <created>1744799453301</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1744799453301</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -172,6 +179,7 @@
     <MESSAGE value="&quot;feat: creación de la vista inicial de playas&#10;&#10;- Se creó el archivo 'playas-index.html' que muestra el listado de playas registradas.&#10;- Se agregó el diseño básico con botones para obtener información y eliminar cada playa.&#10;- Se implementó la redirección automática al listado de playas tras un login exitoso.&#10;- Esta vista servirá como punto de entrada antes de acceder al dashboard detallado de cada playa.&quot;" />
     <MESSAGE value="&quot;feat: añadir nuevas playas y evitar duplicados&#10;&#10;- Se añadió la funcionalidad para agregar playas desde la interfaz web mediante un modal.&#10;- Los datos enviados (nombre y lugar) se geolocalizan con Geopy para obtener latitud y longitud.&#10;- La playa se guarda en la base de datos si la ubicación es válida y no está repetida.&#10;- Se agregó una validación para evitar duplicados usando una búsqueda insensible a mayúsculas.&#10;- Se mejoró el control de errores y se retorna información clara en cada caso.&quot;" />
     <MESSAGE value="&quot;feat: listado dinámico de playas desde la base de datos&#10;&#10;- Se implementó una vista en Django que obtiene todas las playas guardadas y las pasa a la plantilla.&#10;- Se modificó el HTML para que utilice el motor de templates de Django y liste dinámicamente cada playa.&#10;- Cada entrada incluye botones para solicitar información y eliminar la playa correspondiente.&#10;- Se eliminó el contenido estático (Playa 1) en favor de un bucle for con los datos reales de la base.&quot;" />
-    <option name="LAST_COMMIT_MESSAGE" value="&quot;feat: listado dinámico de playas desde la base de datos&#10;&#10;- Se implementó una vista en Django que obtiene todas las playas guardadas y las pasa a la plantilla.&#10;- Se modificó el HTML para que utilice el motor de templates de Django y liste dinámicamente cada playa.&#10;- Cada entrada incluye botones para solicitar información y eliminar la playa correspondiente.&#10;- Se eliminó el contenido estático (Playa 1) en favor de un bucle for con los datos reales de la base.&quot;" />
+    <MESSAGE value="&quot;feat: eliminar playas desde la interfaz usando POST&#10;&#10;- Se implementó una vista que permite eliminar playas mediante una solicitud POST.&#10;- Se adaptó el botón ️ en la plantilla para enviar el ID de la playa al backend.&#10;- Se agregó confirmación de usuario antes de eliminar, y se actualiza la vista tras la acción.&#10;- Se descartó el uso del método DELETE por simplicidad y compatibilidad con Django y CSRF.&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="&quot;feat: eliminar playas desde la interfaz usando POST&#10;&#10;- Se implementó una vista que permite eliminar playas mediante una solicitud POST.&#10;- Se adaptó el botón ️ en la plantilla para enviar el ID de la playa al backend.&#10;- Se agregó confirmación de usuario antes de eliminar, y se actualiza la vista tras la acción.&#10;- Se descartó el uso del método DELETE por simplicidad y compatibilidad con Django y CSRF.&quot;" />
   </component>
 </project>
