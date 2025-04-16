@@ -59,6 +59,27 @@
       color: #7d4cff;
       cursor: pointer;
     }
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      display: none; /* empieza oculto */
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 300px;
+    }
   </style>
 </head>
 <body>
@@ -78,22 +99,74 @@
     <!-- Botón para agregar más playas -->
     <div class="agregar" onclick="agregarPlaya()">+</div>
   </div>
+  <!-- Modal -->
+<div id="modalAgregar" class="modal">
+  <div class="modal-content">
+    <h3>Agregar Playa</h3>
+    <input type="text" id="inputNombre" placeholder="Nombre de la playa"><br><br>
+    <input type="text" id="inputLugar" placeholder="Lugar / ciudad"><br><br>
+    <button onclick="enviarNuevaPlaya()">Guardar</button>
+    <button onclick="cerrarModal()">Cancelar</button>
+  </div>
+</div>
 
-  <script>
-    function solicitarInfo(nombre) {
-      alert('Solicitando info para: ' + nombre);
-      // Aquí harías la llamada a la API con fetch()
-    }
+<script>
+  function solicitarInfo(nombre) {
+    alert('Solicitando info para: ' + nombre);
+    // Aquí harías la llamada a la API con fetch()
+   }
 
-    function eliminarPlaya(nombre) {
-      alert('Eliminando: ' + nombre);
-      // Aquí eliminarías la playa del DOM y posiblemente de la base de datos
-    }
+  function eliminarPlaya(nombre) {
+    alert('Eliminando: ' + nombre);
+    // Aquí eliminarías la playa del DOM y posiblemente de la base de datos
+  }
+  function agregarPlaya() {
+    document.getElementById("modalAgregar").classList.add("show");
+  }
 
-    function agregarPlaya() {
-      alert('Agregar nueva playa');
-      // Aquí mostrarías un formulario o popup para agregar una nueva playa
+  function cerrarModal() {
+    document.getElementById("modalAgregar").classList.remove("show");
+  }
+
+  function enviarNuevaPlaya() {
+    const nombre = document.getElementById("inputNombre").value;
+    const lugar = document.getElementById("inputLugar").value;
+
+    fetch('/api/agregar-playa/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')  // Necesario para Django
+      },
+      body: JSON.stringify({ nombre, lugar })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.ok) {
+        alert("Playa agregada correctamente");
+        cerrarModal();
+        location.reload(); // O actualizá dinámicamente si querés
+      } else {
+        alert(data.error || "No se pudo agregar la playa");
+      }
+    })
+    .catch(() => alert("Error al conectar con el servidor"));
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
     }
-  </script>
+    return cookieValue;
+  }
+</script>
 </body>
 </html>

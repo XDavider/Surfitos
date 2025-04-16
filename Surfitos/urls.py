@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.login_view, name='login' ),
     path('playas/', views.playas_index_view, name='playas' ),
+    path('api/agregar-playa/', views.agregar_playa, name='agregar_playa'),
 ]
