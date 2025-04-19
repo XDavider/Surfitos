@@ -1,0 +1,69 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #cce6ff; /* mismo fondo que en la página de playas */
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+}
+
+.login-container {
+    background: #f0f0f3;
+    padding: 30px 35px;
+    border-radius: 20px;
+    width: 320px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.login-container h2 {
+    text-align: left;
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    color: #2c2c2c;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 10px 0px;
+    margin: 10px 0px;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    font-size: 1em;
+    outline: none;
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-container input:focus {
+    border-color: #7d4cff;
+    box-shadow: 0 0 0 3px rgba(125, 76, 255, 0.2);
+}
+
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background: #7d4cff;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.login-container button:hover {
+    background: #6a3fd9;
+}
+
+.messages {
+    margin-bottom: 15px;
+}
+
+.error-message {
+    color: #d60000;
+    font-weight: 600;
+    margin: 5px 0;
+}
