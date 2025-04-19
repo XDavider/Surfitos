@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="33af6d6e-46bc-42b0-be3a-1e2130eaac91" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/templates/home.html" afterDir="false" />
+    <list default="true" id="33af6d6e-46bc-42b0-be3a-1e2130eaac91" name="Changes" comment="&quot;feat: mejoras visuales y organización de la vista playas-index&#10;&#10;- Se separaron los estilos CSS en un archivo externo 'styles.css' dentro de la carpeta static.&#10;- Se agregó botón para ver la playa en Maps para confirmar que la ubicación es la adecuada.&#10;- Se mejoró el diseño visual de la página de listado de playas con estilos modernos y responsivos.&#10;- Se agregó scroll para manejar correctamente listados largos sin cortar contenido.&#10;- Se actualizó el archivo 'urls.py' para registrar correctamente la vista de playas.&#10;- La página ahora es más limpia, modular y consistente con el resto del diseño del sitio.&quot;">
+      <change afterPath="$PROJECT_DIR$/SurfApp/static/SurfApp/css/login-styles.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SurfApp/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/SurfApp/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Surfitos/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/Surfitos/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
     </list>
@@ -24,12 +22,25 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="HTML File" />
+        <option value="CSS File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;XDavider&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/XDavider/Surfitos.git&quot;,
+    &quot;accountId&quot;: &quot;7b4763d0-56af-48ee-a500-2bf4bfae7084&quot;
+  }
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
@@ -43,13 +54,25 @@
   "keyToString": {
     "DefaultHtmlFileTemplate": "HTML File",
     "Django Server.Surfitos.executor": "Run",
+    "RunOnceActivity.OpenDjangoStructureViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "django.template.preview.state": "SHOW_EDITOR_AND_PREVIEW",
-    "git-widget-placeholder": "feature/login",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.pycharm.django.structure.promotion.once.per.project": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "django.template.preview.state": "SHOW_EDITOR",
+    "git-widget-placeholder": "feature/playas-index",
+    "list.type.of.created.stylesheet": "CSS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "preferences.lookFeel",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlite"
+    ]
   }
 }]]></component>
   <component name="RunManager">
@@ -96,6 +119,8 @@
       <option name="presentableId" value="Default" />
       <updated>1744538541440</updated>
       <workItem from="1744538542417" duration="8000" />
+      <workItem from="1744794059674" duration="7434000" />
+      <workItem from="1745052321268" duration="4750000" />
     </task>
     <task id="LOCAL-00001" summary="feat: crear rama feature/login y app SurfApp con vista y template de login&#10;&#10;- Se creó la rama feature/login para el desarrollo del sistema de autenticación.&#10;- Se generó la app SurfApp.&#10;- Se implementó la vista de login, se agregó el template y se conectó en urls.py.">
       <option name="closed" value="true" />
@@ -105,11 +130,88 @@
       <option name="project" value="LOCAL" />
       <updated>1744541892210</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="feat: configuración del login y creación de superusuario&#10;&#10;- Se configuró el formulario de login en la vista `login_view`.&#10;- Se añadieron mensajes de error para la autenticación fallida.&#10;- Se verificó y ajustó la configuración de `INSTALLED_APPS` en `settings.py` para incluir `django.contrib.admin`.&#10;- Se realizaron las migraciones necesarias para asegurarse de que las tablas de la base de datos estén actualizadas.&#10;- Se configuró correctamente la URL para el panel de administración de Django.">
+      <option name="closed" value="true" />
+      <created>1744543467883</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1744543467883</updated>
+    </task>
+    <task id="LOCAL-00003" summary="&quot;feat: creación de la vista inicial de playas&#10;&#10;- Se creó el archivo 'playas-index.html' que muestra el listado de playas registradas.&#10;- Se agregó el diseño básico con botones para obtener información y eliminar cada playa.&#10;- Se implementó la redirección automática al listado de playas tras un login exitoso.&#10;- Esta vista servirá como punto de entrada antes de acceder al dashboard detallado de cada playa.&quot;">
+      <option name="closed" value="true" />
+      <created>1744795049385</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1744795049385</updated>
+    </task>
+    <task id="LOCAL-00004" summary="&quot;feat: añadir nuevas playas y evitar duplicados&#10;&#10;- Se añadió la funcionalidad para agregar playas desde la interfaz web mediante un modal.&#10;- Los datos enviados (nombre y lugar) se geolocalizan con Geopy para obtener latitud y longitud.&#10;- La playa se guarda en la base de datos si la ubicación es válida y no está repetida.&#10;- Se agregó una validación para evitar duplicados usando una búsqueda insensible a mayúsculas.&#10;- Se mejoró el control de errores y se retorna información clara en cada caso.&quot;">
+      <option name="closed" value="true" />
+      <created>1744797770736</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1744797770736</updated>
+    </task>
+    <task id="LOCAL-00005" summary="&quot;feat: listado dinámico de playas desde la base de datos&#10;&#10;- Se implementó una vista en Django que obtiene todas las playas guardadas y las pasa a la plantilla.&#10;- Se modificó el HTML para que utilice el motor de templates de Django y liste dinámicamente cada playa.&#10;- Cada entrada incluye botones para solicitar información y eliminar la playa correspondiente.&#10;- Se eliminó el contenido estático (Playa 1) en favor de un bucle for con los datos reales de la base.&quot;">
+      <option name="closed" value="true" />
+      <created>1744798342780</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1744798342780</updated>
+    </task>
+    <task id="LOCAL-00006" summary="&quot;feat: eliminar playas desde la interfaz usando POST&#10;&#10;- Se implementó una vista que permite eliminar playas mediante una solicitud POST.&#10;- Se adaptó el botón 🗑️ en la plantilla para enviar el ID de la playa al backend.&#10;- Se agregó confirmación de usuario antes de eliminar, y se actualiza la vista tras la acción.&#10;- Se descartó el uso del método DELETE por simplicidad y compatibilidad con Django y CSRF.&quot;">
+      <option name="closed" value="true" />
+      <created>1744799453301</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1744799453301</updated>
+    </task>
+    <task id="LOCAL-00007" summary="&quot;feat: eliminar playas desde la interfaz usando DELETE&#10;&#10;- Se implementó una vista que permite eliminar playas mediante una solicitud DELETE.&#10;- Se adaptó el botón 🗑️ en la plantilla para enviar el ID de la playa al backend.&#10;- Se agregó confirmación de usuario antes de eliminar, y se actualiza la vista tras la acción.&quot;">
+      <option name="closed" value="true" />
+      <created>1744801528913</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1744801528913</updated>
+    </task>
+    <task id="LOCAL-00008" summary="&quot;feat: mejoras visuales y organización de la vista playas-index&#10;&#10;- Se separaron los estilos CSS en un archivo externo 'styles.css' dentro de la carpeta static.&#10;- Se agregó botón para ver la playa en Maps para confirmar que la ubicación es la adecuada.&#10;- Se mejoró el diseño visual de la página de listado de playas con estilos modernos y responsivos.&#10;- Se agregó scroll para manejar correctamente listados largos sin cortar contenido.&#10;- Se actualizó el archivo 'urls.py' para registrar correctamente la vista de playas.&#10;- La página ahora es más limpia, modular y consistente con el resto del diseño del sitio.&quot;">
+      <option name="closed" value="true" />
+      <created>1745057071276</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1745057071276</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="feat: crear rama feature/login y app SurfApp con vista y template de login&#10;&#10;- Se creó la rama feature/login para el desarrollo del sistema de autenticación.&#10;- Se generó la app SurfApp.&#10;- Se implementó la vista de login, se agregó el template y se conectó en urls.py." />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: crear rama feature/login y app SurfApp con vista y template de login&#10;&#10;- Se creó la rama feature/login para el desarrollo del sistema de autenticación.&#10;- Se generó la app SurfApp.&#10;- Se implementó la vista de login, se agregó el template y se conectó en urls.py." />
+    <MESSAGE value="feat: configuración del login y creación de superusuario&#10;&#10;- Se configuró el formulario de login en la vista `login_view`.&#10;- Se añadieron mensajes de error para la autenticación fallida.&#10;- Se verificó y ajustó la configuración de `INSTALLED_APPS` en `settings.py` para incluir `django.contrib.admin`.&#10;- Se realizaron las migraciones necesarias para asegurarse de que las tablas de la base de datos estén actualizadas.&#10;- Se configuró correctamente la URL para el panel de administración de Django." />
+    <MESSAGE value="&quot;feat: creación de la vista inicial de playas&#10;&#10;- Se creó el archivo 'playas-index.html' que muestra el listado de playas registradas.&#10;- Se agregó el diseño básico con botones para obtener información y eliminar cada playa.&#10;- Se implementó la redirección automática al listado de playas tras un login exitoso.&#10;- Esta vista servirá como punto de entrada antes de acceder al dashboard detallado de cada playa.&quot;" />
+    <MESSAGE value="&quot;feat: añadir nuevas playas y evitar duplicados&#10;&#10;- Se añadió la funcionalidad para agregar playas desde la interfaz web mediante un modal.&#10;- Los datos enviados (nombre y lugar) se geolocalizan con Geopy para obtener latitud y longitud.&#10;- La playa se guarda en la base de datos si la ubicación es válida y no está repetida.&#10;- Se agregó una validación para evitar duplicados usando una búsqueda insensible a mayúsculas.&#10;- Se mejoró el control de errores y se retorna información clara en cada caso.&quot;" />
+    <MESSAGE value="&quot;feat: listado dinámico de playas desde la base de datos&#10;&#10;- Se implementó una vista en Django que obtiene todas las playas guardadas y las pasa a la plantilla.&#10;- Se modificó el HTML para que utilice el motor de templates de Django y liste dinámicamente cada playa.&#10;- Cada entrada incluye botones para solicitar información y eliminar la playa correspondiente.&#10;- Se eliminó el contenido estático (Playa 1) en favor de un bucle for con los datos reales de la base.&quot;" />
+    <MESSAGE value="&quot;feat: eliminar playas desde la interfaz usando POST&#10;&#10;- Se implementó una vista que permite eliminar playas mediante una solicitud POST.&#10;- Se adaptó el botón ️ en la plantilla para enviar el ID de la playa al backend.&#10;- Se agregó confirmación de usuario antes de eliminar, y se actualiza la vista tras la acción.&#10;- Se descartó el uso del método DELETE por simplicidad y compatibilidad con Django y CSRF.&quot;" />
+    <MESSAGE value="&quot;feat: eliminar playas desde la interfaz usando DELETE&#10;&#10;- Se implementó una vista que permite eliminar playas mediante una solicitud DELETE.&#10;- Se adaptó el botón ️ en la plantilla para enviar el ID de la playa al backend.&#10;- Se agregó confirmación de usuario antes de eliminar, y se actualiza la vista tras la acción.&quot;" />
+    <MESSAGE value="&quot;feat: mejoras visuales y organización de la vista playas-index&#10;&#10;- Se separaron los estilos CSS en un archivo externo 'styles.css' dentro de la carpeta static.&#10;- Se agregó botón para ver la playa en Maps para confirmar que la ubicación es la adecuada.&#10;- Se mejoró el diseño visual de la página de listado de playas con estilos modernos y responsivos.&#10;- Se agregó scroll para manejar correctamente listados largos sin cortar contenido.&#10;- Se actualizó el archivo 'urls.py' para registrar correctamente la vista de playas.&#10;- La página ahora es más limpia, modular y consistente con el resto del diseño del sitio.&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="&quot;feat: mejoras visuales y organización de la vista playas-index&#10;&#10;- Se separaron los estilos CSS en un archivo externo 'styles.css' dentro de la carpeta static.&#10;- Se agregó botón para ver la playa en Maps para confirmar que la ubicación es la adecuada.&#10;- Se mejoró el diseño visual de la página de listado de playas con estilos modernos y responsivos.&#10;- Se agregó scroll para manejar correctamente listados largos sin cortar contenido.&#10;- Se actualizó el archivo 'urls.py' para registrar correctamente la vista de playas.&#10;- La página ahora es más limpia, modular y consistente con el resto del diseño del sitio.&quot;" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/SurfApp/views.py</url>
+          <line>76</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
