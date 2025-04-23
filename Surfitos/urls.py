@@ -20,10 +20,22 @@ from django.contrib import admin
 from django.urls import path
 from SurfApp import views
 
+# Definición de las rutas del proyecto
 urlpatterns = [
+    # Ruta al panel de administración de Django
     path('admin/', admin.site.urls),
+
+    # Página de inicio: muestra el login
     path('', views.login_view, name='login' ),
+
+    # Vista principal que lista las playas (requiere login)
     path('playas/', views.playas_index_view, name='playas' ),
+
+    # API para agregar una nueva playa vía POST
     path('api/agregar-playa/', views.agregar_playa, name='agregar_playa'),
+
+    # API para eliminar una playa por ID vía DELETE
     path('api/eliminar-playa/<str:playa_id>', views.eliminar_playa, name='eliminar_playa'),
+
+# Añade soporte para servir archivos estáticos durante el desarrollo
 ]  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

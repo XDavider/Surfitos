@@ -8,7 +8,7 @@ from geopy.geocoders import Nominatim
 from .models import Playa
 import json
 
-
+# Vista para el login del usuario
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -21,17 +21,19 @@ def login_view(request):
             login(request, user)  # Inicia sesión al usuario
             return redirect('playas')  # Redirige a la página principal o a alguna vista protegida
         else:
-            messages.error(request, 'Usuario o contraseña incorrectos.')
+            messages.error(request, 'Usuario o contraseña incorrectos.') # Si falla, muestra mensaje de error
 
+    # Si es GET o si falló el login, renderiza el formulario
     return render(request, 'login.html')
 
+# Vista principal que muestra la lista de playas
 @login_required
 def playas_index_view(request):
-    playas = Playa.objects.all().order_by('nombre')
-    return render(request, 'playas-index.html', {'playas': playas})
+    playas = Playa.objects.all().order_by('nombre') # Obtiene todas las playas ordenadas por nombre
+    return render(request, 'playas-index.html', {'playas': playas}) # Renderiza plantilla con contexto
 
 
-
+# Vista que permite agregar una nueva playa desde el frontend (POST con JSON)
 @csrf_exempt
 def agregar_playa(request):
     if request.method == 'POST':
@@ -40,6 +42,7 @@ def agregar_playa(request):
             nombre = data.get('nombre', '').strip()
             lugar = data.get('lugar', '').strip()
 
+            # Validación de campos obligatorios
             if not nombre or not lugar:
                 return JsonResponse({'ok': False, 'error': 'Faltan datos obligatorios.'})
 
@@ -52,11 +55,12 @@ def agregar_playa(request):
             if existe:
                 return JsonResponse({'ok': False, 'error': 'Ya existe una playa con ese nombre y lugar.'})
 
-            # Buscar coordenadas
+            # Geolocaliza la playa usando Nominatim
             geolocator = Nominatim(user_agent="app_playas")
             location = geolocator.geocode(f"{nombre}, {lugar}")
 
             if location:
+                # Si se encuentra la ubicación, se guarda en la base de datos
                 Playa.objects.create(
                     nombre=nombre,
                     lugar=lugar,
@@ -68,23 +72,25 @@ def agregar_playa(request):
                 return JsonResponse({'ok': False, 'error': 'No se pudo encontrar la ubicación.'})
 
         except Exception as e:
+            # Si ocurre un error inesperado
             return JsonResponse({'ok': False, 'error': str(e)})
 
+    # Si no es POST, devuelve error 405
     return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
 
+# Vista para eliminar una playa según su ID (desde botón 🗑️)
 @csrf_exempt
 def eliminar_playa(request, playa_id):
     if request.method == 'DELETE':
         try:
-            # data = json.loads(request.body)
-            # playa_id = data.get('id')
-
+            # Busca la playa por ID y la elimina
             playa = Playa.objects.get(id=playa_id)
             playa.delete()
-
             return JsonResponse({'ok': True})
         except Playa.DoesNotExist:
             return JsonResponse({'ok': False, 'error': 'Playa no encontrada'})
         except Exception as e:
             return JsonResponse({'ok': False, 'error': str(e)})
+
+    # Si no es DELETE, devuelve error 405
     return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
