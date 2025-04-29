@@ -19,6 +19,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 from SurfApp import views
+from SurfApp import endpoints  # ← nuevo
 
 # Definición de las rutas del proyecto
 urlpatterns = [
@@ -31,11 +32,17 @@ urlpatterns = [
     # Vista principal que lista las playas (requiere login)
     path('playas/', views.playas_index_view, name='playas' ),
 
+    # Vista que muestra la información de la playa seleccionada
+    path('dashboard/', views.dashboard_playa_view, name='dashboard_playa'),
+
+    # API
+
     # API para agregar una nueva playa vía POST
-    path('api/agregar-playa/', views.agregar_playa, name='agregar_playa'),
+    path('api/agregar-playa/', endpoints.agregar_playa, name='agregar_playa'),
 
     # API para eliminar una playa por ID vía DELETE
-    path('api/eliminar-playa/<str:playa_id>', views.eliminar_playa, name='eliminar_playa'),
+    path('api/eliminar-playa/<str:playa_id>', endpoints.eliminar_playa, name='eliminar_playa'),
+
 
 # Añade soporte para servir archivos estáticos durante el desarrollo
 ]  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
