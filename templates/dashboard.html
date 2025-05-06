@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Playa</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'SurfApp/css/dashboard.css' %}">
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+    />
+
+    <!-- Leaflet JS -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+    ></script>
+</head>
+<body>
+    <div class="dashboard-container">
+
+        <!-- Encabezado principal -->
+        <div class="header">
+
+            <div id="mapa-playa"></div>
+            <div class="info-playa">
+                <h1>{{ playa.nombre }}</h1>
+                <p>{{ playa.lugar }}</p>
+                <p>Lat: {{ playa.latitud }} <br> Lon: {{ playa.longitud }}</p>
+            </div>
+
+            <div class="info-clima">
+                <h2 id="hora-actual"></h2>
+                <p>Temperatura: 22ºC</p>
+                <p>Aparente: 20ºC</p>
+                <p>Clima: ☀️ Despejado</p>
+            </div>
+        </div>
+
+        <!-- Contenedor scrollable -->
+        <div class="contenido-scroll">
+
+
+            <!-- Filtros / Checkboxes -->
+            <div class="filtros">
+                <h2>INFORMACIÓN DEL DÍA</h2>
+                <label><input type="checkbox" checked> Altura de ola</label>
+                <label><input type="checkbox"> Periodo de las olas</label>
+                <label><input type="checkbox"> Dirección de las olas</label>
+                <label><input type="checkbox" checked> Altura del Swell</label>
+                <label><input type="checkbox"> Periodo del Swell</label>
+                <label><input type="checkbox"> Dirección del Swell</label>
+            </div>
+
+            <!-- Gráfica (placeholder) -->
+            <div class="grafica">
+                <p>Aquí irá la gráfica interactiva</p>
+            </div>
+
+            <!-- Máximas del día -->
+            <h2>MÁXIMOS DIARIOS</h2>
+            <div class="tarjetas-maximos">
+                <div class="tarjeta">
+                    <h4>🌊 Altura de ola</h4>
+                    <p>1.24 m</p>
+                </div>
+                <div class="tarjeta">
+                    <h4>🌬️ Dirección del swell</h4>
+                    <p style="transform: rotate(235deg); display: inline-block;">⬆️</p>
+                </div>
+                <div class="tarjeta">
+                    <h4>📏 Periodo del Swell</h4>
+                    <p>12 s</p>
+                </div>
+            </div>
+
+            <!-- Ahora mismo -->
+            <h2>DATOS ACTUALES</h2>
+            <div class="tarjetas-maximos">
+                <div class="tarjeta">
+                    <h4>🌊 Altura actual de ola</h4>
+                    <p>0.85 m</p>
+                </div>
+                <div class="tarjeta">
+                    <h4>🌬️ Dirección actual del viento</h4>
+                    <p style="transform: rotate(180deg); display: inline-block;">⬆️</p>
+                </div>
+                <div class="tarjeta">
+                    <h4>🌡️ Temperatura del agua</h4>
+                    <p>18ºC</p>
+                </div>
+            </div>
+            <h2>MAPA INTERACTIVO</h2>
+            <iframe
+              width="100%"
+              height="350"
+              src="https://embed.windy.com/embed2.html?lat=42.9&lon=-9.27&detailLat=42.9&detailLon=-9.27&width=650&height=450&zoom=9&level=surface&overlay=waves&product=ecmwf&menu=&message=true&marker=&calendar=now&pressure=true&type=map&location=coordinates&detail=&metricWind=kt&metricTemp=%C2%B0C&radarRange=-1"
+              frameborder="0">
+            </iframe>
+
+        </div>
+    </div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const lat = parseFloat("{{ playa.latitud }}");
+    const lon = parseFloat("{{ playa.longitud }}");
+
+    const map = L.map('mapa-playa', {
+        center: [lat, lon],
+        zoom: 15,
+        zoomControl: false,
+        dragging: false,
+        scrollWheelZoom: true,
+        doubleClickZoom: false,
+        boxZoom: false,
+        keyboard: false,
+        touchZoom: false
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '',
+        maxZoom: 28,
+    }).addTo(map);
+
+    L.marker([lat, lon]).addTo(map);
+
+    setTimeout(() => {
+        map.invalidateSize();
+    }, 100);
+});
+
+  function actualizarHora() {
+    const ahora = new Date();
+    const opciones = {year: 'numeric', month: 'long', day: 'numeric' };
+    const fecha = ahora.toLocaleDateString('es-ES', opciones);
+    const hora = ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('hora-actual').textContent = `${fecha} - ${hora}`;
+  }
+
+  document.addEventListener("DOMContentLoaded", actualizarHora);
+
+</script>
+</body>
+</html>

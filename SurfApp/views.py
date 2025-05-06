@@ -2,9 +2,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from geopy.geocoders import Nominatim
 from .models import Playa
 import json
 
@@ -31,3 +28,8 @@ def login_view(request):
 def playas_index_view(request):
     playas = Playa.objects.all().order_by('nombre') # Obtiene todas las playas ordenadas por nombre
     return render(request, 'playas-index.html', {'playas': playas}) # Renderiza plantilla con contexto
+
+@login_required
+def dashboard_playa_view(request, playa_id):
+    playa = Playa.objects.get(id=playa_id)
+    return render(request, 'dashboard.html', {'playa': playa})

@@ -44,6 +44,10 @@ function solicitarInfo(nombre) {
     // Aquí podrías hacer una solicitud a la API para obtener más info sobre la playa
 }
 
+function verDashboard(id) {
+    window.open(`/dashboard/${id}/`, '_blank') ;
+}
+
 // Envía la nueva playa al backend para agregarla a la base de datos
 function enviarNuevaPlaya() {
     // Obtiene los valores ingresados por el usuario
