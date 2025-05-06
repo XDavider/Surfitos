@@ -18,6 +18,10 @@
     ></script>
 </head>
 <body>
+<div id="coord"
+     data-lat="{{ playa.latitud }}"
+     data-lon="{{ playa.longitud }}"
+     style="display:none;"></div>
     <div class="dashboard-container">
 
         <!-- Encabezado principal -->
@@ -101,45 +105,6 @@
 
         </div>
     </div>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const lat = parseFloat("{{ playa.latitud }}");
-    const lon = parseFloat("{{ playa.longitud }}");
-
-    const map = L.map('mapa-playa', {
-        center: [lat, lon],
-        zoom: 15,
-        zoomControl: false,
-        dragging: false,
-        scrollWheelZoom: true,
-        doubleClickZoom: false,
-        boxZoom: false,
-        keyboard: false,
-        touchZoom: false
-    });
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '',
-        maxZoom: 28,
-    }).addTo(map);
-
-    L.marker([lat, lon]).addTo(map);
-
-    setTimeout(() => {
-        map.invalidateSize();
-    }, 100);
-});
-
-  function actualizarHora() {
-    const ahora = new Date();
-    const opciones = {year: 'numeric', month: 'long', day: 'numeric' };
-    const fecha = ahora.toLocaleDateString('es-ES', opciones);
-    const hora = ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-    document.getElementById('hora-actual').textContent = `${fecha} - ${hora}`;
-  }
-
-  document.addEventListener("DOMContentLoaded", actualizarHora);
-
-</script>
+<script src="{% static 'SurfApp/js/dashboard.js' %}"></script>
 </body>
 </html>
