@@ -1,5 +1,6 @@
 import requests
-from datetime import date
+from datetime import date, datetime
+from django.utils.timezone import make_aware
 from .models import (
     MarineDailyData, MarineHourlyData,
     WeatherDailyData, WeatherHourlyData
@@ -38,7 +39,8 @@ def fetch_and_save_marine_data(playa):
 
     # Guardar hourly
     times = data['hourly']['time']
-    for i, timestamp in enumerate(times):
+    for i, ts in enumerate(times):
+        timestamp = make_aware(datetime.fromisoformat(ts))
         MarineHourlyData.objects.update_or_create(
             playa=playa,
             timestamp=timestamp,
@@ -69,6 +71,8 @@ def fetch_and_save_weather_data(playa):
 
     data = response.json()
     fecha = date.fromisoformat(data['daily']['time'][0])
+    sunrise = make_aware(datetime.fromisoformat(data['daily']['sunrise'][0]))
+    sunset = make_aware(datetime.fromisoformat(data['daily']['sunset'][0]))
 
     # Guardar daily
     WeatherDailyData.objects.update_or_create(
@@ -77,14 +81,15 @@ def fetch_and_save_weather_data(playa):
         defaults={
             'temperature_max': data['daily']['temperature_2m_max'][0],
             'temperature_min': data['daily']['temperature_2m_min'][0],
-            'sunrise': data['daily']['sunrise'][0],
-            'sunset': data['daily']['sunset'][0],
+            'sunrise': sunrise,
+            'sunset': sunset,
         }
     )
 
     # Guardar hourly
     times = data['hourly']['time']
-    for i, timestamp in enumerate(times):
+    for i, ts in enumerate(times):
+        timestamp = make_aware(datetime.fromisoformat(ts))
         WeatherHourlyData.objects.update_or_create(
             playa=playa,
             timestamp=timestamp,
