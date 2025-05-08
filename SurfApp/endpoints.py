@@ -1,3 +1,4 @@
+from django.contrib.sites import requests
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from geopy.geocoders import Nominatim
@@ -65,3 +66,17 @@ def eliminar_playa(request, playa_id):
 
     # Si no es DELETE, devuelve error 405
     return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
+
+def get_current_marine_data(lat, lon):
+    url = f"https://marine-api.open-meteo.com/v1/marine?latitude={lat}&longitude={lon}&current=wave_height,wave_direction,wave_period,sea_surface_temperature"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json().get("current", {})
+    return None
+
+def get_current_weather_data(lat, lon):
+    url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,apparent_temperature,weather_code"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return response.json().get("current", {})
+    return None

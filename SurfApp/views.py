@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .models import Playa
+from .endpoints import get_current_marine_data, get_current_weather_data
 import json
 
 
@@ -36,5 +37,12 @@ def playas_index_view(request):
 @login_required
 def dashboard_playa_view(request, playa_id):
     playa = Playa.objects.get(id=playa_id)  # Obtiene la instancia de la playa correspondiente al ID recibido por la URL
-    return render(request, 'dashboard.html',
-                  {'playa': playa})  # Renderiza la plantilla 'dashboard.html' y le pasa el objeto 'playa' al contexto
+    # Diccionario de contexto personalizado
+    context = {
+        'playa': playa,
+        'current_marine': get_current_marine_data(playa.latitud, playa.longitud),
+        'current_weather': get_current_weather_data(playa.latitud, playa.longitud)
+    }
+
+    return render(request, 'dashboard.html', context)
+
