@@ -122,9 +122,10 @@ body {
 
 
 .grafica {
-    height: 500px;
+    height: 450px;
     width: 100%;
-    background: #0b0f1a;
+    background-color: rgba(20, 20, 20, 0.8);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
     color: white;
     display: flex;
     align-items: center;

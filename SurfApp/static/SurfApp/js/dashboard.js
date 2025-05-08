@@ -99,94 +99,192 @@ document.addEventListener("DOMContentLoaded", () => {
     // Define los datasets para la gráfica, uno por variable (cada uno con su color y estado inicial visible/oculto)
     const datasets = {
         wave_height: {
-            label: "Altura de ola",
+            label: "Altura de ola (m)",
             data: marineData.map(d => d.wave_height),
             borderColor: "rgba(100, 100, 255, 1)",
+            yAxisID: 'y_altura',
             hidden: false
         },
         wave_period: {
-            label: "Periodo de ola",
+            label: "Periodo de ola (s)",
             data: marineData.map(d => d.wave_period),
             borderColor: "rgba(30, 0, 255, 1)",
+            yAxisID: 'y_periodo',
             hidden: true
         },
         wave_direction: {
-            label: "Dirección de las olas",
+            label: "Dirección de las olas (º)",
             data: marineData.map(d => d.wave_direction),
             borderColor: "rgba(75, 192, 192, 1)",
+            yAxisID: 'y_direccion',
             hidden: true
         },
         swell_wave_height: {
-            label: "Altura del Mar de fondo",
+            label: "Altura del Mar de fondo (m)",
             data: marineData.map(d => d.swell_wave_height),
             borderColor: "rgba(255, 150, 200, 1)",
+            yAxisID: 'y_altura',
             hidden: false
         },
         swell_wave_period: {
-            label: "Periodo del Mar de fondo",
+            label: "Periodo del Mar de fondo (s)",
             data: marineData.map(d => d.swell_wave_period),
             borderColor: "rgba(210, 70, 180, 1)",
+            yAxisID: 'y_periodo',
             hidden: true
         },
         swell_wave_direction: {
-            label: "Dirección del Mar de fondo",
+            label: "Dirección del Mar de fondo (º)",
             data: marineData.map(d => d.swell_wave_direction),
             borderColor: "rgba(200, 50, 255, 1)",
+            yAxisID: 'y_direccion',
             hidden: true
         },
         temperature: {
-            label: "Temperatura",
+            label: "Temperatura (ºC)",
             data: weatherData.map(d => d.temperature),
             borderColor: "rgba(255, 0, 0, 1)",
+            yAxisID: 'y_temp',
             hidden: true
         },
         apparent_temperature: {
-            label: "Sensación térmica",
+            label: "Sensación térmica (ºC)",
             data: weatherData.map(d => d.apparent_temperature),
             borderColor: "rgba(255, 159, 64, 1)",
+            yAxisID: 'y_temp',
             hidden: true
         },
         weather_code: {
             label: "Clima",
             data: weatherData.map(d => d.weather_code),
             borderColor: "rgba(240, 255, 0, 1)",
+            yAxisID: 'y_codigo',
             hidden: true
         }
     };
 
     // Inicializa la gráfica usando Chart.js
-    const chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: Object.values(datasets) // convierte el objeto datasets en un array
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: true },
-                tooltip: {
-                    callbacks: {
-                        // Muestra la descripción textual del código meteorológico en los tooltips
-                        label: function (context) {
-                            const datasetLabel = context.dataset.label || '';
-                            const value = context.raw;
-
-                            if (datasetLabel === "Clima") {
-                                return `${datasetLabel}: ${weatherCodeMap[value] || 'N/D'}`;
-                            }
-                            return `${datasetLabel}: ${value}`;
-                        }
-                    }
-                }
+const chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [
+            {
+                label: "Altura de ola (m)",
+                data: marineData.map(d => d.wave_height),
+                borderColor: "rgba(100, 100, 255, 1)",
+                yAxisID: 'y_altura',
+                hidden: false
             },
-            scales: {
-                y: {
-                    beginAtZero: true
+            {
+                label: "Periodo de ola (s)",
+                data: marineData.map(d => d.wave_period),
+                borderColor: "rgba(30, 0, 255, 1)",
+                yAxisID: 'y_periodo',
+                hidden: true
+            },
+            {
+                label: "Dirección de las olas (º)",
+                data: marineData.map(d => d.wave_direction),
+                borderColor: "rgba(75, 192, 192, 1)",
+                yAxisID: 'y_direccion',
+                hidden: true
+            },
+            {
+                label: "Altura del Mar de fondo (m)",
+                data: marineData.map(d => d.swell_wave_height),
+                borderColor: "rgba(255, 150, 200, 1)",
+                yAxisID: 'y_altura',
+                hidden: false
+            },
+            {
+                label: "Periodo del Mar de fondo (s)",
+                data: marineData.map(d => d.swell_wave_period),
+                borderColor: "rgba(210, 70, 180, 1)",
+                yAxisID: 'y_periodo',
+                hidden: true
+            },
+            {
+                label: "Dirección del Mar de fondo (º)",
+                data: marineData.map(d => d.swell_wave_direction),
+                borderColor: "rgba(200, 50, 255, 1)",
+                yAxisID: 'y_direccion',
+                hidden: true
+            },
+            {
+                label: "Temperatura (ºC)",
+                data: weatherData.map(d => d.temperature),
+                borderColor: "rgba(255, 0, 0, 1)",
+                yAxisID: 'y_temp',
+                hidden: true
+            },
+            {
+                label: "Sensación térmica (ºC)",
+                data: weatherData.map(d => d.apparent_temperature),
+                borderColor: "rgba(255, 159, 64, 1)",
+                yAxisID: 'y_temp',
+                hidden: true
+            },
+            {
+                label: "Clima",
+                data: weatherData.map(d => d.weather_code),
+                borderColor: "rgba(240, 255, 0, 1)",
+                yAxisID: 'y_codigo',
+                hidden: true
+            }
+        ]
+    },
+        options: {
+        responsive: true,
+        scales: {
+            y_altura: {
+                type: 'linear',
+                position: 'right',
+                title: { display: true, text: 'Altura (m)' },
+                beginAtZero: true
+            },
+            y_periodo: {
+                type: 'linear',
+                position: 'right',
+                title: { display: true, text: 'Periodo (s)' },
+                grid: { drawOnChartArea: false }
+            },
+            y_direccion: {
+                type: 'linear',
+                position: 'right',
+                offset: true,
+                title: { display: true, text: 'Dirección (º)' },
+                grid: { drawOnChartArea: false }
+            },
+            y_temp: {
+                type: 'linear',
+                position: 'left',
+                offset: true,
+                title: { display: true, text: 'Temperatura (°C)' },
+                grid: { drawOnChartArea: false }
+            },
+            y_codigo: {
+                type: 'linear',
+                position: 'left',
+                display: false
+            }
+        },
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const datasetLabel = context.dataset.label || '';
+                        const value = context.raw;
+                        if (datasetLabel.includes("Clima")) {
+                            return `${datasetLabel}: ${weatherCodeMap[value] || 'N/D'}`;
+                        }
+                        return `${datasetLabel}: ${value}`;
+                    }
                 }
             }
         }
-    });
+    }
+});
 
     // 🔁 Asocia cada checkbox con su respectivo dataset
     document.querySelectorAll(".filtros input[type='checkbox']").forEach((checkbox, i) => {
@@ -199,4 +297,5 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
-});
+})
+    ;
