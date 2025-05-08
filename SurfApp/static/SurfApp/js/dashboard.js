@@ -1,3 +1,37 @@
+// Constantes para los datos de la gráfica
+const marineData = JSON.parse(document.getElementById('marine-data').textContent);
+const weatherData = JSON.parse(document.getElementById('weather-data').textContent);
+const weatherCodeMap = {
+    0: "☀️ Despejado",
+    1: "🌤️ Mayormente despejado",
+    2: "⛅ Parcialmente nublado",
+    3: "☁️ Nublado",
+    45: "🌫️ Niebla",
+    48: "🌫️ Niebla con escarcha",
+    51: "🌦️ Llovizna ligera",
+    53: "🌧️ Llovizna moderada",
+    55: "🌧️ Llovizna intensa",
+    56: "❄️🌧️ Llovizna helada ligera",
+    57: "❄️🌧️ Llovizna helada intensa",
+    61: "🌦️ Lluvia ligera",
+    63: "🌧️ Lluvia moderada",
+    65: "🌧️ Lluvia intensa",
+    66: "🌧️❄️ Lluvia helada ligera",
+    67: "🌧️❄️ Lluvia helada intensa",
+    71: "🌨️ Nieve ligera",
+    73: "🌨️ Nieve moderada",
+    75: "🌨️ Nieve intensa",
+    77: "❄️ Granos de nieve",
+    80: "🌦️ Chubascos ligeros",
+    81: "🌧️ Chubascos moderados",
+    82: "🌧️🌩️ Chubascos fuertes",
+    85: "🌨️ Chubascos de nieve ligeros",
+    86: "🌨️ Chubascos de nieve intensos",
+    95: "⛈️ Tormenta eléctrica",
+    96: "⛈️ Tormenta con granizo ligero",
+    99: "⛈️ Tormenta con granizo fuerte"
+};
+
 // Ejecuta este bloque cuando el DOM esté completamente cargado
 document.addEventListener("DOMContentLoaded", function () {
     // Obtiene el div oculto con los atributos data-lat y data-lon
@@ -50,3 +84,111 @@ function actualizarHora() {
 
 // Ejecuta la función de hora una vez que el DOM esté listo
 document.addEventListener("DOMContentLoaded", actualizarHora);
+
+document.addEventListener("DOMContentLoaded", () => {
+    const marineData = JSON.parse(document.getElementById("marine-data").textContent);
+    const weatherData = JSON.parse(document.getElementById("weather-data").textContent);
+
+    const ctx = document.getElementById("grafico-hourly").getContext("2d");
+
+    const labels = marineData.map(d => d.time);  // Asumen mismos tiempos para todas las variables
+
+    const datasets = {
+        wave_height: {
+            label: "Altura de ola",
+            data: marineData.map(d => d.wave_height),
+            borderColor: "rgba(100, 100, 255, 1)",
+            hidden: false
+        },
+        wave_period: {
+            label: "Periodo de ola",
+            data: marineData.map(d => d.wave_period),
+            borderColor: "rgba(30, 0, 255, 1)",
+            hidden: true
+        },
+        wave_direction: {
+            label: "Dirección de las olas",
+            data: marineData.map(d => d.wave_direction),
+            borderColor: "rgba(75, 192, 192, 1)",
+            hidden: true
+        },
+        swell_wave_height: {
+            label: "Altura del Mar de fondo",
+            data: marineData.map(d => d.swell_wave_height),
+            borderColor: "rgba(255, 150, 200, 1)",
+            hidden: false
+        },
+        swell_wave_period: {
+            label: "Periodo del Mar de fondo",
+            data: marineData.map(d => d.swell_wave_period),
+            borderColor: "rgba(210, 70, 180, 1)",
+            hidden: true
+        },
+        swell_wave_direction: {
+            label: "Dirección del Mar de fondo",
+            data: marineData.map(d => d.swell_wave_direction),
+            borderColor: "rgba(200, 50, 255, 1)",
+            hidden: true
+        },
+        temperature: {
+            label: "Temperatura",
+            data: weatherData.map(d => d.temperature),
+            borderColor: "rgba(255, 0, 0, 1)",
+            hidden: true
+        },
+        apparent_temperature: {
+            label: "Sensación térmica",
+            data: weatherData.map(d => d.apparent_temperature),
+            borderColor: "rgba(255, 159, 64, 1)",
+            hidden: true
+        },
+        weather_code: {
+            label: "Clima",
+            data: weatherData.map(d => d.weather_code),
+            borderColor: "rgba(240, 255, 0, 1)",
+            hidden: true
+        }
+    };
+
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: Object.values(datasets)
+        },
+        options: {
+    responsive: true,
+    plugins: {
+        legend: { display: true },
+        tooltip: {
+            callbacks: {
+                label: function(context) {
+                    const datasetLabel = context.dataset.label || '';
+                    const value = context.raw;
+
+                    if (datasetLabel === "Clima") {
+                        return `${datasetLabel}: ${weatherCodeMap[value] || 'N/D'}`;
+                    }
+                    return `${datasetLabel}: ${value}`;
+                }
+            }
+        }
+    },
+    scales: {
+        y: {
+            beginAtZero: true
+        }
+    }
+}
+
+    });
+
+    // 🔁 Vincular checkboxes
+    document.querySelectorAll(".filtros input[type='checkbox']").forEach((checkbox, i) => {
+        checkbox.addEventListener("change", () => {
+            const key = Object.keys(datasets)[i];
+            chart.data.datasets.find(ds => ds.label === datasets[key].label).hidden = !checkbox.checked;
+            chart.update();
+        });
+    });
+});

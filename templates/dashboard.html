@@ -66,13 +66,19 @@
                     <label><input type="checkbox"> Periodo del Mar de fondo</label>
                     <label><input type="checkbox"> Dirección del Mar de fondo</label>
                 </div>
+                <div class="columna-filtro">
+                    <h3>🌡️ Clima</h3>
+                    <label><input type="checkbox"> Temperatura</label>
+                    <label><input type="checkbox"> Sensación térmica</label>
+                    <label><input type="checkbox"> Clima</label>
+                </div>
             </div>
         </div>
 
 
         <!-- Gráfica (placeholder) -->
         <div class="grafica">
-            <p>Aquí irá la gráfica interactiva</p>
+            <canvas id="grafico-hourly"></canvas>
         </div>
 
         <!-- Máximas del día -->
@@ -175,6 +181,18 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Inyectamos los datos hourly desde Django al frontend como JSON -->
+<script id="marine-data" type="application/json">
+    {{ marine_hourly_json|safe }}
+</script>
+
+<script id="weather-data" type="application/json">
+    {{ weather_hourly_json|safe }}
+</script>
+
+<!-- Script principal -->
 <!-- JAVASCRIPT -->
 <script src="{% static 'SurfApp/js/dashboard.js' %}"></script>
 </body>
