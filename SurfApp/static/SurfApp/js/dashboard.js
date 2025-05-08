@@ -1,6 +1,4 @@
 // Constantes para los datos de la gráfica
-const marineData = JSON.parse(document.getElementById('marine-data').textContent);
-const weatherData = JSON.parse(document.getElementById('weather-data').textContent);
 const weatherCodeMap = {
     0: "☀️ Despejado",
     1: "🌤️ Mayormente despejado",
@@ -85,14 +83,20 @@ function actualizarHora() {
 // Ejecuta la función de hora una vez que el DOM esté listo
 document.addEventListener("DOMContentLoaded", actualizarHora);
 
+// Espera a que el contenido del DOM esté cargado antes de ejecutar
 document.addEventListener("DOMContentLoaded", () => {
+
+    // Obtiene los datos horarios de variables marinas y meteorológicas desde el HTML (inyectados como JSON desde Django)
     const marineData = JSON.parse(document.getElementById("marine-data").textContent);
     const weatherData = JSON.parse(document.getElementById("weather-data").textContent);
 
+    // Obtiene el contexto del lienzo (canvas) donde se renderiza la gráfica
     const ctx = document.getElementById("grafico-hourly").getContext("2d");
 
-    const labels = marineData.map(d => d.time);  // Asumen mismos tiempos para todas las variables
+    // Crea las etiquetas del eje X a partir de las horas (formato HH:MM)
+    const labels = marineData.map(d => d.time);  // Asume que todas las variables comparten el mismo eje temporal
 
+    // Define los datasets para la gráfica, uno por variable (cada uno con su color y estado inicial visible/oculto)
     const datasets = {
         wave_height: {
             label: "Altura de ola",
@@ -150,45 +154,49 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
+    // Inicializa la gráfica usando Chart.js
     const chart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
-            datasets: Object.values(datasets)
+            datasets: Object.values(datasets) // convierte el objeto datasets en un array
         },
         options: {
-    responsive: true,
-    plugins: {
-        legend: { display: true },
-        tooltip: {
-            callbacks: {
-                label: function(context) {
-                    const datasetLabel = context.dataset.label || '';
-                    const value = context.raw;
+            responsive: true,
+            plugins: {
+                legend: { display: true },
+                tooltip: {
+                    callbacks: {
+                        // Muestra la descripción textual del código meteorológico en los tooltips
+                        label: function (context) {
+                            const datasetLabel = context.dataset.label || '';
+                            const value = context.raw;
 
-                    if (datasetLabel === "Clima") {
-                        return `${datasetLabel}: ${weatherCodeMap[value] || 'N/D'}`;
+                            if (datasetLabel === "Clima") {
+                                return `${datasetLabel}: ${weatherCodeMap[value] || 'N/D'}`;
+                            }
+                            return `${datasetLabel}: ${value}`;
+                        }
                     }
-                    return `${datasetLabel}: ${value}`;
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
                 }
             }
         }
-    },
-    scales: {
-        y: {
-            beginAtZero: true
-        }
-    }
-}
-
     });
 
-    // 🔁 Vincular checkboxes
+    // 🔁 Asocia cada checkbox con su respectivo dataset
     document.querySelectorAll(".filtros input[type='checkbox']").forEach((checkbox, i) => {
         checkbox.addEventListener("change", () => {
             const key = Object.keys(datasets)[i];
-            chart.data.datasets.find(ds => ds.label === datasets[key].label).hidden = !checkbox.checked;
-            chart.update();
+            const dataset = chart.data.datasets.find(ds => ds.label === datasets[key].label);
+            if (dataset) {
+                dataset.hidden = !checkbox.checked; // Oculta o muestra según el checkbox
+                chart.update(); // Actualiza la gráfica
+            }
         });
     });
 });
