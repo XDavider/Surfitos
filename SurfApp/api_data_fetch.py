@@ -1,4 +1,5 @@
 import requests
+import pytz
 from datetime import date, datetime
 from django.utils.timezone import make_aware
 from .models import (
@@ -71,8 +72,10 @@ def fetch_and_save_weather_data(playa):
 
     data = response.json()
     fecha = date.fromisoformat(data['daily']['time'][0])
-    sunrise = make_aware(datetime.fromisoformat(data['daily']['sunrise'][0]))
-    sunset = make_aware(datetime.fromisoformat(data['daily']['sunset'][0]))
+    europe_madrid = pytz.timezone("Europe/Madrid")
+    sunrise = make_aware(datetime.fromisoformat(data['daily']['sunrise'][0]), timezone=pytz.utc).astimezone(
+        europe_madrid)
+    sunset = make_aware(datetime.fromisoformat(data['daily']['sunset'][0]), timezone=pytz.utc).astimezone(europe_madrid)
 
     # Guardar daily
     WeatherDailyData.objects.update_or_create(
