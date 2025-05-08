@@ -1,0 +1,178 @@
+/* Estilo general del dashboard */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #cce6ff;
+}
+
+.dashboard-container {
+    padding: 30px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+#mapa-playa {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    filter: brightness(0.6);
+}
+
+.header {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    background-size: cover;
+    background-position: center;
+    color: white;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+.info-playa {
+    position: relative;
+    background-color: rgba(150, 150, 150, 0.5);
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.info-playa h1 {
+    margin: 0;
+    font-size: 3em;
+}
+
+.info-playa p {
+    font-size: 1.2em;
+}
+
+.info-clima {
+    position: relative;
+    background-color: rgba(150, 150, 150, 0.5);
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    text-align: right;
+    z-index: 1;
+}
+
+.info-clima h1 {
+    margin: 0;
+    font-size: 3em;
+}
+
+.contenido-scroll {
+    background: rgba(50, 50, 50, 0.6);
+    border-radius: 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    max-height: 88vh;
+    overflow-y: auto;
+    color: white;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+}
+
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    padding: 15px;
+
+}
+
+.filtros h2 {
+    flex-basis: 100%;
+    margin: 0;
+}
+
+.grupo-filtros {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.columna-filtro {
+    background-color: rgba(255, 255, 255, 0.3);
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.columna-filtro h3 {
+    margin-top: 0;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+}
+
+.columna-filtro label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+
+.grafica {
+    height: 450px;
+    width: 100%;
+    background-color: rgba(20, 20, 20, 0.8);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    margin-bottom: 30px;
+    font-size: 1.2em;
+}
+.tarjetas-maximos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.tarjeta {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    padding: 16px;
+    min-height: 120px; /* Altura uniforme */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tarjeta h4 {
+    font-size: 1em;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.tarjeta p {
+    font-size: 1.5em;
+    margin: 0;
+    font-weight: bold;
+    min-height: 1.5em; /* asegura altura uniforme sin crear espacios grandes */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px; /* si hay una flecha, separa ligeramente */
+}
+
+@media (min-width: 800px) {
+    .tarjetas-maximos {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
