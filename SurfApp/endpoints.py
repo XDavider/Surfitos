@@ -1,4 +1,4 @@
-from django.contrib.sites import requests
+import requests
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from geopy.geocoders import Nominatim
@@ -75,7 +75,7 @@ def get_current_marine_data(lat, lon):
     return None
 
 def get_current_weather_data(lat, lon):
-    url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,apparent_temperature,weather_code"
+    url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature_2m,apparent_temperature,weather_code&timezone=Europe%2FBerlin&forecast_days=1"
     response = requests.get(url)
     if response.status_code == 200:
         return response.json().get("current", {})

@@ -1,10 +1,12 @@
+from datetime import date
+from SurfApp.models import MarineDailyData, WeatherDailyData
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .models import Playa
 from .endpoints import get_current_marine_data, get_current_weather_data
-import json
+from SurfApp.utils import decode_weather_code
 
 
 # Vista para el login del usuario
@@ -37,12 +39,24 @@ def playas_index_view(request):
 @login_required
 def dashboard_playa_view(request, playa_id):
     playa = Playa.objects.get(id=playa_id)  # Obtiene la instancia de la playa correspondiente al ID recibido por la URL
-    # Diccionario de contexto personalizado
+    hoy = date.today()
+
+    # Datos actuales
+    current_marine = get_current_marine_data(playa.latitud, playa.longitud)
+    current_weather = get_current_weather_data(playa.latitud, playa.longitud)
+    weather_description = decode_weather_code(current_weather.get("weather_code")) if current_weather else "N/D"
+
+    # Nuevos datos diarios
+    marine_daily = MarineDailyData.objects.filter(playa=playa, fecha=hoy).first()
+    weather_daily = WeatherDailyData.objects.filter(playa=playa, fecha=hoy).first()
+
     context = {
         'playa': playa,
-        'current_marine': get_current_marine_data(playa.latitud, playa.longitud),
-        'current_weather': get_current_weather_data(playa.latitud, playa.longitud)
+        'current_marine': current_marine,
+        'current_weather': current_weather,
+        'marine_daily': marine_daily,
+        'weather_daily': weather_daily,
+        'weather_description': weather_description,
     }
 
     return render(request, 'dashboard.html', context)
-
