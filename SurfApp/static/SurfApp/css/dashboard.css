@@ -132,10 +132,9 @@ body {
     margin-bottom: 30px;
     font-size: 1.2em;
 }
-
 .tarjetas-maximos {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 16px;
     margin-bottom: 30px;
 }
@@ -145,19 +144,33 @@ body {
     border-radius: 16px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     padding: 16px;
-    min-width: 180px;
+    min-height: 120px; /* Altura uniforme */
     text-align: center;
-    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .tarjeta h4 {
-    margin-bottom: 10px;
     font-size: 1em;
     font-weight: 600;
+    margin-bottom: 10px;
 }
 
 .tarjeta p {
     font-size: 1.5em;
     margin: 0;
     font-weight: bold;
+    min-height: 1.5em; /* asegura altura uniforme sin crear espacios grandes */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px; /* si hay una flecha, separa ligeramente */
+}
+
+@media (min-width: 800px) {
+    .tarjetas-maximos {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }

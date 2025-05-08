@@ -77,93 +77,102 @@
 
         <!-- Máximas del día -->
         <h2>VARIABLES DIARIAS</h2>
-        <h3><br>Variables marítimas</h3>
-        <div class="tarjetas-maximos">
-            <!-- MARINE -->
-            <div class="tarjeta">
-                <h4>🌊 Altura máxima de ola</h4>
-                <p>{{ marine_daily.wave_height_max|default:"N/D" }} m</p>
-            </div>
-            <div class="tarjeta">
-                <h4>🧭 Dirección dominante de ola</h4>
-                <p>{{ marine_daily.wave_direction_dominant|default:0 }}º</p>
-                <p style="transform: rotate(
-                        {{ marine_daily.wave_direction_dominant|default:0 }}deg); display: inline-block;">⬇️</p>
-            </div>
-            <div class="tarjeta">
-                <h4>⏱️ Periodo máximo de ola</h4>
-                <p>{{ marine_daily.wave_period_max|default:"N/D" }} s</p>
-            </div>
-            <div class="tarjeta">
-                <h4>🌊 Altura máxima del swell</h4>
-                <p>{{ marine_daily.swell_wave_height_max|default:"N/D" }} m</p>
-            </div>
-            <div class="tarjeta">
-                <h4>🧭 Dirección dominante del swell</h4>
-                <p>{{ marine_daily.swell_wave_direction_dominant|default:0 }}º</p>
-                <p style="transform: rotate(
-                        {{ marine_daily.swell_wave_direction_dominant|default:0 }}deg); display: inline-block;">⬇️</p>
-            </div>
-            <div class="tarjeta">
-                <h4>⏱️ Periodo máximo del swell</h4>
-                <p>{{ marine_daily.swell_wave_period_max|default:"N/D" }} s</p>
-            </div>
-            </div>
-
-            <!-- WEATHER -->
+        <div class="grupo-tarjetas">
+            <h3><br>Variables marítimas</h3>
             <div class="tarjetas-maximos">
+                <!-- MARINE -->
+                <div class="tarjeta">
+                    <h4>🌊 Altura máxima de ola</h4>
+                    <p>{{ marine_daily.wave_height_max|default:"N/D" }} m</p>
+                </div>
+                <div class="tarjeta">
+                    <h4>🧭 Dirección dominante de ola</h4>
+                    <p>{{ marine_daily.wave_direction_dominant|default:0 }}º
+                        <span style="transform: rotate(
+                                {{ marine_daily.wave_direction_dominant|default:0 }}deg); display: inline-block;">⬇️</span>
+                    </p>
+                </div>
+                <div class="tarjeta">
+                    <h4>⏱️ Periodo máximo de ola</h4>
+                    <p>{{ marine_daily.wave_period_max|default:"N/D" }} s</p>
+                </div>
+                <div class="tarjeta">
+                    <h4>🌊 Altura máxima del swell</h4>
+                    <p>{{ marine_daily.swell_wave_height_max|default:"N/D" }} m</p>
+                </div>
+                <div class="tarjeta">
+                    <h4>🧭 Dirección dominante del swell</h4>
+                    <p>{{ marine_daily.swell_wave_direction_dominant|default:0 }}º
+                        <span style="transform: rotate(
+                                {{ marine_daily.swell_wave_direction_dominant|default:0 }}deg); display: inline-block;">
+                        ⬇️</span>
+                    </p>
+                </div>
+                <div class="tarjeta">
+                    <h4>⏱️ Periodo máximo del swell</h4>
+                    <p>{{ marine_daily.swell_wave_period_max|default:"N/D" }} s</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- WEATHER -->
+        <div class="grupo-tarjetas">
             <h3><br>Variables del tiempo</h3>
-            <div class="tarjeta">
-                <h4>🌡️ Temperatura máxima</h4>
-                <p>{{ weather_daily.temperature_max|default:"N/D" }} ºC</p>
-            </div>
-            <div class="tarjeta">
-                <h4>❄️ Temperatura mínima</h4>
-                <p>{{ weather_daily.temperature_min|default:"N/D" }} ºC</p>
-            </div>
-            <div class="tarjeta">
-                <h4>🌅 Salida del sol</h4>
-                <p>{{ weather_daily.sunrise|time:"H:i" }}</p>
-            </div>
-            <div class="tarjeta">
-                <h4>🌇 Puesta de sol</h4>
-                <p>{{ weather_daily.sunset|time:"H:i" }}</p>
+            <div class="tarjetas-maximos">
+                <div class="tarjeta">
+                    <h4>🌡️ Temperatura máxima</h4>
+                    <p>{{ weather_daily.temperature_max|default:"N/D" }} ºC</p>
+                </div>
+                <div class="tarjeta">
+                    <h4>❄️ Temperatura mínima</h4>
+                    <p>{{ weather_daily.temperature_min|default:"N/D" }} ºC</p>
+                </div>
+                <div class="tarjeta">
+                    <h4>🌅 Salida del sol</h4>
+                    <p>{{ weather_daily.sunrise|time:"H:i" }}</p>
+                </div>
+                <div class="tarjeta">
+                    <h4>🌇 Puesta de sol</h4>
+                    <p>{{ weather_daily.sunset|time:"H:i" }}</p>
+                </div>
             </div>
         </div>
 
-    <!-- Ahora mismo -->
-    <h2>DATOS ACTUALES</h2>
-    <div class="tarjetas-maximos">
-        <div class="tarjeta">
-            <h4>🌊 Altura actual de ola</h4>
-            <p>{{ current_marine.wave_height|default:"N/D" }} m</p>
+        <!-- Ahora mismo -->
+        <h2>DATOS ACTUALES</h2>
+        <div class="tarjetas-maximos">
+            <div class="tarjeta">
+                <h4>🌊 Altura actual de ola</h4>
+                <p>{{ current_marine.wave_height|default:"N/D" }} m</p>
+            </div>
+            <div class="tarjeta">
+                <h4>🌬️ Dirección actual de ola</h4>
+                <p>{{ current_marine.wave_direction|default:0 }}º
+                    <span style="transform: rotate(
+                            {{ current_marine.wave_direction|default:0 }}deg); display: inline-block;">
+                    ⬇️</span>
+                </p>
+            </div>
+            <div class="tarjeta">
+                <h4>🔁 Periodo actual de ola</h4>
+                <p>{{ current_marine.wave_period|default:"N/D" }} s</p>
+            </div>
+            <div class="tarjeta">
+                <h4>🌡️ Temperatura del agua</h4>
+                <p>{{ current_marine.sea_surface_temperature|default:"N/D" }} ºC</p>
+            </div>
         </div>
-        <div class="tarjeta">
-            <h4>🌬️ Dirección actual de ola</h4>
-            <p>{{ current_marine.wave_direction|default:0 }}º</p>
-            <p style="transform: rotate({{ current_marine.wave_direction|default:0 }}deg); display: inline-block;">
-                ⬇️</p>
-        </div>
-        <div class="tarjeta">
-            <h4>🔁 Periodo actual de ola</h4>
-            <p>{{ current_marine.wave_period|default:"N/D" }} s</p>
-        </div>
-        <div class="tarjeta">
-            <h4>🌡️ Temperatura del agua</h4>
-            <p>{{ current_marine.sea_surface_temperature|default:"N/D" }} ºC</p>
-        </div>
+
+        <!-- Mapa de Windy -->
+        <h2>MAPA INTERACTIVO</h2>
+        <iframe
+                width="100%"
+                height="350"
+                src="https://embed.windy.com/embed2.html?lat={{ playa.latitud }}&lon={{ playa.longitud }}&detailLat={{ playa.latitud }}&detailLon={{ playa.longitud }}&width=650&height=450&zoom=18&level=surface&overlay=waves&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=&metricWind=kt&metricTemp=%C2%B0C&radarRange=-1"
+                frameborder="0">
+        </iframe>
+
     </div>
-
-    <!-- Mapa de Windy -->
-    <h2>MAPA INTERACTIVO</h2>
-    <iframe
-            width="100%"
-            height="350"
-            src="https://embed.windy.com/embed2.html?lat={{ playa.latitud }}&lon={{ playa.longitud }}&detailLat={{ playa.latitud }}&detailLon={{ playa.longitud }}&width=650&height=450&zoom=18&level=surface&overlay=waves&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=&metricWind=kt&metricTemp=%C2%B0C&radarRange=-1"
-            frameborder="0">
-    </iframe>
-
-</div>
 </div>
 
 <!-- JAVASCRIPT -->

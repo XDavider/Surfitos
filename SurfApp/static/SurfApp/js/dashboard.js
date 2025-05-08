@@ -11,11 +11,11 @@ document.addEventListener("DOMContentLoaded", function () {
         zoom: 15,               // Zoom inicial (puede ajustarse según preferencia)
         zoomControl: false,     // Oculta los botones de zoom (+/-)
         dragging: false,        // Desactiva el arrastre del mapa
-        scrollWheelZoom: true,  // Permite hacer zoom con la rueda del ratón
+        scrollWheelZoom: false,  // Permite hacer zoom con la rueda del ratón
         doubleClickZoom: false, // Desactiva el zoom por doble clic
         boxZoom: false,         // Desactiva zoom por selección con caja
         keyboard: false,        // Desactiva navegación con teclado
-        touchZoom: false        // Desactiva zoom con gestos táctiles
+        touchZoom: true        // Desactiva zoom con gestos táctiles
     });
 
     // Añade la capa de mapas de OpenStreetMap
