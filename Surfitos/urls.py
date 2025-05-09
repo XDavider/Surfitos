@@ -33,7 +33,8 @@ urlpatterns = [
     path('playas/', views.playas_index_view, name='playas' ),
 
     # Vista que muestra la información de la playa seleccionada
-    path('dashboard/', views.dashboard_playa_view, name='dashboard_playa'),
+    path('dashboard/<int:playa_id>/', views.dashboard_playa_view, name='dashboard_playa'),
+
 
     # API
 

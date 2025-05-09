@@ -21,8 +21,9 @@
             </div>
             <div class="acciones">
                 <button class="boton" onclick="verEnMapa({{ playa.latitud }}, {{ playa.longitud }})">📍</button>
-                <button class="boton" onclick="solicitarInfo('{{ playa.nombre }}')">♻️</button>
+                <button class="boton" onclick="verDashboard({{ playa.id }})">📊</button>
                 <button class="boton" onclick="eliminarPlaya('{{ playa.id }}')">🗑️</button>
+
             </div>
         </div>
     {% empty %}
@@ -44,7 +45,7 @@
         </div>
     </div>
 </div>
-
+{% load static %}
 <script src="{% static 'SurfApp/js/playas.js' %}"></script>
 </body>
 </html>
