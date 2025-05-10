@@ -2,50 +2,97 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Gestión de Playas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surfitos - Gestión de Playas</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'SurfApp/css/playas-styles.css' %}">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+      <!-- CSS de Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <!-- JavaScript de Leaflet -->
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
 </head>
 <body>
-<div class="container" id="contenedor-playas">
-
-    {% for playa in playas %}
-        <div class="playa">
-            <div>
-                <div class="nombre-playa">{{ playa.nombre }}</div>
-                <a class="fecha">
-                    Lugar: {{ playa.lugar }} <br>
-                    Lat: {{ playa.latitud|floatformat:7 }} - Long: {{ playa.longitud|floatformat:7 }}
-                </a>
-            </div>
-            <div class="acciones">
-                <button class="boton" onclick="verEnMapa({{ playa.latitud }}, {{ playa.longitud }})">📍</button>
-                <button class="boton" onclick="verDashboard({{ playa.id }})">📊</button>
-                <button class="boton" onclick="eliminarPlaya('{{ playa.id }}')">🗑️</button>
-
-            </div>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-water"></i> Mis Playas</h1>
         </div>
-    {% empty %}
-        <p>No hay playas registradas.</p>
-    {% endfor %}
-
-    <!-- Botón para agregar más playas -->
-    <div class="agregar" onclick="agregarPlaya()">+</div>
-</div>
-<!-- Modal -->
-<div id="modalAgregar" class="modal">
-    <div class="modal-content">
-        <h3>Agregar Playa</h3>
-        <input type="text" id="inputNombre" placeholder="Nombre de la playa"><br><br>
-        <input type="text" id="inputLugar" placeholder="Lugar / ciudad"><br><br>
-        <div class="modal-buttons">
-            <button class="btn guardar" onclick="enviarNuevaPlaya()">Guardar</button>
-            <button class="btn cancelar" onclick="cerrarModal()">Cancelar</button>
+        
+        <div id="contenedor-playas">
+            {% for playa in playas %}
+                <div class="playa" data-id="{{ playa.id }}">
+                    <div class="playa-content">
+                        <div class="playa-header">
+                            <span class="nombre-playa">{{ playa.nombre }}</span>
+                        </div>
+                        <span class="fecha">
+                            <i class="fas fa-map-marker-alt"></i> {{ playa.lugar }} 
+                            <br>
+                            <i class="fas fa-location-dot"></i> {{ playa.latitud|floatformat:5 }}, {{ playa.longitud|floatformat:5 }}
+                        </span>
+                    </div>
+                    <div class="acciones">
+                        <button class="boton boton-mapa" onclick="verEnMapa({{ playa.latitud }}, {{ playa.longitud }}, '{{ playa.nombre }}', '{{ playa.lugar }}')" title="Ver en mapa">
+                            <i class="fas fa-map-pin"></i>
+                        </button>
+                        <button class="boton boton-dashboard" onclick="verDashboard({{ playa.id }})" title="Ver panel de datos">
+                            <i class="fas fa-chart-line"></i>
+                        </button>
+                        <button class="boton boton-eliminar" onclick="eliminarPlaya('{{ playa.id }}')" title="Eliminar playa">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="empty-state">
+                    <i class="fas fa-umbrella-beach"></i>
+                    <p>No hay playas registradas.</p>
+                    <p>¡Agrega tu primera playa!</p>
+                </div>
+            {% endfor %}
         </div>
     </div>
-</div>
-{% load static %}
-<script src="{% static 'SurfApp/js/playas.js' %}"></script>
+    
+    <!-- Botón flotante para agregar playas -->
+    <div class="agregar" onclick="agregarPlaya()">
+        <i class="fas fa-plus"></i>
+    </div>
+    
+    <!-- Modal para agregar playas -->
+    <div id="modalAgregar" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-umbrella-beach"></i> Agregar Playa</h3>
+            </div>
+            <input type="text" id="inputNombre" placeholder="Nombre de la playa">
+            <input type="text" id="inputLugar" placeholder="Ciudad / Localidad">
+            <div class="modal-buttons">
+                <button class="btn cancelar" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn guardar" onclick="enviarNuevaPlaya()">Guardar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para mostrar el mapa -->
+    <div id="modalMapa" class="modal">
+        <div class="modal-content mapa-content">
+            <div class="modal-header">
+                <h3 id="mapa-titulo"></h3>
+                <button class="modal-close" onclick="cerrarModalMapa()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="mapa-view" style="height: 400px; width: 100%;"></div>
+        </div>
+    </div>
+    
+    <!-- Notificación Toast -->
+    <div id="toast" class="toast">Playa guardada correctamente</div>
+    
+    {% load static %}
+    <script src="{% static 'SurfApp/js/playas.js' %}"></script>
 </body>
 </html>
