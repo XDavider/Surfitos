@@ -8,14 +8,20 @@ from .models import (
 )
 
 # === Función para guardar datos de Marine ===
+# Esta función obtiene datos marinos de una playa específica y los guarda en la base de datos.
+# Se utiliza la API de Open Meteo para obtener datos como altura de olas, dirección de olas, etc.
 def fetch_and_save_marine_data(playa):
+    # Obtener la fecha actual
+    hoy = datetime.now().date()
+    # Formatear la fecha como cadena
+    hoy = hoy.isoformat()
     lat = playa.latitud
     lon = playa.longitud
     url = (
         f"https://marine-api.open-meteo.com/v1/marine?latitude={lat}&longitude={lon}"
         f"&daily=wave_height_max,wave_direction_dominant,wave_period_max,swell_wave_height_max,swell_wave_direction_dominant,swell_wave_period_max"
         f"&hourly=wave_height,wave_direction,wave_period,swell_wave_height,swell_wave_direction,swell_wave_period"
-        f"&forecast_days=1"
+        f"&start_date={hoy}&end_date={hoy}"
     )
     response = requests.get(url)
     if response.status_code != 200:
@@ -57,22 +63,32 @@ def fetch_and_save_marine_data(playa):
 
 
 # === Función para guardar datos de Weather ===
+# Esta función obtiene datos meteorológicos de una playa específica y los guarda en la base de datos.
+# Se utiliza la API de Open Meteo para obtener datos como temperatura máxima, mínima, amanecer y atardecer.
+# También guarda datos horarios como temperatura, temperatura aparente y código del clima.
 def fetch_and_save_weather_data(playa):
+    # Obtener la fecha actual
+    hoy = datetime.now().date()
+    # Formatear la fecha como cadena
+    hoy = hoy.isoformat()
     lat = playa.latitud
     lon = playa.longitud
     url = (
         f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}"
         f"&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset"
         f"&hourly=temperature_2m,apparent_temperature,weather_code"
-        f"&forecast_days=1"
+        f"&start_date={hoy}&end_date={hoy}"
     )
     response = requests.get(url)
     if response.status_code != 200:
         return
-
+    
+    # Procesar la respuesta
+    # Verificar si la respuesta es válida
     data = response.json()
     fecha = date.fromisoformat(data['daily']['time'][0])
     europe_madrid = pytz.timezone("Europe/Madrid")
+    # Convertir sunrise y sunset a la zona horaria de Europa/Madrid
     sunrise = make_aware(datetime.fromisoformat(data['daily']['sunrise'][0]), timezone=pytz.utc).astimezone(
         europe_madrid)
     sunset = make_aware(datetime.fromisoformat(data['daily']['sunset'][0]), timezone=pytz.utc).astimezone(europe_madrid)
@@ -102,3 +118,18 @@ def fetch_and_save_weather_data(playa):
                 'weather_code': data['hourly']['weather_code'][i],
             }
         )
+
+# === Función para eliminar datos de Marine ===
+def fetch_and_delete_marine_data(playa):
+    # Eliminar datos de Marine
+    MarineDailyData.objects.filter(playa=playa).delete()
+    MarineHourlyData.objects.filter(playa=playa).delete()
+
+
+# === Función para eliminar datos de Weather ===
+def fetch_and_delete_weather_data(playa):
+    # Eliminar datos de Weather
+    WeatherDailyData.objects.filter(playa=playa).delete()
+    WeatherHourlyData.objects.filter(playa=playa).delete()
+
+

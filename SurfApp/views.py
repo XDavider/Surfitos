@@ -7,6 +7,11 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .models import Playa
 from .endpoints import get_current_marine_data, get_current_weather_data
+from .api_data_fetch import (
+    fetch_and_save_marine_data,
+    fetch_and_save_weather_data,
+
+)
 from SurfApp.utils import decode_weather_code
 import json
 
@@ -50,6 +55,16 @@ def dashboard_playa_view(request, playa_id):
     # Datos horarios de hoy
     marine_hourly = MarineHourlyData.objects.filter(playa=playa, timestamp__date=date.today()).order_by('timestamp')
     weather_hourly = WeatherHourlyData.objects.filter(playa=playa, timestamp__date=date.today()).order_by('timestamp')
+  
+    # Si no hay datos, los obtiene de la API
+    if not marine_daily or not weather_daily or not marine_hourly or not weather_hourly:
+        fetch_and_save_marine_data(playa)
+        fetch_and_save_weather_data(playa)
+        marine_daily = MarineDailyData.objects.filter(playa=playa, fecha=hoy).first()
+        weather_daily = WeatherDailyData.objects.filter(playa=playa, fecha=hoy).first()
+        marine_hourly = MarineHourlyData.objects.filter(playa=playa, timestamp__date=date.today()).order_by('timestamp')
+        weather_hourly = WeatherHourlyData.objects.filter(playa=playa, timestamp__date=date.today()).order_by('timestamp')
+    
 
     # Datos actuales
     current_marine = get_current_marine_data(playa.latitud, playa.longitud)
