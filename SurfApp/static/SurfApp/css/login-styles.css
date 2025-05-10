@@ -2,60 +2,89 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background-color: #cce6ff; /* mismo fondo que en la página de playas */
+    min-height: 100vh;
+    background: linear-gradient(135deg, #3494e6, #ec6ead);
     font-family: 'Segoe UI', sans-serif;
     margin: 0;
+    padding: 15px;
+    box-sizing: border-box;
 }
 
 .login-container {
-    background: #f0f0f3;
-    padding: 30px 35px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
     border-radius: 20px;
-    width: 320px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 340px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
     text-align: center;
-    border: 1px solid #ddd;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .login-container h2 {
-    text-align: left;
+    text-align: center;
     font-size: 1.8em;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     color: #2c2c2c;
+    position: relative;
+}
+
+.login-container h2:after {
+    content: "";
+    display: block;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(90deg, #3494e6, #ec6ead);
+    margin: 10px auto 0;
+    border-radius: 3px;
 }
 
 .login-container input {
-    width: 90%;
-    padding: 10px 14px;
-    margin: 10px 0px;
-    border: 1px solid #ccc;
+    width: 100%;
+    padding: 12px 16px;
+    margin: 14px 0;
+    border: 1px solid #ddd;
     border-radius: 12px;
     font-size: 1em;
     outline: none;
-    transition: border 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.9);
 }
 
 .login-container input:focus {
-    border-color: #7d4cff;
-    box-shadow: 0 0 0 3px rgba(125, 76, 255, 0.2);
+    border-color: #3494e6;
+    box-shadow: 0 0 0 3px rgba(52, 148, 230, 0.2);
+    transform: translateY(-2px);
 }
 
 .login-container button {
     width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    background: #7d4cff;
+    padding: 14px;
+    margin-top: 20px;
+    background: linear-gradient(90deg, #3494e6, #ec6ead);
     color: white;
     border: none;
     border-radius: 12px;
-    font-size: 1em;
+    font-size: 1.1em;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(52, 148, 230, 0.3);
 }
 
 .login-container button:hover {
-    background: #6a3fd9;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(52, 148, 230, 0.4);
+}
+
+.login-container button:active {
+    transform: translateY(1px);
 }
 
 .messages {
@@ -63,7 +92,31 @@ body {
 }
 
 .error-message {
-    color: #d60000;
+    color: #e74c3c;
     font-weight: 600;
     margin: 5px 0;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: rgba(231, 76, 60, 0.1);
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+/* Mobile first by default */
+
+/* For larger screens */
+@media (min-width: 768px) {
+    .login-container {
+        padding: 40px;
+        max-width: 380px;
+    }
+    
+    .login-container h2 {
+        font-size: 2em;
+    }
 }

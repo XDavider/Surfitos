@@ -3,23 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Surfitos - Iniciar Sesión</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'SurfApp/css/login-styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="login-container">
-        <h2>Iniciar Sesión</h2>
+        <h2><i class="fas fa-water"></i> Surfitos</h2>
+        
         {% if messages %}
-            {% for message in messages %}
-                <p class="error-message">{{ message }}</p>
-            {% endfor %}
+            <div class="messages">
+                {% for message in messages %}
+                    <p class="error-message">{{ message }}</p>
+                {% endfor %}
+            </div>
         {% endif %}
+        
         <form method="POST">
             {% csrf_token %}
-            <input type="text" name="username" placeholder="Usuario" required>
-            <input type="password" name="password" placeholder="Contraseña" required>
-            <button type="submit">Iniciar Sesión</button>
+            <div class="input-group">
+                <input type="text" name="username" placeholder="Usuario" required>
+            </div>
+            <div class="input-group">
+                <input type="password" name="password" placeholder="Contraseña" required>
+            </div>
+            <button type="submit">
+                <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+            </button>
         </form>
     </div>
 </body>
