@@ -75,13 +75,13 @@
             <!-- Sección de Pronóstico por Hora -->
             <section class="section">
                 <div class="section-header">
-                    <h2 class="section-title">
+                    <h2 class="section-title1">
                         <i class="fas fa-chart-line"></i> Pronóstico Horario
                     </h2>
                 </div>
                   <div class="chart-container">
                     <div class="filtros">
-                        <h2>INFORMACIÓN DEL DÍA</h2>
+                        <h2>Filtros</h2>
                         <div class="grupo-filtros">
                             <div class="columna-filtro">
                                 <h3><span class="icon"><i class="fas fa-water"></i></span> Olas</h3>
@@ -138,6 +138,27 @@
                             <i class="fas fa-long-arrow-alt-down" data-rotate="{{ current_marine.wave_direction|default:'0' }}"></i>
                         </p>
                     </div>
+
+                    <div class="data-card">
+                        <span class="icon"><i class="fas fa-water"></i></span>
+                        <h4>Altura de ola del swell</h4>
+                        <p>{{ current_marine.swell_wave_height|default:"--" }} <span class="unit">m</span></p>
+                    </div>
+                    
+                    <div class="data-card">
+                        <span class="icon"><i class="fas fa-sync-alt"></i></span>
+                        <h4>Periodo de ola del swell</h4>
+                        <p>{{ current_marine.swell_wave_period|default:"--" }} <span class="unit">s</span></p>
+                    </div>
+                    
+                    <div class="data-card">
+                        <span class="icon"><i class="fas fa-compass"></i></span>
+                        <h4>Dirección de ola del swell</h4>
+                        <p>
+                            {{ current_marine.swell_wave_direction|default:"--" }}° 
+                            <i class="fas fa-long-arrow-alt-down" data-rotate="{{ current_marine.wave_direction|default:'0' }}"></i>
+                        </p>
+                    </div>
                     
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-temperature-high"></i></span>
@@ -147,8 +168,12 @@
                 </div>
             </section>
               <!-- Sección de Datos Marítimos Diarios -->
+            <h1 class="section-title1">
+                <i class="fas fa-calendar-day"></i> Pronóstico Diario
+            </h1>
             <section class="section">
                 <div class="section-header">
+                    
                     <h2 class="section-title">
                         <i class="fas fa-water"></i> Condiciones Marítimas
                     </h2>

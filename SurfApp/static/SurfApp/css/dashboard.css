@@ -182,6 +182,18 @@ body {
     margin-bottom: 15px;
 }
 
+.section-title1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--light-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+    align-content: center;
+    justify-content: center;
+}
+
 .section-title {
     font-size: 1.3rem;
     font-weight: 600;

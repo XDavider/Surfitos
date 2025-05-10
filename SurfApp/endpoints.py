@@ -77,7 +77,8 @@ def get_current_marine_data(lat, lon):
     url = (
         f"https://marine-api.open-meteo.com/v1/marine"
         f"?latitude={lat}&longitude={lon}"
-        f"&current=wave_height,wave_direction,wave_period,sea_surface_temperature"
+        f"&current=wave_height,wave_direction,wave_period,"
+        f"swell_wave_height,swell_wave_direction,swell_wave_period,sea_surface_temperature"
     )
     response = requests.get(url)
     if response.status_code == 200:
