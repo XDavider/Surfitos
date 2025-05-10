@@ -1,4 +1,4 @@
-// Constantes para los datos de la gráfica
+// Constantes y funciones auxiliares
 const weatherCodeMap = {
     0: "☀️ Despejado",
     1: "🌤️ Mayormente despejado",
@@ -30,272 +30,432 @@ const weatherCodeMap = {
     99: "⛈️ Tormenta con granizo fuerte"
 };
 
-// Ejecuta este bloque cuando el DOM esté completamente cargado
+// Formatea el tiempo en un formato legible
+function formatTime(timeString) {
+    // Si el timeString ya está en formato HH:MM, devuélvelo tal cual
+    if (/^\d{1,2}:\d{2}$/.test(timeString)) {
+        return timeString;
+    }
+    
+    // Si no, intenta analizarlo como fecha
+    const date = new Date(timeString);
+    if (date.toString() === 'Invalid Date') {        return timeString; // Devuelve el original si falla el análisis
+    }
+    
+    return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+}
+
+// Formatea la fecha
+function formatDate(timeString) {
+    const date = new Date(timeString);
+    return date.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' });
+}
+
+// Inicialización principal cuando el DOM está cargado
 document.addEventListener("DOMContentLoaded", function () {
-    // Obtiene el div oculto con los atributos data-lat y data-lon
+    initializeMap();
+    updateCurrentTime();
+    setInterval(updateCurrentTime, 60000); // Actualiza el tiempo cada minuto
+    initializeCharts();
+});
+
+// Inicializa el mapa
+function initializeMap() {
     const coordDiv = document.getElementById("coord");
     const lat = parseFloat(coordDiv.dataset.lat);
     const lon = parseFloat(coordDiv.dataset.lon);
 
-    // Inicializa el mapa de Leaflet en el div con id "mapa-playa"
     const map = L.map('mapa-playa', {
-        center: [lat, lon],     // Centra el mapa en las coordenadas de la playa
-        zoom: 15,               // Zoom inicial (puede ajustarse según preferencia)
-        zoomControl: false,     // Oculta los botones de zoom (+/-)
-        dragging: false,        // Desactiva el arrastre del mapa
-        scrollWheelZoom: false,  // Permite hacer zoom con la rueda del ratón
-        doubleClickZoom: false, // Desactiva el zoom por doble clic
-        boxZoom: false,         // Desactiva zoom por selección con caja
-        keyboard: false,        // Desactiva navegación con teclado
-        touchZoom: true        // Desactiva zoom con gestos táctiles
-    });
-
-    // Añade la capa de mapas de OpenStreetMap
+        center: [lat, lon],
+        zoom: 14,
+        zoomControl: false,
+        dragging: false,
+        scrollWheelZoom: false,
+        doubleClickZoom: false,
+        boxZoom: false,
+        keyboard: false,
+        touchZoom: false
+    });    // Usa mosaicos de OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '',        // No muestra atribución (podés agregarla si querés)
-        maxZoom: 28             // Máximo nivel de zoom permitido
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    // Coloca un marcador en las coordenadas de la playa
-    L.marker([lat, lon]).addTo(map);
+    // Añade un marcador personalizado
+    const markerIcon = L.divIcon({
+        className: 'custom-marker',
+        html: '<i class="fas fa-map-marker-alt" style="color: #ec6ead; font-size: 24px; text-shadow: 0 0 5px rgba(0,0,0,0.5);"></i>',
+        iconSize: [24, 24],
+        iconAnchor: [12, 24]
+    });
 
-    // Corrige un problema visual: obliga a Leaflet a recalcular el tamaño del mapa
+    L.marker([lat, lon], { icon: markerIcon }).addTo(map);    // Corrige problemas de visualización del mapa
     setTimeout(() => {
-        map.invalidateSize({pan: false});
+        map.invalidateSize();
     }, 300);
-});
-
-// Función para mostrar la hora y fecha actual en el dashboard
-function actualizarHora() {
-    const ahora = new Date();
-
-    // Formatea la fecha en formato largo (día, mes, año)
-    const opciones = {year: 'numeric', month: 'long', day: 'numeric'};
-    const fecha = ahora.toLocaleDateString('es-ES', opciones);
-
-    // Formatea la hora con dos dígitos (ej. 14:05)
-    const hora = ahora.toLocaleTimeString('es-ES', {hour: '2-digit', minute: '2-digit'});
-
-    // Inserta el resultado en el elemento con id "hora-actual"
-    document.getElementById('hora-actual').textContent = `${fecha} - ${hora}`;
 }
 
-// Ejecuta la función de hora una vez que el DOM esté listo
-document.addEventListener("DOMContentLoaded", actualizarHora);
+// Mantiene actualizada la hora actual
+function updateCurrentTime() {
+    const now = new Date();
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const dateStr = now.toLocaleDateString('es-ES', options);
+    const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    
+    document.getElementById('hora-actual').innerHTML = `<i class="far fa-clock"></i> ${dateStr} - ${timeStr}`;
+}
 
-// Espera a que el contenido del DOM esté cargado antes de ejecutar
-document.addEventListener("DOMContentLoaded", () => {
-
-    // Obtiene los datos horarios de variables marinas y meteorológicas desde el HTML (inyectados como JSON desde Django)
+// Inicializa las gráficas
+function initializeCharts() {
     const marineData = JSON.parse(document.getElementById("marine-data").textContent);
     const weatherData = JSON.parse(document.getElementById("weather-data").textContent);
 
-    // Obtiene el contexto del lienzo (canvas) donde se renderiza la gráfica
     const ctx = document.getElementById("grafico-hourly").getContext("2d");
-
-    // Crea las etiquetas del eje X a partir de las horas (formato HH:MM)
-    const labels = marineData.map(d => d.time);  // Asume que todas las variables comparten el mismo eje temporal
-
-    // Define los datasets para la gráfica, uno por variable (cada uno con su color y estado inicial visible/oculto)
-    const datasets = {
-        wave_height: {
-            label: "Altura de ola (m)",
-            data: marineData.map(d => d.wave_height),
-            borderColor: "rgba(100, 100, 255, 1)",
-            yAxisID: 'y_altura',
-            hidden: false
+    const labels = marineData.map(d => formatTime(d.time));
+    
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: []
         },
-        wave_period: {
-            label: "Periodo de ola (s)",
-            data: marineData.map(d => d.wave_period),
-            borderColor: "rgba(30, 0, 255, 1)",
-            yAxisID: 'y_periodo',
-            hidden: true
-        },
-        wave_direction: {
-            label: "Dirección de las olas (º)",
-            data: marineData.map(d => d.wave_direction),
-            borderColor: "rgba(75, 192, 192, 1)",
-            yAxisID: 'y_direccion',
-            hidden: true
-        },
-        swell_wave_height: {
-            label: "Altura del Mar de fondo (m)",
-            data: marineData.map(d => d.swell_wave_height),
-            borderColor: "rgba(255, 150, 200, 1)",
-            yAxisID: 'y_altura',
-            hidden: false
-        },
-        swell_wave_period: {
-            label: "Periodo del Mar de fondo (s)",
-            data: marineData.map(d => d.swell_wave_period),
-            borderColor: "rgba(210, 70, 180, 1)",
-            yAxisID: 'y_periodo',
-            hidden: true
-        },
-        swell_wave_direction: {
-            label: "Dirección del Mar de fondo (º)",
-            data: marineData.map(d => d.swell_wave_direction),
-            borderColor: "rgba(200, 50, 255, 1)",
-            yAxisID: 'y_direccion',
-            hidden: true
-        },
-        temperature: {
-            label: "Temperatura (ºC)",
-            data: weatherData.map(d => d.temperature),
-            borderColor: "rgba(255, 0, 0, 1)",
-            yAxisID: 'y_temp',
-            hidden: true
-        },
-        apparent_temperature: {
-            label: "Sensación térmica (ºC)",
-            data: weatherData.map(d => d.apparent_temperature),
-            borderColor: "rgba(255, 159, 64, 1)",
-            yAxisID: 'y_temp',
-            hidden: true
-        },
-        weather_code: {
-            label: "Clima",
-            data: weatherData.map(d => d.weather_code),
-            borderColor: "rgba(240, 255, 0, 1)",
-            yAxisID: 'y_codigo',
-            hidden: true
-        }
-    };
-
-    // Inicializa la gráfica usando Chart.js
-const chart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: labels,
-        datasets: [
-            {
-                label: "Altura de ola (m)",
-                data: marineData.map(d => d.wave_height),
-                borderColor: "rgba(100, 100, 255, 1)",
-                yAxisID: 'y_altura',
-                hidden: false
-            },
-            {
-                label: "Periodo de ola (s)",
-                data: marineData.map(d => d.wave_period),
-                borderColor: "rgba(30, 0, 255, 1)",
-                yAxisID: 'y_periodo',
-                hidden: true
-            },
-            {
-                label: "Dirección de las olas (º)",
-                data: marineData.map(d => d.wave_direction),
-                borderColor: "rgba(75, 192, 192, 1)",
-                yAxisID: 'y_direccion',
-                hidden: true
-            },
-            {
-                label: "Altura del Mar de fondo (m)",
-                data: marineData.map(d => d.swell_wave_height),
-                borderColor: "rgba(255, 150, 200, 1)",
-                yAxisID: 'y_altura',
-                hidden: false
-            },
-            {
-                label: "Periodo del Mar de fondo (s)",
-                data: marineData.map(d => d.swell_wave_period),
-                borderColor: "rgba(210, 70, 180, 1)",
-                yAxisID: 'y_periodo',
-                hidden: true
-            },
-            {
-                label: "Dirección del Mar de fondo (º)",
-                data: marineData.map(d => d.swell_wave_direction),
-                borderColor: "rgba(200, 50, 255, 1)",
-                yAxisID: 'y_direccion',
-                hidden: true
-            },
-            {
-                label: "Temperatura (ºC)",
-                data: weatherData.map(d => d.temperature),
-                borderColor: "rgba(255, 0, 0, 1)",
-                yAxisID: 'y_temp',
-                hidden: true
-            },
-            {
-                label: "Sensación térmica (ºC)",
-                data: weatherData.map(d => d.apparent_temperature),
-                borderColor: "rgba(255, 159, 64, 1)",
-                yAxisID: 'y_temp',
-                hidden: true
-            },
-            {
-                label: "Clima",
-                data: weatherData.map(d => d.weather_code),
-                borderColor: "rgba(240, 255, 0, 1)",
-                yAxisID: 'y_codigo',
-                hidden: true
-            }
-        ]
-    },
         options: {
-        responsive: true,
-        scales: {
-            y_altura: {
-                type: 'linear',
-                position: 'right',
-                title: { display: true, text: 'Altura (m)' },
-                beginAtZero: true
-            },
-            y_periodo: {
-                type: 'linear',
-                position: 'right',
-                title: { display: true, text: 'Periodo (s)' },
-                grid: { drawOnChartArea: false }
-            },
-            y_direccion: {
-                type: 'linear',
-                position: 'right',
-                offset: true,
-                title: { display: true, text: 'Dirección (º)' },
-                grid: { drawOnChartArea: false }
-            },
-            y_temp: {
-                type: 'linear',
-                position: 'left',
-                offset: true,
-                title: { display: true, text: 'Temperatura (°C)' },
-                grid: { drawOnChartArea: false }
-            },
-            y_codigo: {
-                type: 'linear',
-                position: 'left',
-                display: false
-            }
-        },
-        plugins: {
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        const datasetLabel = context.dataset.label || '';
-                        const value = context.raw;
-                        if (datasetLabel.includes("Clima")) {
-                            return `${datasetLabel}: ${weatherCodeMap[value] || 'N/D'}`;
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        color: "#fff",
+                        font: {
+                            family: "'Poppins', sans-serif",
+                            size: 12
                         }
-                        return `${datasetLabel}: ${value}`;
+                    }
+                },
+                tooltip: {
+                    backgroundColor: "rgba(0, 0, 0, 0.8)",
+                    titleFont: {
+                        family: "'Poppins', sans-serif",
+                        size: 14
+                    },
+                    bodyFont: {
+                        family: "'Poppins', sans-serif",
+                        size: 13
+                    },
+                    padding: 12,
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: function(context) {
+                            const value = context.raw;
+                            const dataType = context.dataset.dataType;
+                            if (dataType === 'weather-code') {
+                                return weatherCodeMap[value] || 'N/D';
+                            }
+                            return `${context.dataset.label}: ${value}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y_altura: {
+                    type: 'linear',
+                    position: 'right',
+                    title: { 
+                        display: true, 
+                        text: 'Altura (m)',
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        font: {
+                            family: "'Poppins', sans-serif",
+                            size: 12
+                        }
+                    },
+                    beginAtZero: true,
+                    grid: {
+                        color: "rgba(255, 255, 255, 0.1)"
+                    },
+                    ticks: {
+                        color: "rgba(255, 255, 255, 0.8)",
+                        font: {
+                            family: "'Poppins', sans-serif"
+                        }
+                    }
+                },
+                y_periodo: {
+                    type: 'linear',
+                    position: 'right',
+                    title: { 
+                        display: true, 
+                        text: 'Periodo (s)',
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        font: {
+                            family: "'Poppins', sans-serif",
+                            size: 12
+                        }
+                    },
+                    grid: { 
+                        drawOnChartArea: false,
+                        color: "rgba(255, 255, 255, 0.1)"
+                    },
+                    ticks: {
+                        color: "rgba(255, 255, 255, 0.8)",
+                        font: {
+                            family: "'Poppins', sans-serif"
+                        }
+                    }
+                },
+                y_direccion: {
+                    type: 'linear',
+                    position: 'right',
+                    offset: true,
+                    title: { 
+                        display: true, 
+                        text: 'Dirección (°)',
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        font: {
+                            family: "'Poppins', sans-serif",
+                            size: 12
+                        }
+                    },
+                    min: 0,
+                    max: 360,
+                    grid: { 
+                        drawOnChartArea: false,
+                        color: "rgba(255, 255, 255, 0.1)"
+                    },
+                    ticks: {
+                        color: "rgba(255, 255, 255, 0.8)",
+                        font: {
+                            family: "'Poppins', sans-serif"
+                        },
+                        stepSize: 90,
+                        callback: function(value) {
+                            const directions = {
+                                0: 'N',
+                                90: 'E',
+                                180: 'S',
+                                270: 'O',
+                                360: 'N'
+                            };
+                            return directions[value] || value;
+                        }
+                    }
+                },
+                y_temp: {
+                    type: 'linear',
+                    position: 'left',
+                    offset: true,
+                    title: { 
+                        display: true, 
+                        text: 'Temperatura (°C)',
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        font: {
+                            family: "'Poppins', sans-serif",
+                            size: 12
+                        }
+                    },
+                    grid: { 
+                        drawOnChartArea: false,
+                        color: "rgba(255, 255, 255, 0.1)"
+                    },
+                    ticks: {
+                        color: "rgba(255, 255, 255, 0.8)",
+                        font: {
+                            family: "'Poppins', sans-serif"
+                        }
+                    }
+                },
+                y_codigo: {
+                    type: 'linear',
+                    position: 'left',
+                    display: false,
+                    ticks: {
+                        display: false
+                    }
+                },
+                x: {
+                    grid: {
+                        color: "rgba(255, 255, 255, 0.1)"
+                    },
+                    ticks: {
+                        color: "rgba(255, 255, 255, 0.8)",
+                        font: {
+                            family: "'Poppins', sans-serif",
+                            size: 11
+                        },
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                }
+            },
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },            animation: {
+                duration: 750,
+                easing: 'easeInOutQuart',
+                responsive: true,
+                animateScale: true,
+                animateRotate: true,
+                animations: {
+                    y: {
+                        easing: 'easeInOutQuart',
+                        from: (ctx) => {
+                            if (ctx.type === 'data') {
+                                if (ctx.mode === 'default' && !ctx.dropped) {
+                                    ctx.dropped = true;
+                                    return 0;
+                                }
+                            }
+                            return ctx.chart.scales[ctx.scale.id].getPixelForValue(100);
+                        }
                     }
                 }
             }
         }
-    }
-});
-
-    // 🔁 Asocia cada checkbox con su respectivo dataset
-    document.querySelectorAll(".filtros input[type='checkbox']").forEach((checkbox, i) => {
-        checkbox.addEventListener("change", () => {
-            const key = Object.keys(datasets)[i];
-            const dataset = chart.data.datasets.find(ds => ds.label === datasets[key].label);
-            if (dataset) {
-                dataset.hidden = !checkbox.checked; // Oculta o muestra según el checkbox
-                chart.update(); // Actualiza la gráfica
-            }
-        });
     });
-})
-    ;
+
+    window.chartConfig = {
+        chart: chart,
+        marineData: marineData,
+        weatherData: weatherData,
+        datasetConfigs: {
+            'wave': {
+                label: "Altura de ola (m)",
+                data: marineData.map(d => d.wave_height),
+                borderColor: "#89CFF0", // Azul claro
+                backgroundColor: "rgba(137, 207, 240, 0.2)",
+                dataType: 'wave',
+                yAxisID: 'y_altura'
+            },
+            'wave-period': {
+                label: "Periodo de olas (s)",
+                data: marineData.map(d => d.wave_period),
+                borderColor: "#3494E6", // Azul medio
+                backgroundColor: "rgba(52, 148, 230, 0.2)",
+                dataType: 'wave-period',
+                yAxisID: 'y_periodo'
+            },
+            'wave-direction': {
+                label: "Dirección de olas (°)",
+                data: marineData.map(d => d.wave_direction),
+                borderColor: "#1B4B82", // Azul oscuro
+                backgroundColor: "rgba(27, 75, 130, 0.2)",
+                dataType: 'wave-direction',
+                yAxisID: 'y_direccion'
+            },
+            'swell': {
+                label: "Altura del Mar de fondo (m)",
+                data: marineData.map(d => d.swell_wave_height),
+                borderColor: "#FFB6C1", // Rosa claro
+                backgroundColor: "rgba(255, 182, 193, 0.2)",
+                dataType: 'swell',
+                yAxisID: 'y_altura'
+            },
+            'swell-period': {
+                label: "Periodo del Mar de fondo (s)",
+                data: marineData.map(d => d.swell_wave_period),
+                borderColor: "#FF69B4", // Rosa medio
+                backgroundColor: "rgba(255, 105, 180, 0.2)",
+                dataType: 'swell-period',
+                yAxisID: 'y_periodo'
+            },
+            'swell-direction': {
+                label: "Dirección del Mar de fondo (°)",
+                data: marineData.map(d => d.swell_wave_direction),
+                borderColor: "#C71585", // Rosa oscuro
+                backgroundColor: "rgba(199, 21, 133, 0.2)",
+                dataType: 'swell-direction',
+                yAxisID: 'y_direccion'
+            },
+            'temperature': {
+                label: "Temperatura (°C)",
+                data: weatherData.map(d => d.temperature),
+                borderColor: "#FFA07A", // Naranja claro
+                backgroundColor: "rgba(255, 160, 122, 0.2)",
+                dataType: 'temperature',
+                yAxisID: 'y_temp'
+            },
+            'apparent-temperature': {
+                label: "Sensación térmica (°C)",
+                data: weatherData.map(d => d.apparent_temperature),
+                borderColor: "#FF6347", // Naranja medio
+                backgroundColor: "rgba(255, 99, 71, 0.2)",
+                dataType: 'apparent-temperature',
+                yAxisID: 'y_temp'
+            },
+            'weather-code': {
+                label: "Clima",
+                data: weatherData.map(d => d.weather_code),
+                borderColor: "#F4A460", // Arena/Marrón claro
+                backgroundColor: "rgba(255, 1, 1, 0.2)",
+                dataType: 'weather-code',
+                yAxisID: 'y_codigo'
+            }
+        }
+    };
+
+    initializeFilters();
+    updateDatasets();
+}
+
+// Inicializa los filtros
+function initializeFilters() {
+    const checkboxes = document.querySelectorAll('.filtros input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateDatasets);
+    });
+}
+
+// Actualiza los datasets mostrados en la gráfica
+function updateDatasets() {
+    const { chart, datasetConfigs } = window.chartConfig;
+    const checkboxes = document.querySelectorAll('.filtros input[type="checkbox"]:checked');
+    
+    // Limpia los datasets actuales
+    chart.data.datasets = [];
+    
+    // Obtiene los ejes Y activos
+    const activeYAxes = new Set();
+    
+    // Añade un dataset por cada checkbox seleccionado
+    checkboxes.forEach(checkbox => {
+        const dataType = checkbox.dataset.type;
+        const config = datasetConfigs[dataType];
+        if (config) {
+            chart.data.datasets.push({
+                label: config.label,
+                data: config.data,
+                borderColor: config.borderColor,
+                backgroundColor: config.backgroundColor,
+                borderWidth: 3,
+                pointRadius: 4,
+                pointHoverRadius: 6,
+                pointBackgroundColor: "#fff",
+                tension: 0.4,
+                fill: true,
+                dataType: config.dataType,
+                yAxisID: config.yAxisID
+            });
+            activeYAxes.add(config.yAxisID);
+        }
+    });
+    
+    // Actualiza la visibilidad de los ejes Y
+    Object.keys(chart.options.scales).forEach(scaleId => {
+        if (scaleId.startsWith('y_')) {
+            const showScale = activeYAxes.has(scaleId);
+            chart.options.scales[scaleId].display = showScale;
+        }
+    });
+      // Configura y actualiza la gráfica con animaciones
+    chart.options.animation = {
+        duration: 750,
+        easing: 'easeInOutQuart',
+        responsive: true,
+        animateScale: true,
+        animateRotate: true
+    };
+    chart.update();
+}
