@@ -3,3 +3,6 @@ migrations
 *.pyc
 .idea
 db.sqlite3
+.env
+nginx/*
+.idea/*

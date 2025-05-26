@@ -1,0 +1,7 @@
+requests
+pytz
+geopy
+Django>=4.2
+gunicorn
+psycopg2-binary
+whitenoise

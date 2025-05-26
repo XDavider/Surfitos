@@ -18,16 +18,21 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
+from django.shortcuts import redirect
+from django.views.static import serve 
 from SurfApp import views
 from SurfApp import endpoints  # ← nuevo
 
 # Definición de las rutas del proyecto
 urlpatterns = [
+
+    path('', lambda request: redirect('playas')),
+
     # Ruta al panel de administración de Django
     path('admin/', admin.site.urls),
 
     # Página de inicio: muestra el login
-    path('', views.login_view, name='login' ),
+    path('login/', views.login_view, name='login' ),
 
     # Vista principal que lista las playas (requiere login)
     path('playas/', views.playas_index_view, name='playas' ),
@@ -44,6 +49,8 @@ urlpatterns = [
     # API para eliminar una playa por ID vía DELETE
     path('api/eliminar-playa/<str:playa_id>', endpoints.eliminar_playa, name='eliminar_playa'),
 
+    path('staticfiles/', serve,{'document_root': settings.STATIC_ROOT})
 
 # Añade soporte para servir archivos estáticos durante el desarrollo
 ]  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
