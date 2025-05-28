@@ -1,6 +1,6 @@
 <h1 align="center"> Surfitos <br><br>
   
-![github-header-image](https://github.com/user-attachments/assets/22561233-6b2d-496f-b368-38437b797b7b)
+![github-header-image](https://github.com/XDavider/Surfitos/blob/main/capturas/github-header-image.png)
 
 
 ![Badge en Desarollo](https://img.shields.io/badge/Status-Ya%20desplegado!-yellow)
@@ -157,33 +157,33 @@ python manage.py createsuperuser
 
 - Login
   
-  ![imagen](https://github.com/user-attachments/assets/7719b593-49b4-4586-9f56-6b9239027365)
+  ![imagen](https://github.com/XDavider/Surfitos/blob/main/capturas/login.png))
 
 - Lista de playas
   
-  ![imagen](https://github.com/user-attachments/assets/4b2151e8-eae0-4483-a49c-14b9e94fff0a)
+  ![imagen](https://github.com/XDavider/Surfitos/blob/main/capturas/playas.png)
 
 - Modo mapa
   
-  ![imagen](https://github.com/user-attachments/assets/7854b61e-062d-4a69-adc9-5324368891b3)
+  ![imagen](https://github.com/XDavider/Surfitos/blob/main/capturas/playas_mapa.png)
 
 - Dashboard
   
   - Header
     
-  ![imagen](https://github.com/user-attachments/assets/86a5032d-c2fd-4ba3-a7e8-80892458819b)
+  ![imagen](https://github.com/XDavider/Surfitos/blob/main/capturas/dashboard_1.png)
 
   - Gráfica interactiva
     
-  ![imagen](https://github.com/user-attachments/assets/cf8f703b-1c1b-4ca0-ae9e-51adce652887)
+  ![imagen](https://github.com/XDavider/Surfitos/blob/main/capturas/dashboard_2.png)
 
   - Tarjetas de datos
     
-  ![imagen](https://github.com/user-attachments/assets/00404b1b-3373-442d-9ecc-0a8099acf4ed)
+  ![imagen](https://github.com/XDavider/Surfitos/blob/main/capturas/dashboard_3.png)
 
   - Mapa Interactivo
     
-  ![imagen](https://github.com/user-attachments/assets/9086a089-264c-455f-8bfb-3b70fd6bdd4e)
+  ![imagen](https://github.com/XDavider/Surfitos/blob/main/capturas/dashboard_4.png)
 
 
 
