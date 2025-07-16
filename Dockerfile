@@ -1,8 +1,8 @@
 # Dockerfile
-FROM python:3.11-slim
+FROM python:3.12-slim
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
@@ -21,4 +21,4 @@ COPY . .
 # Recolecta los archivos estáticos
 RUN python manage.py collectstatic --noinput
 
-CMD ["gunicorn", "tu_proyecto.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "Surfitos.wsgi:application", "--bind", "0.0.0.0:8000"]

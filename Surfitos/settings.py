@@ -27,8 +27,8 @@ SECRET_KEY = 'django-insecure-vpk2w*2e_pe&yl9i-i1$@g84@!k+moq=)sq^a#g#+$7^h$vu!n
 DEBUG = False
 LOGIN_URL = '/login/'
 
-ALLOWED_HOSTS = ['surfitos.mooo.com', 'localhost' ]
-CSRF_TRUSTED_ORIGINS = ['https://surfitos.mooo.com', 'http://localhost']
+ALLOWED_HOSTS = ['surfitos.dedora.es', 'localhost' ]
+CSRF_TRUSTED_ORIGINS = ['https://surfitos.dedora.es', 'http://localhost']
 # Application definition
 
 INSTALLED_APPS = [

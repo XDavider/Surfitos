@@ -5,11 +5,11 @@ services:
     build: .
     command: gunicorn Surfitos.wsgi:application --bind 0.0.0.0:8000
     volumes:
-      - .:/app
+      - /home/xdavider/Surfitos:/app
     ports:
-      - "8000:8000"
+      - "8001:8000"
     env_file:
-      - .env
+      - /home/xdavider/Surfitos/.env
     depends_on:
       - db
 
@@ -21,17 +21,6 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-
-  nginx:
-    image: 'jc21/nginx-proxy-manager:latest'
-    restart: unless-stopped
-    ports:
-      - '80:80'
-      - '81:81'
-      - '443:443'
-    volumes:
-      - ./nginx/data:/data
-      - ./nginx/letsencrypt:/etc/letsencrypt
 
 volumes:
   postgres_data:
