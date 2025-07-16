@@ -1,6 +1,6 @@
 from datetime import date
 from django.utils.timezone import localtime
-from SurfApp.models import MarineDailyData, WeatherDailyData, WeatherHourlyData, MarineHourlyData
+from SurfApp.models import MarineDailyData, WeatherDailyData, WeatherHourlyData, MarineHourlyData, PlayaFavorita
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
@@ -38,8 +38,25 @@ def login_view(request):
 # Vista principal que muestra la lista de playas
 @login_required
 def playas_index_view(request):
-    playas = Playa.objects.all().order_by('nombre')  # Obtiene todas las playas ordenadas por nombre
-    return render(request, 'playas-index.html', {'playas': playas})  # Renderiza plantilla con contexto
+    playas = Playa.objects.all().order_by('nombre')
+    # Obtener las playas favoritas del usuario
+    favoritas = set(PlayaFavorita.objects.filter(
+        usuario=request.user
+    ).values_list('playa_id', flat=True))
+    
+    # Añadir el campo is_favorita a cada playa
+    playas_data = [{
+        'id': playa.id,
+        'nombre': playa.nombre,
+        'lugar': playa.lugar,
+        'latitud': playa.latitud,
+        'longitud': playa.longitud,
+        'is_favorita': playa.id in favoritas
+    } for playa in playas]
+    
+    return render(request, 'playas-index.html', {
+        'playas': playas_data
+    })
 
 
 # Vista que muestra la información del API sobre la playa en forma de dashboard

@@ -49,6 +49,12 @@ urlpatterns = [
     # API para eliminar una playa por ID vía DELETE
     path('api/eliminar-playa/<str:playa_id>', endpoints.eliminar_playa, name='eliminar_playa'),
 
+    # API para marcar/desmarcar playa como favorita
+    path('api/toggle-favorita/<int:playa_id>/', endpoints.toggle_playa_favorita, name='toggle_playa_favorita'),
+
+    # API para obtener las playas favoritas del usuario
+    path('api/playas-favoritas/', endpoints.get_playas_favoritas, name='get_playas_favoritas'),
+
     path('staticfiles/', serve,{'document_root': settings.STATIC_ROOT})
 
 # Añade soporte para servir archivos estáticos durante el desarrollo

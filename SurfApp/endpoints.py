@@ -2,7 +2,8 @@ import requests
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from geopy.geocoders import Nominatim
-from .models import Playa
+from .models import Playa, PlayaFavorita
+from django.contrib.auth.decorators import login_required
 import json
 
 # === Agregar Playa ===
@@ -99,3 +100,47 @@ def get_current_weather_data(lat, lon):
     if response.status_code == 200:
         return response.json().get("current", {})
     return None
+
+
+# === Marcar/Desmarcar Playa como Favorita ===
+@csrf_exempt
+@login_required
+def toggle_playa_favorita(request, playa_id):
+    if request.method == 'POST':
+        try:
+            playa = Playa.objects.get(id=playa_id)
+            favorita, created = PlayaFavorita.objects.get_or_create(
+                usuario=request.user,
+                playa=playa
+            )
+            
+            if not created:
+                # Si ya existía, la eliminamos
+                favorita.delete()
+                return JsonResponse({'ok': True, 'is_favorita': False})
+            
+            return JsonResponse({'ok': True, 'is_favorita': True})
+            
+        except Playa.DoesNotExist:
+            return JsonResponse({'ok': False, 'error': 'Playa no encontrada'})
+        except Exception as e:
+            return JsonResponse({'ok': False, 'error': str(e)})
+    
+    return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
+
+# === Obtener Playas Favoritas ===
+@login_required
+def get_playas_favoritas(request):
+    try:
+        favoritas = PlayaFavorita.objects.filter(usuario=request.user).select_related('playa')
+        playas = [{
+            'id': fav.playa.id,
+            'nombre': fav.playa.nombre,
+            'lugar': fav.playa.lugar,
+            'latitud': fav.playa.latitud,
+            'longitud': fav.playa.longitud
+        } for fav in favoritas]
+        
+        return JsonResponse({'ok': True, 'playas': playas})
+    except Exception as e:
+        return JsonResponse({'ok': False, 'error': str(e)})

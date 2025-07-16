@@ -1,6 +1,6 @@
 // Escuchador de eventos para cuando el DOM esté completamente cargado
 document.addEventListener('DOMContentLoaded', function() {
-    // Añade escuchadores de eventos para los clics en las tarjetas para permitir la navegación al dashboard
+    // Añade escuchadores de eventos para los clics en las tarjetas
     const playaCards = document.querySelectorAll('.playa');
     playaCards.forEach(card => {
         const playaContent = card.querySelector('.playa-content');
@@ -11,7 +11,73 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
+
+    // Añade el escuchador para el switch de filtrado
+    const filtroFavoritas = document.getElementById('filtroFavoritas');
+    if (filtroFavoritas) {
+        filtroFavoritas.addEventListener('change', function() {
+            // Cambiar el tema con una animación suave
+            if (this.checked) {
+                document.body.classList.add('favorites-theme');
+                animateThemeChange(true);
+                animarCambioTexto('Tus playas');
+            } else {
+                document.body.classList.remove('favorites-theme');
+                animateThemeChange(false);
+                animarCambioTexto('Todas las playas');
+            }
+            filtrarPlayas();
+        });
+    }
+
+    // Añade el escuchador para la búsqueda
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            filtrarPlayas();
+        });
+    }
 });
+
+// Función para filtrar las playas según el estado del switch y la búsqueda
+function filtrarPlayas() {
+    const filtroFavoritas = document.getElementById('filtroFavoritas');
+    const searchInput = document.getElementById('searchInput');
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    const playas = document.querySelectorAll('.playa');
+    const emptyState = document.querySelector('.empty-state');
+    let playasVisibles = 0;
+
+    playas.forEach(playa => {
+        const esFavorita = playa.querySelector('.boton-favorito').classList.contains('favorito-activo');
+        const nombre = playa.dataset.nombre.toLowerCase();
+        const lugar = playa.dataset.lugar.toLowerCase();
+        const coincideBusqueda = nombre.includes(searchTerm) || lugar.includes(searchTerm);
+
+        if ((filtroFavoritas.checked && !esFavorita) || !coincideBusqueda) {
+            playa.classList.add('oculta');
+        } else {
+            playa.classList.remove('oculta');
+            playasVisibles++;
+        }
+    });
+
+    // Mostrar mensaje cuando no hay playas que mostrar
+    if (playasVisibles === 0) {
+        if (!emptyState) {
+            const nuevoEmptyState = document.createElement('div');
+            nuevoEmptyState.className = 'empty-state';
+            nuevoEmptyState.innerHTML = `
+                <i class="fas fa-umbrella-beach"></i>
+                <p>No hay playas ${filtroFavoritas.checked ? 'favoritas' : ''} para mostrar.</p>
+                ${filtroFavoritas.checked ? '<p>¡Marca algunas playas como favoritas!</p>' : '<p>¡Agrega tu primera playa!</p>'}
+            `;
+            document.getElementById('contenedor-playas').appendChild(nuevoEmptyState);
+        }
+    } else if (emptyState) {
+        emptyState.remove();
+    }
+}
 
 // Muestra el modal para agregar una nueva playa
 function agregarPlaya() {
@@ -27,9 +93,12 @@ function cerrarModal() {    document.getElementById("modalAgregar").classList.re
 }
 
 // Elimina una playa de la base de datos usando su ID
-function eliminarPlaya(id) {
+function eliminarPlaya(button) {
     // Evita la propagación del evento
     event.stopPropagation();
+    
+    const playaCard = button.closest('.playa');
+    const id = playaCard.dataset.id;
     
     // Confirma con el usuario antes de eliminar
     if (!confirm("¿Estás seguro de que quieres eliminar esta playa?")) return;
@@ -73,8 +142,14 @@ function eliminarPlaya(id) {
 }
 
 // Abre un mapa con Leaflet en un modal para mostrar la ubicación de la playa
-function verEnMapa(lat, lon, nombre, lugar) {
+function verEnMapa(button) {
     event.stopPropagation();
+    
+    const playaCard = button.closest('.playa');
+    const nombre = playaCard.dataset.nombre;
+    const lugar = playaCard.dataset.lugar;
+    const lat = parseFloat(playaCard.dataset.lat);
+    const lon = parseFloat(playaCard.dataset.lon);
     
     // Set the modal title and show the modal
     document.getElementById('mapa-titulo').innerHTML = `<i class="fas fa-map-pin"></i> ${nombre}`;
@@ -135,8 +210,42 @@ function cerrarModalMapa() {
 }
 
 // Navigate to dashboard view for the selected beach
-function verDashboard(id) {
+function verDashboard(button) {
+    event.stopPropagation();
+    const playaCard = button.closest('.playa');
+    const id = playaCard.dataset.id;
     window.location.href = `/dashboard/${id}/`;
+}
+
+// Función para marcar/desmarcar una playa como favorita
+function toggleFavorito(button) {
+    event.stopPropagation();
+    const playaCard = button.closest('.playa');
+    const id = playaCard.dataset.id;
+
+    fetch(`/api/toggle-favorita/${id}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.ok) {
+            if (data.is_favorita) {
+                button.classList.add('favorito-activo');
+                button.title = 'Quitar de favoritos';
+                showToast('Playa añadida a favoritos');
+            } else {
+                button.classList.remove('favorito-activo');
+                button.title = 'Añadir a favoritos';
+                showToast('Playa eliminada de favoritos');
+            }
+        } else {
+            showToast('Error al actualizar favoritos: ' + data.error, true);
+        }
+    })
+    .catch(() => showToast('Error al conectar con el servidor', true));
 }
 
 // Envía la nueva playa al backend para agregarla a la base de datos
@@ -196,6 +305,76 @@ function enviarNuevaPlaya() {
         saveButton.innerHTML = originalText;
         saveButton.disabled = false;
     });
+}
+
+// Función para animar el cambio de tema
+function animateThemeChange(isFavorites) {
+    // Elementos que necesitan animación especial
+    const header = document.querySelector('.header');
+    const addButton = document.querySelector('.agregar');
+    const container = document.querySelector('.container');
+    
+    // Transición suave del header sin escalado
+    if (header) {
+        header.style.opacity = '0.8';
+        setTimeout(() => {
+            header.style.opacity = '1';
+        }, 300);
+    }
+    
+    // Animar el botón de agregar
+    if (addButton) {
+        addButton.style.transform = 'scale(0.95) rotate(-180deg)';
+        setTimeout(() => {
+            addButton.style.transform = 'scale(1) rotate(0)';
+        }, 500);
+    }
+    
+    // Animar el contenedor principal
+    if (container) {
+        container.style.transform = 'scale(0.98)';
+        container.style.opacity = '0.9';
+        setTimeout(() => {
+            container.style.transform = 'scale(1)';
+            container.style.opacity = '1';
+        }, 300);
+    }
+    
+    // Animar las tarjetas de playas con efecto cascada
+    const playas = document.querySelectorAll('.playa:not(.oculta)');
+    playas.forEach((playa, index) => {
+        playa.style.transform = 'scale(0.9) translateY(20px)';
+        playa.style.opacity = '0';
+        
+        setTimeout(() => {
+            playa.style.transform = 'scale(1) translateY(0)';
+            playa.style.opacity = '1';
+        }, 100 + (index * 100));
+    });
+
+    // Mostrar un mensaje toast con el cambio
+    showToast(isFavorites ? '🌟 Mostrando favoritas' : '🏖️ Mostrando todas las playas');
+}
+
+// Función para animar el cambio de texto del título letra por letra
+async function animarCambioTexto(nuevoTexto) {
+    const titulo = document.getElementById('titulo-playas');
+    const textoActual = titulo.textContent;
+    titulo.classList.add('typing');
+
+    // Borrar texto actual letra por letra
+    for (let i = textoActual.length; i >= 0; i--) {
+        titulo.textContent = textoActual.substring(0, i);
+        await new Promise(resolve => setTimeout(resolve, 25));
+    }
+
+    // Escribir nuevo texto letra por letra
+    for (let i = 0; i <= nuevoTexto.length; i++) {
+        titulo.textContent = nuevoTexto.substring(0, i);
+        await new Promise(resolve => setTimeout(resolve, 25));
+    }
+
+    titulo.classList.remove('typing');
 }
 
 // Toast notification function

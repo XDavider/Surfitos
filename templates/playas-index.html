@@ -16,17 +16,45 @@
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
 </head>
 <body>
+    <div class="background-effects">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
     <div class="container">
         <div class="header">
-            <h1><i class="fas fa-water"></i> Mis Playas</h1>
+            <h1><i class="fas fa-water"></i> <span id="titulo-playas">Todas las playas</span></h1>
+        </div>
+
+        <div class="filter-container">
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Buscar playas..." class="search-input">
+            </div>
+            <div class="switch-container">
+                <label class="switch">
+                    <input type="checkbox" id="filtroFavoritas">
+                    <span class="slider"></span>
+                </label>
+                <span class="filter-label">Solo Favoritas</span>
+            </div>
         </div>
         
         <div id="contenedor-playas">
             {% for playa in playas %}
-                <div class="playa" data-id="{{ playa.id }}">
+                <div class="playa" data-id="{{ playa.id }}" 
+                     data-nombre="{{ playa.nombre|escapejs }}" 
+                     data-lugar="{{ playa.lugar|escapejs }}"
+                     data-lat="{{ playa.latitud }}"
+                     data-lon="{{ playa.longitud }}">
                     <div class="playa-content">
                         <div class="playa-header">
                             <span class="nombre-playa">{{ playa.nombre }}</span>
+                            <button class="boton boton-favorito {% if playa.is_favorita %}favorito-activo{% endif %}" 
+                                    onclick="toggleFavorito(this)" 
+                                    title="{% if playa.is_favorita %}Quitar de favoritos{% else %}Añadir a favoritos{% endif %}">
+                                <i class="fas fa-star"></i>
+                            </button>
                         </div>
                         <span class="fecha">
                             <i class="fas fa-map-marker-alt"></i> {{ playa.lugar }} 
@@ -35,13 +63,13 @@
                         </span>
                     </div>
                     <div class="acciones">
-                        <button class="boton boton-mapa" onclick="verEnMapa({{ playa.latitud }}, {{ playa.longitud }}, '{{ playa.nombre }}', '{{ playa.lugar }}')" title="Ver en mapa">
+                        <button class="boton boton-mapa" onclick="verEnMapa(this)" title="Ver en mapa">
                             <i class="fas fa-map-pin"></i>
                         </button>
-                        <button class="boton boton-dashboard" onclick="verDashboard({{ playa.id }})" title="Ver panel de datos">
+                        <button class="boton boton-dashboard" onclick="verDashboard(this)" title="Ver panel de datos">
                             <i class="fas fa-chart-line"></i>
                         </button>
-                        <button class="boton boton-eliminar" onclick="eliminarPlaya('{{ playa.id }}')" title="Eliminar playa">
+                        <button class="boton boton-eliminar" onclick="eliminarPlaya(this)" title="Eliminar playa">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>

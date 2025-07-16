@@ -27,9 +27,12 @@ function cerrarModal() {    document.getElementById("modalAgregar").classList.re
 }
 
 // Elimina una playa de la base de datos usando su ID
-function eliminarPlaya(id) {
+function eliminarPlaya(button) {
     // Evita la propagación del evento
     event.stopPropagation();
+    
+    const playaCard = button.closest('.playa');
+    const id = playaCard.dataset.id;
     
     // Confirma con el usuario antes de eliminar
     if (!confirm("¿Estás seguro de que quieres eliminar esta playa?")) return;
@@ -73,8 +76,14 @@ function eliminarPlaya(id) {
 }
 
 // Abre un mapa con Leaflet en un modal para mostrar la ubicación de la playa
-function verEnMapa(lat, lon, nombre, lugar) {
+function verEnMapa(button) {
     event.stopPropagation();
+    
+    const playaCard = button.closest('.playa');
+    const nombre = playaCard.dataset.nombre;
+    const lugar = playaCard.dataset.lugar;
+    const lat = parseFloat(playaCard.dataset.lat);
+    const lon = parseFloat(playaCard.dataset.lon);
     
     // Set the modal title and show the modal
     document.getElementById('mapa-titulo').innerHTML = `<i class="fas fa-map-pin"></i> ${nombre}`;
@@ -135,8 +144,42 @@ function cerrarModalMapa() {
 }
 
 // Navigate to dashboard view for the selected beach
-function verDashboard(id) {
+function verDashboard(button) {
+    event.stopPropagation();
+    const playaCard = button.closest('.playa');
+    const id = playaCard.dataset.id;
     window.location.href = `/dashboard/${id}/`;
+}
+
+// Función para marcar/desmarcar una playa como favorita
+function toggleFavorito(button) {
+    event.stopPropagation();
+    const playaCard = button.closest('.playa');
+    const id = playaCard.dataset.id;
+
+    fetch(`/api/toggle-favorita/${id}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.ok) {
+            if (data.is_favorita) {
+                button.classList.add('favorito-activo');
+                button.title = 'Quitar de favoritos';
+                showToast('Playa añadida a favoritos');
+            } else {
+                button.classList.remove('favorito-activo');
+                button.title = 'Añadir a favoritos';
+                showToast('Playa eliminada de favoritos');
+            }
+        } else {
+            showToast('Error al actualizar favoritos: ' + data.error, true);
+        }
+    })
+    .catch(() => showToast('Error al conectar con el servidor', true));
 }
 
 // Envía la nueva playa al backend para agregarla a la base de datos

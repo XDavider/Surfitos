@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # === Datos de las playas ===
 class Playa(models.Model):
@@ -70,3 +71,18 @@ class WeatherHourlyData(models.Model):
 
     class Meta:
         unique_together = ('playa', 'timestamp')
+
+
+# === Playas Favoritas ===
+class PlayaFavorita(models.Model):
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    playa = models.ForeignKey(Playa, on_delete=models.CASCADE)
+    fecha_agregada = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('usuario', 'playa')
+        verbose_name = 'Playa Favorita'
+        verbose_name_plural = 'Playas Favoritas'
+
+    def __str__(self):
+        return f"{self.usuario.username} - {self.playa.nombre}"
