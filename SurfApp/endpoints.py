@@ -99,7 +99,8 @@ def get_current_marine_data(lat, lon):
         f"https://marine-api.open-meteo.com/v1/marine"
         f"?latitude={lat}&longitude={lon}"
         f"&current=wave_height,wave_direction,wave_period,"
-        f"swell_wave_height,swell_wave_direction,swell_wave_period,sea_surface_temperature"
+        f"swell_wave_height,swell_wave_direction,swell_wave_period,"
+        f"wind_wave_height,wind_wave_period,sea_surface_temperature"
     )
     try:
         response = requests.get(url, headers={"User-Agent": "SurfitosApp/1.0"}, timeout=10)
@@ -126,7 +127,8 @@ def get_current_weather_data(lat, lon):
     url = (
         f"https://api.open-meteo.com/v1/forecast"
         f"?latitude={lat}&longitude={lon}"
-        f"&current=temperature_2m,apparent_temperature,weather_code"
+        f"&current=temperature_2m,apparent_temperature,weather_code,"
+        f"wind_speed_10m,wind_direction_10m,wind_gusts_10m,precipitation,cloud_cover"
         f"&timezone=Europe%2FBerlin&forecast_days=1"
     )
     try:

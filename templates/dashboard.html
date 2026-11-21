@@ -10,50 +10,49 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- CSS de Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
-    <!-- JavaScript de Leaflet -->
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
 </head>
 <body>
-    <!-- Datos ocultos para JavaScript -->
-    <div id="coord" 
-         data-lat="{{ playa.latitud }}" 
-         data-lon="{{ playa.longitud }}" 
+    <div id="coord"
+         data-lat="{{ playa.latitud }}"
+         data-lon="{{ playa.longitud }}"
          style="display:none;">
     </div>
 
-    <!-- Barra de navegación -->
-    <div class="navbar">
-        <button class="back-button" onclick="window.location.href='/playas/'">
+    <nav class="navbar">
+        <button type="button" class="back-button" onclick="window.location.href='/playas/'">
             <i class="fas fa-arrow-left"></i> Volver
         </button>
         <h1><i class="fas fa-water"></i> Surfitos</h1>
-    </div>
+    </nav>
 
     <div class="dashboard-container">
-        <!-- Encabezado con fondo de mapa -->
         <div class="header">
             <div id="mapa-playa"></div>
             <div class="overlay"></div>
-            
+
             <div class="current-time" id="hora-actual">
                 <i class="far fa-clock"></i> Cargando...
             </div>
-            
+
             <div class="header-content">
                 <div class="playa-info">
                     <h1>{{ playa.nombre }}</h1>
                     <p><i class="fas fa-map-marker-alt"></i> {{ playa.lugar }}</p>
                 </div>
-                  <div class="stats-row">
+                <div class="stats-row">
                     <div class="stat-card">
                         <h3>Temperatura</h3>
                         <p>{{ current_weather.temperature_2m|default:"--" }} °C</p>
-                    </div>                    
+                    </div>
                     <div class="stat-card">
                         <h3>Sensación</h3>
                         <p>{{ current_weather.apparent_temperature|default:"--" }} °C</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Viento</h3>
+                        <p>{{ current_weather.wind_speed_10m|default:"--" }} km/h</p>
                     </div>
                     <div class="stat-card">
                         <h3>Tiempo</h3>
@@ -63,152 +62,172 @@
             </div>
         </div>
 
-        <!-- Contenido Principal -->
         <div class="contenido-scroll">
-            <!-- Sección de Pronóstico por Hora -->
+            <!-- Pronóstico Horario -->
             <section class="section">
                 <div class="section-header">
                     <h2 class="section-title1">
                         <i class="fas fa-chart-line"></i> Pronóstico Horario
                     </h2>
                 </div>
-                  <div class="chart-container">
+                <div class="chart-container">
                     <div class="filtros">
                         <h2>Filtros</h2>
                         <div class="grupo-filtros">
                             <div class="columna-filtro">
-                                <h3><span class="icon"><i class="fas fa-water"></i></span> Olas</h3>
+                                <h3><i class="fas fa-water"></i> Olas</h3>
                                 <label><input type="checkbox" data-type="wave" checked> Altura de ola</label>
                                 <label><input type="checkbox" data-type="wave-period"> Periodo de las olas</label>
                                 <label><input type="checkbox" data-type="wave-direction"> Dirección de las olas</label>
                             </div>
                             <div class="columna-filtro">
-                                <h3><span class="icon"><i class="fas fa-water"></i></span> Mar de fondo</h3>
+                                <h3><i class="fas fa-water"></i> Mar de fondo</h3>
                                 <label><input type="checkbox" data-type="swell" checked> Altura del Mar de fondo</label>
                                 <label><input type="checkbox" data-type="swell-period"> Periodo del Mar de fondo</label>
                                 <label><input type="checkbox" data-type="swell-direction"> Dirección del Mar de fondo</label>
                             </div>
                             <div class="columna-filtro">
-                                <h3> <span class="icon"><i class="fas fa-sun"></i></span> Clima</h3>
+                                <h3><i class="fas fa-sun"></i> Clima</h3>
                                 <label><input type="checkbox" data-type="temperature"> Temperatura</label>
                                 <label><input type="checkbox" data-type="apparent-temperature"> Sensación térmica</label>
                                 <label><input type="checkbox" data-type="weather-code"> Clima</label>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="grafica">
                         <canvas id="grafico-hourly"></canvas>
                     </div>
                 </div>
             </section>
-              <!-- Sección de Datos Actuales -->
+
+            <!-- Condiciones Actuales -->
             <section class="section">
                 <div class="section-header">
                     <h2 class="section-title">
                         <i class="fas fa-tachometer-alt"></i> Condiciones Actuales
                     </h2>
                 </div>
-                
+
                 <div class="data-grid">
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-water"></i></span>
                         <h4>Altura de ola</h4>
                         <p>{{ current_marine.wave_height|default:"--" }} <span class="unit">m</span></p>
                     </div>
-                    
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-sync-alt"></i></span>
                         <h4>Periodo de ola</h4>
                         <p>{{ current_marine.wave_period|default:"--" }} <span class="unit">s</span></p>
                     </div>
-                    
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-compass"></i></span>
                         <h4>Dirección de ola</h4>
                         <p>
-                            {{ current_marine.wave_direction|default:"--" }}° 
+                            {{ current_marine.wave_direction|default:"--" }}°
                             <i class="fas fa-long-arrow-alt-down" data-rotate="{{ current_marine.wave_direction|default:'0' }}"></i>
                         </p>
                     </div>
 
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-water"></i></span>
-                        <h4>Altura de ola del swell</h4>
+                        <h4>Altura del swell</h4>
                         <p>{{ current_marine.swell_wave_height|default:"--" }} <span class="unit">m</span></p>
                     </div>
-                    
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-sync-alt"></i></span>
-                        <h4>Periodo de ola del swell</h4>
+                        <h4>Periodo del swell</h4>
                         <p>{{ current_marine.swell_wave_period|default:"--" }} <span class="unit">s</span></p>
                     </div>
-                    
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-compass"></i></span>
-                        <h4>Dirección de ola del swell</h4>
+                        <h4>Dirección del swell</h4>
                         <p>
-                            {{ current_marine.swell_wave_direction|default:"--" }}° 
+                            {{ current_marine.swell_wave_direction|default:"--" }}°
                             <i class="fas fa-long-arrow-alt-down" data-rotate="{{ current_marine.swell_wave_direction|default:'0' }}"></i>
                         </p>
                     </div>
-                    
+
+                    <div class="data-card">
+                        <span class="icon"><i class="fas fa-wind"></i></span>
+                        <h4>Velocidad del viento</h4>
+                        <p>{{ current_weather.wind_speed_10m|default:"--" }} <span class="unit">km/h</span></p>
+                    </div>
+                    <div class="data-card">
+                        <span class="icon"><i class="fas fa-wind"></i></span>
+                        <h4>Rachas de viento</h4>
+                        <p>{{ current_weather.wind_gusts_10m|default:"--" }} <span class="unit">km/h</span></p>
+                    </div>
+                    <div class="data-card">
+                        <span class="icon"><i class="fas fa-compass"></i></span>
+                        <h4>Dirección del viento</h4>
+                        <p>
+                            {{ current_weather.wind_direction_10m|default:"--" }}°
+                            <i class="fas fa-long-arrow-alt-down" data-rotate="{{ current_weather.wind_direction_10m|default:'0' }}"></i>
+                        </p>
+                    </div>
+
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-temperature-high"></i></span>
                         <h4>Temp. del agua</h4>
                         <p>{{ current_marine.sea_surface_temperature|default:"--" }} <span class="unit">°C</span></p>
                     </div>
+                    <div class="data-card">
+                        <span class="icon"><i class="fas fa-cloud-rain"></i></span>
+                        <h4>Precipitación</h4>
+                        <p>{{ current_weather.precipitation|default:"0" }} <span class="unit">mm</span></p>
+                    </div>
+                    <div class="data-card">
+                        <span class="icon"><i class="fas fa-cloud"></i></span>
+                        <h4>Nubosidad</h4>
+                        <p>{{ current_weather.cloud_cover|default:"--" }} <span class="unit">%</span></p>
+                    </div>
                 </div>
             </section>
-              <!-- Sección de Datos Marítimos Diarios -->
-            <h1 class="section-title1">
+
+            <!-- Pronóstico Diario -->
+            <h2 class="section-heading-standalone">
                 <i class="fas fa-calendar-day"></i> Pronóstico Diario
-            </h1>
+            </h2>
+
             <section class="section">
                 <div class="section-header">
-                    
                     <h2 class="section-title">
                         <i class="fas fa-water"></i> Condiciones Marítimas
                     </h2>
                 </div>
-                
                 <div class="data-grid">
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-arrows-alt-v"></i></span>
                         <h4>Altura máx. de ola</h4>
                         <p>{{ marine_daily.wave_height_max|default:"--" }} <span class="unit">m</span></p>
                     </div>
-                    
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-compass"></i></span>
                         <h4>Dirección dominante</h4>
                         <p>
-                            {{ marine_daily.wave_direction_dominant|default:"--" }}° 
+                            {{ marine_daily.wave_direction_dominant|default:"--" }}°
                             <i class="fas fa-long-arrow-alt-down" data-rotate="{{ marine_daily.wave_direction_dominant|default:0 }}"></i>
                         </p>
                     </div>
-                    
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-stopwatch"></i></span>
                         <h4>Periodo máx. de ola</h4>
                         <p>{{ marine_daily.wave_period_max|default:"--" }} <span class="unit">s</span></p>
                     </div>
-                    
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-water"></i></span>
                         <h4>Altura máx. del swell</h4>
                         <p>{{ marine_daily.swell_wave_height_max|default:"--" }} <span class="unit">m</span></p>
                     </div>
-                    
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-compass"></i></span>
                         <h4>Dirección del swell</h4>
                         <p>
-                            {{ marine_daily.swell_wave_direction_dominant|default:"--" }}° 
-                            <i class="fas fa-long-arrow-alt-down" data-rotate="{{marine_daily.swell_wave_direction_dominant|default:0 }}"></i>
+                            {{ marine_daily.swell_wave_direction_dominant|default:"--" }}°
+                            <i class="fas fa-long-arrow-alt-down" data-rotate="{{ marine_daily.swell_wave_direction_dominant|default:0 }}"></i>
                         </p>
                     </div>
-                    
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-stopwatch"></i></span>
                         <h4>Periodo máx. del swell</h4>
@@ -216,48 +235,43 @@
                     </div>
                 </div>
             </section>
-              <!-- Sección de Datos Meteorológicos Diarios -->
+
             <section class="section">
                 <div class="section-header">
                     <h2 class="section-title">
                         <i class="fas fa-cloud-sun"></i> Condiciones Meteorológicas
                     </h2>
                 </div>
-                
                 <div class="data-grid">
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-temperature-high"></i></span>
                         <h4>Temperatura máxima</h4>
                         <p>{{ weather_daily.temperature_max|default:"--" }} <span class="unit">°C</span></p>
                     </div>
-                    
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-temperature-low"></i></span>
                         <h4>Temperatura mínima</h4>
                         <p>{{ weather_daily.temperature_min|default:"--" }} <span class="unit">°C</span></p>
                     </div>
-                    
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-sun"></i></span>
                         <h4>Salida del sol</h4>
-                        <p>{{ weather_daily.sunrise|time:"H:i"|default:"--"  }}</p>
+                        <p>{{ weather_daily.sunrise|time:"H:i"|default:"--" }}</p>
                     </div>
-                    
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-moon"></i></span>
                         <h4>Puesta de sol</h4>
-                        <p>{{ weather_daily.sunset|time:"H:i"|default:"--"  }}</p>
+                        <p>{{ weather_daily.sunset|time:"H:i"|default:"--" }}</p>
                     </div>
                 </div>
             </section>
-              <!-- Sección de Mapa Interactivo -->
+
             <section class="section">
                 <div class="section-header">
                     <h2 class="section-title">
-                        <i class="fas fa-map"></i> Mapa Interactivo
+                        <i class="fas fa-map"></i> Mapa Interactivo (Windy)
                     </h2>
                 </div>
-                
                 <div class="map-container">
                     <iframe
                         src="https://embed.windy.com/embed2.html?lat={{ playa.latitud }}&lon={{ playa.longitud }}&detailLat={{ playa.latitud }}&detailLon={{ playa.longitud }}&width=650&height=450&zoom=10&level=surface&overlay=waves&product=ecmwf&menu=&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=&metricWind=kt&metricTemp=%C2%B0C&radarRange=-1"
@@ -268,18 +282,30 @@
         </div>
     </div>
 
-    <!-- Scripts -->
+    <footer class="app-footer">
+        <div class="footer-content">
+            <span>Creado por <strong>XDavider</strong> · Proyecto Surfitos</span>
+            <div class="social-links">
+                <a class="social-link" href="https://github.com/XDavider/Surfitos" target="_blank" rel="noopener noreferrer" aria-label="Repositorio en GitHub" title="Repositorio en GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a class="social-link" href="#" aria-label="LinkedIn" title="LinkedIn (pendiente de enlace)">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a class="social-link" href="#" aria-label="Instagram" title="Instagram (pendiente de enlace)">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Datos para JavaScript -->
     <script id="marine-data" type="application/json">
         {{ marine_hourly_json|safe }}
     </script>
-    
     <script id="weather-data" type="application/json">
         {{ weather_hourly_json|safe }}
     </script>
-      <!-- JavaScript Principal -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll('[data-rotate]').forEach(function (element) {
