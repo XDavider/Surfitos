@@ -19,7 +19,6 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 from django.shortcuts import redirect
-from django.views.static import serve 
 from SurfApp import views
 from SurfApp import endpoints  # ← nuevo
 
@@ -48,8 +47,6 @@ urlpatterns = [
 
     # API para eliminar una playa por ID vía DELETE
     path('api/eliminar-playa/<int:playa_id>', endpoints.eliminar_playa, name='eliminar_playa'),
-
-    path('staticfiles/', serve,{'document_root': settings.STATIC_ROOT})
 
 # Añade soporte para servir archivos estáticos durante el desarrollo
 ]  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

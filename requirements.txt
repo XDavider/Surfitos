@@ -1,7 +1,6 @@
 requests
 pytz
 geopy
-Django>=4.2
-gunicorn
+Django>=4.2,<6.0
 psycopg2-binary
 whitenoise
