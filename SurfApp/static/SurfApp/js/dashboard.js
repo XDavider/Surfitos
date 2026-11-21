@@ -112,6 +112,7 @@ function initializeCharts() {
 
     const ctx = document.getElementById("grafico-hourly").getContext("2d");
     const labels = marineData.map(d => formatTime(d.time));
+    const weatherByTime = Object.fromEntries(weatherData.map(d => [formatTime(d.time), d]));
     
     const chart = new Chart(ctx, {
         type: 'line',
@@ -385,7 +386,7 @@ function initializeCharts() {
             },
             'temperature': {
                 label: "Temperatura (°C)",
-                data: weatherData.map(d => d.temperature),
+                data: labels.map(t => (weatherByTime[t] ? weatherByTime[t].temperature : null)),
                 borderColor: "#fbbf24",
                 backgroundColor: "rgba(251, 191, 36, 0.15)",
                 dataType: 'temperature',
@@ -393,7 +394,7 @@ function initializeCharts() {
             },
             'apparent-temperature': {
                 label: "Sensación térmica (°C)",
-                data: weatherData.map(d => d.apparent_temperature),
+                data: labels.map(t => (weatherByTime[t] ? weatherByTime[t].apparent_temperature : null)),
                 borderColor: "#fb923c",
                 backgroundColor: "rgba(251, 146, 60, 0.15)",
                 dataType: 'apparent-temperature',
@@ -401,7 +402,7 @@ function initializeCharts() {
             },
             'weather-code': {
                 label: "Clima",
-                data: weatherData.map(d => d.weather_code),
+                data: labels.map(t => (weatherByTime[t] ? weatherByTime[t].weather_code : null)),
                 borderColor: "#F4A460", // Arena/Marrón claro
                 backgroundColor: "rgba(255, 1, 1, 0.2)",
                 dataType: 'weather-code',
