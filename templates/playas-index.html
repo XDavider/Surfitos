@@ -35,7 +35,7 @@
                         </span>
                     </div>
                     <div class="acciones">
-                        <button class="boton boton-mapa" onclick="verEnMapa({{ playa.latitud }}, {{ playa.longitud }}, '{{ playa.nombre }}', '{{ playa.lugar }}')" title="Ver en mapa">
+                        <button class="boton boton-mapa" onclick="verEnMapa({{ playa.latitud }}, {{ playa.longitud }}, '{{ playa.nombre|escapejs }}', '{{ playa.lugar|escapejs }}')" title="Ver en mapa">
                             <i class="fas fa-map-pin"></i>
                         </button>
                         <button class="boton boton-dashboard" onclick="verDashboard({{ playa.id }})" title="Ver panel de datos">

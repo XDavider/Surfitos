@@ -1,6 +1,5 @@
 import requests
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from geopy.geocoders import Nominatim
 from .models import Playa
 import json
@@ -8,8 +7,10 @@ import json
 # === Agregar Playa ===
 # Permite agregar una playa desde el frontend vía POST con JSON.
 # Requiere nombre y lugar; se obtiene latitud y longitud usando geopy (Nominatim).
-@csrf_exempt
 def agregar_playa(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'ok': False, 'error': 'Autenticación requerida.'}, status=401)
+
     if request.method == 'POST':
         try:
             # Se extraen los datos del cuerpo de la petición
@@ -17,9 +18,15 @@ def agregar_playa(request):
             nombre = data.get('nombre', '').strip()
             lugar = data.get('lugar', '').strip()
 
-            # Validación: ambos campos son obligatorios
+            # Validación: ambos campos son obligatorios y respetan el límite del modelo
             if not nombre or not lugar:
                 return JsonResponse({'ok': False, 'error': 'Faltan datos obligatorios.'})
+
+            if len(nombre) > 100 or len(lugar) > 100:
+                return JsonResponse(
+                    {'ok': False, 'error': 'El nombre y el lugar no pueden superar los 100 caracteres.'},
+                    status=400,
+                )
 
             # Verificación: no permitir duplicados por nombre y lugar (ignorando mayúsculas)
             existe = Playa.objects.filter(
@@ -31,8 +38,8 @@ def agregar_playa(request):
                 return JsonResponse({'ok': False, 'error': 'Ya existe una playa con ese nombre y lugar.'})
 
             # Geolocaliza la playa combinando nombre y lugar
-            geolocator = Nominatim(user_agent="app_playas")
-            location = geolocator.geocode(f"{nombre}, {lugar}")
+            geolocator = Nominatim(user_agent="surfitos_app")
+            location = geolocator.geocode(f"{nombre}, {lugar}", timeout=10)
 
             if location:
                 # Si encuentra coordenadas, crea la playa en la base de datos
@@ -56,8 +63,10 @@ def agregar_playa(request):
 
 # === Eliminar Playa ===
 # Recibe un ID y elimina la playa correspondiente si existe.
-@csrf_exempt
 def eliminar_playa(request, playa_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({'ok': False, 'error': 'Autenticación requerida.'}, status=401)
+
     if request.method == 'DELETE':
         try:
             playa = Playa.objects.get(id=playa_id)
@@ -80,7 +89,10 @@ def get_current_marine_data(lat, lon):
         f"&current=wave_height,wave_direction,wave_period,"
         f"swell_wave_height,swell_wave_direction,swell_wave_period,sea_surface_temperature"
     )
-    response = requests.get(url)
+    try:
+        response = requests.get(url, timeout=10)
+    except requests.RequestException:
+        return None
     if response.status_code == 200:
         return response.json().get("current", {})
     return None
@@ -95,7 +107,10 @@ def get_current_weather_data(lat, lon):
         f"&current=temperature_2m,apparent_temperature,weather_code"
         f"&timezone=Europe%2FBerlin&forecast_days=1"
     )
-    response = requests.get(url)
+    try:
+        response = requests.get(url, timeout=10)
+    except requests.RequestException:
+        return None
     if response.status_code == 200:
         return response.json().get("current", {})
     return None

@@ -47,7 +47,7 @@ urlpatterns = [
     path('api/agregar-playa/', endpoints.agregar_playa, name='agregar_playa'),
 
     # API para eliminar una playa por ID vía DELETE
-    path('api/eliminar-playa/<str:playa_id>', endpoints.eliminar_playa, name='eliminar_playa'),
+    path('api/eliminar-playa/<int:playa_id>', endpoints.eliminar_playa, name='eliminar_playa'),
 
     path('staticfiles/', serve,{'document_root': settings.STATIC_ROOT})
 

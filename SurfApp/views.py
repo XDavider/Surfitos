@@ -2,7 +2,7 @@ from datetime import date
 from django.utils.timezone import localtime
 from SurfApp.models import MarineDailyData, WeatherDailyData, WeatherHourlyData, MarineHourlyData
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .models import Playa
@@ -19,8 +19,8 @@ import json
 # Vista para el login del usuario
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+        username = request.POST.get('username', '')
+        password = request.POST.get('password', '')
 
         # Autenticación del usuario con el modelo User predeterminado
         user = authenticate(request, username=username, password=password)
@@ -45,7 +45,7 @@ def playas_index_view(request):
 # Vista que muestra la información del API sobre la playa en forma de dashboard
 @login_required
 def dashboard_playa_view(request, playa_id):
-    playa = Playa.objects.get(id=playa_id)  # Obtiene la instancia de la playa correspondiente al ID recibido por la URL
+    playa = get_object_or_404(Playa, id=playa_id)  # Obtiene la instancia de la playa correspondiente al ID recibido por la URL
     hoy = date.today()
 
     # Datos diarios

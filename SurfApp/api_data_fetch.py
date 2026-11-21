@@ -23,12 +23,18 @@ def fetch_and_save_marine_data(playa):
         f"&hourly=wave_height,wave_direction,wave_period,swell_wave_height,swell_wave_direction,swell_wave_period"
         f"&start_date={hoy}&end_date={hoy}"
     )
-    response = requests.get(url)
+    try:
+        response = requests.get(url, timeout=10)
+    except requests.RequestException:
+        return
     if response.status_code != 200:
         return
 
     data = response.json()
-    fecha = date.fromisoformat(data["daily"]["time"][0])
+    daily_times = data.get("daily", {}).get("time")
+    if not daily_times:
+        return
+    fecha = date.fromisoformat(daily_times[0])
 
     # Guardar daily
     MarineDailyData.objects.update_or_create(
@@ -44,21 +50,35 @@ def fetch_and_save_marine_data(playa):
         }
     )
 
-    # Guardar hourly
-    times = data['hourly']['time']
-    for i, ts in enumerate(times):
-        timestamp = make_aware(datetime.fromisoformat(ts))
-        MarineHourlyData.objects.update_or_create(
+    # Guardar hourly en lote para minimizar viajes a la base de datos
+    hourly = data.get('hourly', {})
+    times = hourly.get('time', [])
+    marine_hourly_objects = [
+        MarineHourlyData(
             playa=playa,
-            timestamp=timestamp,
-            defaults={
-                'wave_height': data['hourly']['wave_height'][i],
-                'wave_direction': data['hourly']['wave_direction'][i],
-                'wave_period': data['hourly']['wave_period'][i],
-                'swell_wave_height': data['hourly']['swell_wave_height'][i],
-                'swell_wave_direction': data['hourly']['swell_wave_direction'][i],
-                'swell_wave_period': data['hourly']['swell_wave_period'][i],
-            }
+            timestamp=make_aware(datetime.fromisoformat(ts)),
+            wave_height=hourly['wave_height'][i],
+            wave_direction=hourly['wave_direction'][i],
+            wave_period=hourly['wave_period'][i],
+            swell_wave_height=hourly['swell_wave_height'][i],
+            swell_wave_direction=hourly['swell_wave_direction'][i],
+            swell_wave_period=hourly['swell_wave_period'][i],
+        )
+        for i, ts in enumerate(times)
+    ]
+    if marine_hourly_objects:
+        MarineHourlyData.objects.bulk_create(
+            marine_hourly_objects,
+            update_conflicts=True,
+            unique_fields=['playa', 'timestamp'],
+            update_fields=[
+                'wave_height',
+                'wave_direction',
+                'wave_period',
+                'swell_wave_height',
+                'swell_wave_direction',
+                'swell_wave_period',
+            ],
         )
 
 
@@ -79,14 +99,20 @@ def fetch_and_save_weather_data(playa):
         f"&hourly=temperature_2m,apparent_temperature,weather_code"
         f"&start_date={hoy}&end_date={hoy}"
     )
-    response = requests.get(url)
+    try:
+        response = requests.get(url, timeout=10)
+    except requests.RequestException:
+        return
     if response.status_code != 200:
         return
     
     # Procesar la respuesta
     # Verificar si la respuesta es válida
     data = response.json()
-    fecha = date.fromisoformat(data['daily']['time'][0])
+    daily_times = data.get('daily', {}).get('time')
+    if not daily_times:
+        return
+    fecha = date.fromisoformat(daily_times[0])
     europe_madrid = pytz.timezone("Europe/Madrid")
     # Convertir sunrise y sunset a la zona horaria de Europa/Madrid
     sunrise = make_aware(datetime.fromisoformat(data['daily']['sunrise'][0]), timezone=pytz.utc).astimezone(
@@ -105,18 +131,29 @@ def fetch_and_save_weather_data(playa):
         }
     )
 
-    # Guardar hourly
-    times = data['hourly']['time']
-    for i, ts in enumerate(times):
-        timestamp = make_aware(datetime.fromisoformat(ts))
-        WeatherHourlyData.objects.update_or_create(
+    # Guardar hourly en lote para minimizar viajes a la base de datos
+    hourly = data.get('hourly', {})
+    times = hourly.get('time', [])
+    weather_hourly_objects = [
+        WeatherHourlyData(
             playa=playa,
-            timestamp=timestamp,
-            defaults={
-                'temperature': data['hourly']['temperature_2m'][i],
-                'apparent_temperature': data['hourly']['apparent_temperature'][i],
-                'weather_code': data['hourly']['weather_code'][i],
-            }
+            timestamp=make_aware(datetime.fromisoformat(ts)),
+            temperature=hourly['temperature_2m'][i],
+            apparent_temperature=hourly['apparent_temperature'][i],
+            weather_code=hourly['weather_code'][i],
+        )
+        for i, ts in enumerate(times)
+    ]
+    if weather_hourly_objects:
+        WeatherHourlyData.objects.bulk_create(
+            weather_hourly_objects,
+            update_conflicts=True,
+            unique_fields=['playa', 'timestamp'],
+            update_fields=[
+                'temperature',
+                'apparent_temperature',
+                'weather_code',
+            ],
         )
 
 # === Función para eliminar datos de Marine ===

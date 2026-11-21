@@ -5,14 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ playa.nombre }} - Surfitos</title>
     {% load static %}
-            <!-- Sección de Mapa Interactivo -->
-            <section class="section">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <i class="fas fa-map"></i> Mapa Interactivo
-                    </h2>
-                </div>
-                <link rel="stylesheet" href="{% static 'SurfApp/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'SurfApp/css/dashboard.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -156,7 +149,7 @@
                         <h4>Dirección de ola del swell</h4>
                         <p>
                             {{ current_marine.swell_wave_direction|default:"--" }}° 
-                            <i class="fas fa-long-arrow-alt-down" data-rotate="{{ current_marine.wave_direction|default:'0' }}"></i>
+                            <i class="fas fa-long-arrow-alt-down" data-rotate="{{ current_marine.swell_wave_direction|default:'0' }}"></i>
                         </p>
                     </div>
                     
