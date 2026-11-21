@@ -25,6 +25,9 @@
                     <p class="header-subtitle">Selecciona un spot para ver la previsión completa</p>
                 </div>
             </div>
+            <button type="button" class="btn-agregar-header" onclick="agregarPlaya()" aria-label="Agregar playa">
+                <i class="fas fa-plus"></i> Añadir playa
+            </button>
         </header>
 
         <div id="contenedor-playas">
@@ -61,22 +64,20 @@
         </div>
     </div>
 
-    <!-- Botón flotante para agregar playas -->
-    <button type="button" class="agregar" onclick="agregarPlaya()" aria-label="Agregar playa" title="Agregar playa">
-        <i class="fas fa-plus"></i>
-    </button>
-
     <!-- Modal para agregar playas -->
     <div id="modalAgregar" class="modal" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-agregar">
-        <div class="modal-content">
+        <div class="modal-content mapa-content">
             <div class="modal-header">
-                <h3 id="titulo-modal-agregar"><i class="fas fa-umbrella-beach"></i> Agregar Playa</h3>
+                <h3 id="titulo-modal-agregar"><i class="fas fa-umbrella-beach"></i> Añadir Playa</h3>
                 <button type="button" class="modal-close" onclick="cerrarModal()" aria-label="Cerrar">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <input type="text" id="inputNombre" placeholder="Nombre de la playa (ej. Playa de Razo)">
-            <input type="text" id="inputLugar" placeholder="Ciudad / Localidad (ej. Carballo)">
+            <input type="text" id="inputLugar" placeholder="Zona / Localidad (opcional)">
+            <p class="mapa-agregar-hint">Haz clic en el mapa para marcar la ubicación exacta:</p>
+            <div id="mapa-agregar" style="height: 230px; width: 100%; border-radius: 12px; margin-bottom: 8px;"></div>
+            <p id="coords-seleccionadas" class="mapa-agregar-coords">Ninguna ubicación seleccionada</p>
             <div class="modal-buttons">
                 <button type="button" class="btn cancelar" onclick="cerrarModal()">Cancelar</button>
                 <button type="button" class="btn guardar" onclick="enviarNuevaPlaya()">Guardar</button>

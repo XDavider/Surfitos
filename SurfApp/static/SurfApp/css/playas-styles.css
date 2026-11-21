@@ -36,7 +36,7 @@ body {
     width: 100%;
     max-width: 960px;
     margin: 0 auto;
-    padding: 32px 20px 100px;
+    padding: 28px 20px 36px;
     flex: 1;
 }
 
@@ -199,29 +199,40 @@ body {
     margin-bottom: 12px;
 }
 
-.agregar {
-    position: fixed;
-    bottom: 28px;
-    right: 28px;
-    width: 58px;
-    height: 58px;
-    border-radius: 18px;
+.btn-agregar-header {
+    padding: 10px 16px;
+    border-radius: 12px;
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent-strong) 100%);
     color: #04131f;
     border: none;
-    font-size: 1.4rem;
-    display: flex;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    box-shadow: 0 12px 28px rgba(14, 165, 233, 0.35);
+    gap: 8px;
+    box-shadow: 0 8px 20px rgba(14, 165, 233, 0.25);
     cursor: pointer;
-    z-index: 900;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    flex-shrink: 0;
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
 }
 
-.agregar:hover {
-    transform: translateY(-2px) scale(1.04);
-    box-shadow: 0 16px 32px rgba(45, 212, 191, 0.4);
+.btn-agregar-header:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(45, 212, 191, 0.35);
+}
+
+.mapa-agregar-hint {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.mapa-agregar-coords {
+    font-size: 0.8rem;
+    color: var(--accent);
+    margin-bottom: 12px;
+    min-height: 18px;
 }
 
 /* Modales */
@@ -430,17 +441,21 @@ body {
 
 @media (max-width: 600px) {
     .container {
-        padding: 20px 14px 96px;
+        padding: 18px 14px 24px;
+    }
+
+    .header {
+        flex-wrap: wrap;
+        margin-bottom: 18px;
+        padding-bottom: 14px;
+    }
+
+    .btn-agregar-header {
+        width: 100%;
+        justify-content: center;
     }
 
     #contenedor-playas {
         grid-template-columns: 1fr;
-    }
-
-    .agregar {
-        bottom: 20px;
-        right: 20px;
-        width: 54px;
-        height: 54px;
     }
 }

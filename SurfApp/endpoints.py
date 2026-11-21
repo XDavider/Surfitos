@@ -17,11 +17,12 @@ def agregar_playa(request):
             # Se extraen los datos del cuerpo de la petición
             data = json.loads(request.body)
             nombre = data.get('nombre', '').strip()
-            lugar = data.get('lugar', '').strip()
+            lugar = data.get('lugar', '').strip() or 'Ubicación personalizada'
+            latitud = data.get('latitud')
+            longitud = data.get('longitud')
 
-            # Validación: ambos campos son obligatorios y respetan el límite del modelo
-            if not nombre or not lugar:
-                return JsonResponse({'ok': False, 'error': 'Faltan datos obligatorios.'})
+            if not nombre:
+                return JsonResponse({'ok': False, 'error': 'El nombre es obligatorio.'})
 
             if len(nombre) > 100 or len(lugar) > 100:
                 return JsonResponse(
@@ -29,7 +30,6 @@ def agregar_playa(request):
                     status=400,
                 )
 
-            # Verificación: no permitir duplicados por nombre y lugar (ignorando mayúsculas)
             existe = Playa.objects.filter(
                 nombre__iexact=nombre,
                 lugar__iexact=lugar
@@ -38,12 +38,19 @@ def agregar_playa(request):
             if existe:
                 return JsonResponse({'ok': False, 'error': 'Ya existe una playa con ese nombre y lugar.'})
 
-            # Geolocaliza la playa combinando nombre y lugar
+            if latitud is not None and longitud is not None:
+                Playa.objects.create(
+                    nombre=nombre,
+                    lugar=lugar,
+                    latitud=float(latitud),
+                    longitud=float(longitud),
+                )
+                return JsonResponse({'ok': True})
+
             geolocator = Nominatim(user_agent="surfitos_app")
             location = geolocator.geocode(f"{nombre}, {lugar}", timeout=10)
 
             if location:
-                # Si encuentra coordenadas, crea la playa en la base de datos
                 Playa.objects.create(
                     nombre=nombre,
                     lugar=lugar,
@@ -51,8 +58,7 @@ def agregar_playa(request):
                     longitud=location.longitude
                 )
                 return JsonResponse({'ok': True})
-            else:
-                return JsonResponse({'ok': False, 'error': 'No se pudo encontrar la ubicación.'})
+            return JsonResponse({'ok': False, 'error': 'No se pudo encontrar la ubicación.'})
 
         except Exception as e:
             # Manejo genérico de errores

@@ -13,17 +13,57 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Muestra el modal para agregar una nueva playa
+let addMap = null;
+let addMarker = null;
+let selectedLat = null;
+let selectedLon = null;
+
+// Muestra el modal para agregar una nueva playa con mapa interactivo
 function agregarPlaya() {
     document.getElementById("modalAgregar").classList.add("show");
     document.getElementById("inputNombre").focus();
+
+    setTimeout(() => {
+        if (!addMap) {
+            addMap = L.map('mapa-agregar', {
+                center: [43.0, -8.5],
+                zoom: 6,
+                zoomControl: true
+            });
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap',
+                maxZoom: 19
+            }).addTo(addMap);
+
+            addMap.on('click', function(e) {
+                selectedLat = e.latlng.lat;
+                selectedLon = e.latlng.lng;
+                if (addMarker) {
+                    addMarker.setLatLng(e.latlng);
+                } else {
+                    addMarker = L.marker(e.latlng).addTo(addMap);
+                }
+                document.getElementById('coords-seleccionadas').textContent =
+                    `Ubicación: ${selectedLat.toFixed(5)}, ${selectedLon.toFixed(5)}`;
+            });
+        }
+        addMap.invalidateSize();
+    }, 120);
 }
 
 // Cierra el modal de agregar playa
-function cerrarModal() {    document.getElementById("modalAgregar").classList.remove("show");
-    // Limpia los campos de entrada
+function cerrarModal() {
+    document.getElementById("modalAgregar").classList.remove("show");
     document.getElementById("inputNombre").value = '';
     document.getElementById("inputLugar").value = '';
+    selectedLat = null;
+    selectedLon = null;
+    if (addMarker && addMap) {
+        addMap.removeLayer(addMarker);
+        addMarker = null;
+    }
+    const coordsEl = document.getElementById('coords-seleccionadas');
+    if (coordsEl) coordsEl.textContent = 'Ninguna ubicación seleccionada';
 }
 
 let playaIdAEliminar = null;
@@ -161,37 +201,37 @@ function verDashboard(id) {
 
 // Envía la nueva playa al backend para agregarla a la base de datos
 function enviarNuevaPlaya() {
-    // Obtiene los valores ingresados por el usuario
     const nombre = document.getElementById("inputNombre").value.trim();
     const lugar = document.getElementById("inputLugar").value.trim();
-    
-    // Basic validation
+
     if (!nombre) {
         showToast("Por favor ingresa un nombre para la playa", true);
         document.getElementById("inputNombre").focus();
         return;
     }
-    
-    if (!lugar) {
-        showToast("Por favor ingresa la ubicación de la playa", true);
-        document.getElementById("inputLugar").focus();
+
+    if (selectedLat === null || selectedLon === null) {
+        showToast("Haz clic en el mapa para marcar la ubicación", true);
         return;
     }
 
-    // Show loading state
     const saveButton = document.querySelector('.btn.guardar');
     const originalText = saveButton.innerHTML;
     saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
     saveButton.disabled = true;
 
-    // Realiza una solicitud POST al backend con los datos ingresados
     fetch('/api/agregar-playa/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')  // Necesario para Django
+            'X-CSRFToken': getCookie('csrftoken')
         },
-        body: JSON.stringify({nombre, lugar}) // Enviamos los datos en formato JSON
+        body: JSON.stringify({
+            nombre,
+            lugar,
+            latitud: selectedLat,
+            longitud: selectedLon
+        })
     })
     .then(res => res.json())
     .then(data => {
