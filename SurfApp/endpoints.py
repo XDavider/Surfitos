@@ -1,9 +1,10 @@
+import json
+import time
 import requests
 from django.core.cache import cache
 from django.http import JsonResponse
 from geopy.geocoders import Nominatim
 from .models import Playa
-import json
 
 # === Agregar Playa ===
 # Permite agregar una playa desde el frontend vía POST con JSON.
@@ -102,17 +103,19 @@ def get_current_marine_data(lat, lon):
         f"swell_wave_height,swell_wave_direction,swell_wave_period,"
         f"wind_wave_height,wind_wave_period,sea_surface_temperature"
     )
-    try:
-        response = requests.get(url, headers={"User-Agent": "SurfitosApp/1.0"}, timeout=10)
-    except requests.RequestException as exc:
-        print(f"[Open-Meteo Current Marine] request error: {exc}")
-        return None
-    if response.status_code == 200:
-        data = response.json().get("current", {})
-        if data:
-            cache.set(cache_key, data, 600)
-        return data
-    print(f"[Open-Meteo Current Marine] status={response.status_code} body={response.text[:200]}")
+    for attempt in range(2):
+        try:
+            response = requests.get(url, headers={"User-Agent": "SurfitosApp/1.0"}, timeout=10)
+            if response.status_code == 200:
+                data = response.json().get("current", {})
+                if data:
+                    cache.set(cache_key, data, 600)
+                return data
+            print(f"[Open-Meteo Current Marine] attempt={attempt+1} status={response.status_code}")
+        except requests.RequestException as exc:
+            print(f"[Open-Meteo Current Marine] attempt={attempt+1} error: {exc}")
+        if attempt == 0:
+            time.sleep(0.5)
     return None
 
 
@@ -131,15 +134,17 @@ def get_current_weather_data(lat, lon):
         f"wind_speed_10m,wind_direction_10m,wind_gusts_10m,precipitation,cloud_cover"
         f"&timezone=Europe%2FBerlin&forecast_days=1"
     )
-    try:
-        response = requests.get(url, headers={"User-Agent": "SurfitosApp/1.0"}, timeout=10)
-    except requests.RequestException as exc:
-        print(f"[Open-Meteo Current Weather] request error: {exc}")
-        return None
-    if response.status_code == 200:
-        data = response.json().get("current", {})
-        if data:
-            cache.set(cache_key, data, 600)
-        return data
-    print(f"[Open-Meteo Current Weather] status={response.status_code} body={response.text[:200]}")
+    for attempt in range(2):
+        try:
+            response = requests.get(url, headers={"User-Agent": "SurfitosApp/1.0"}, timeout=10)
+            if response.status_code == 200:
+                data = response.json().get("current", {})
+                if data:
+                    cache.set(cache_key, data, 600)
+                return data
+            print(f"[Open-Meteo Current Weather] attempt={attempt+1} status={response.status_code}")
+        except requests.RequestException as exc:
+            print(f"[Open-Meteo Current Weather] attempt={attempt+1} error: {exc}")
+        if attempt == 0:
+            time.sleep(0.5)
     return None

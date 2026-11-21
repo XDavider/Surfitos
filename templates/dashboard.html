@@ -43,69 +43,31 @@
                 </div>
                 <div class="stats-row">
                     <div class="stat-card">
-                        <h3>Temperatura</h3>
-                        <p>{{ current_weather.temperature_2m|default:"--" }} °C</p>
+                        <h3>Olas</h3>
+                        <p>{{ current_marine.wave_height|default:"--" }} m</p>
                     </div>
                     <div class="stat-card">
-                        <h3>Sensación</h3>
-                        <p>{{ current_weather.apparent_temperature|default:"--" }} °C</p>
+                        <h3>Periodo</h3>
+                        <p>{{ current_marine.wave_period|default:"--" }} s</p>
                     </div>
                     <div class="stat-card">
                         <h3>Viento</h3>
                         <p>{{ current_weather.wind_speed_10m|default:"--" }} km/h</p>
                     </div>
                     <div class="stat-card">
-                        <h3>Tiempo</h3>
-                        <p>{{ weather_description }}</p>
+                        <h3>Temperatura</h3>
+                        <p>{{ current_weather.temperature_2m|default:"--" }} °C · {{ weather_description }}</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="contenido-scroll">
-            <!-- Pronóstico Horario -->
-            <section class="section">
-                <div class="section-header">
-                    <h2 class="section-title1">
-                        <i class="fas fa-chart-line"></i> Pronóstico Horario
-                    </h2>
-                </div>
-                <div class="chart-container">
-                    <div class="filtros">
-                        <h2>Filtros</h2>
-                        <div class="grupo-filtros">
-                            <div class="columna-filtro">
-                                <h3><i class="fas fa-water"></i> Olas</h3>
-                                <label><input type="checkbox" data-type="wave" checked> Altura de ola</label>
-                                <label><input type="checkbox" data-type="wave-period"> Periodo de las olas</label>
-                                <label><input type="checkbox" data-type="wave-direction"> Dirección de las olas</label>
-                            </div>
-                            <div class="columna-filtro">
-                                <h3><i class="fas fa-water"></i> Mar de fondo</h3>
-                                <label><input type="checkbox" data-type="swell" checked> Altura del Mar de fondo</label>
-                                <label><input type="checkbox" data-type="swell-period"> Periodo del Mar de fondo</label>
-                                <label><input type="checkbox" data-type="swell-direction"> Dirección del Mar de fondo</label>
-                            </div>
-                            <div class="columna-filtro">
-                                <h3><i class="fas fa-sun"></i> Clima</h3>
-                                <label><input type="checkbox" data-type="temperature"> Temperatura</label>
-                                <label><input type="checkbox" data-type="apparent-temperature"> Sensación térmica</label>
-                                <label><input type="checkbox" data-type="weather-code"> Clima</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="grafica">
-                        <canvas id="grafico-hourly"></canvas>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Condiciones Actuales -->
+            <!-- Condiciones Actuales (Prioridad: Olas y Viento) -->
             <section class="section">
                 <div class="section-header">
                     <h2 class="section-title">
-                        <i class="fas fa-tachometer-alt"></i> Condiciones Actuales
+                        <i class="fas fa-water"></i> Condiciones Actuales (Olas y Viento)
                     </h2>
                 </div>
 
@@ -181,6 +143,44 @@
                         <span class="icon"><i class="fas fa-cloud"></i></span>
                         <h4>Nubosidad</h4>
                         <p>{{ current_weather.cloud_cover|default:"--" }} <span class="unit">%</span></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pronóstico Horario -->
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title1">
+                        <i class="fas fa-chart-line"></i> Pronóstico Horario
+                    </h2>
+                </div>
+                <div class="chart-container">
+                    <div class="filtros">
+                        <h2>Filtros</h2>
+                        <div class="grupo-filtros">
+                            <div class="columna-filtro">
+                                <h3><i class="fas fa-water"></i> Olas</h3>
+                                <label><input type="checkbox" data-type="wave" checked> Altura de ola</label>
+                                <label><input type="checkbox" data-type="wave-period" checked> Periodo de las olas</label>
+                                <label><input type="checkbox" data-type="wave-direction"> Dirección de las olas</label>
+                            </div>
+                            <div class="columna-filtro">
+                                <h3><i class="fas fa-water"></i> Mar de fondo</h3>
+                                <label><input type="checkbox" data-type="swell" checked> Altura del Mar de fondo</label>
+                                <label><input type="checkbox" data-type="swell-period"> Periodo del Mar de fondo</label>
+                                <label><input type="checkbox" data-type="swell-direction"> Dirección del Mar de fondo</label>
+                            </div>
+                            <div class="columna-filtro">
+                                <h3><i class="fas fa-sun"></i> Clima</h3>
+                                <label><input type="checkbox" data-type="temperature"> Temperatura</label>
+                                <label><input type="checkbox" data-type="apparent-temperature"> Sensación térmica</label>
+                                <label><input type="checkbox" data-type="weather-code"> Clima</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grafica">
+                        <canvas id="grafico-hourly"></canvas>
                     </div>
                 </div>
             </section>
