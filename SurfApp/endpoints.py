@@ -147,4 +147,29 @@ def get_current_weather_data(lat, lon):
             print(f"[Open-Meteo Current Weather] attempt={attempt+1} error: {exc}")
         if attempt == 0:
             time.sleep(0.5)
+
+    # Fallback a api.met.no (Yr.no) si Open-Meteo Forecast bloquea/limita la IP de Vercel
+    try:
+        met_url = f"https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={round(float(lat), 4)}&lon={round(float(lon), 4)}"
+        met_resp = requests.get(met_url, headers={"User-Agent": "SurfitosApp/1.0 github.com/XDavider/Surfitos"}, timeout=10)
+        if met_resp.status_code == 200:
+            ts = met_resp.json().get("properties", {}).get("timeseries", [])
+            if ts:
+                details = ts[0].get("data", {}).get("instant", {}).get("details", {})
+                next_1h = ts[0].get("data", {}).get("next_1_hours", {}).get("details", {})
+                wind_ms = details.get("wind_speed")
+                data = {
+                    "temperature_2m": details.get("air_temperature"),
+                    "apparent_temperature": details.get("air_temperature"),
+                    "wind_speed_10m": round(wind_ms * 3.6, 1) if wind_ms is not None else None,
+                    "wind_direction_10m": details.get("wind_from_direction"),
+                    "wind_gusts_10m": round(details.get("wind_speed_of_gust") * 3.6, 1) if details.get("wind_speed_of_gust") is not None else None,
+                    "cloud_cover": details.get("cloud_area_fraction"),
+                    "precipitation": next_1h.get("precipitation_amount", 0),
+                    "weather_code": 3 if (details.get("cloud_area_fraction") or 0) > 70 else (2 if (details.get("cloud_area_fraction") or 0) > 30 else 0),
+                }
+                cache.set(cache_key, data, 600)
+                return data
+    except requests.RequestException as exc:
+        print(f"[Met.no Current Weather] error: {exc}")
     return None
