@@ -56,11 +56,20 @@
                     </div>
                     <div class="stat-card">
                         <h3>Temperatura</h3>
-                        <p>{{ current_weather.temperature_2m|default:"--" }} °C · {{ weather_description }}</p>
+                        <p>{{ current_weather.temperature_2m|default:"--" }} °C</p>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Barra deslizable de 7 días -->
+        <nav class="day-selector-bar" aria-label="Selector de día de previsión">
+            {% for d in dias_disponibles %}
+                <a href="?dia={{ d.fecha_iso }}" class="day-pill {% if d.activo %}active{% endif %}">
+                    {{ d.label }}
+                </a>
+            {% endfor %}
+        </nav>
 
         <div class="contenido-scroll">
             <!-- Nivel de Surf recomendado -->
@@ -217,36 +226,6 @@
                         <span class="icon"><i class="fas fa-stopwatch"></i></span>
                         <h4>Periodo máx. del swell</h4>
                         <p>{{ marine_daily.swell_wave_period_max|default:"--" }} <span class="unit">s</span></p>
-                    </div>
-                </div>
-            </section>
-
-            <section class="section">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <i class="fas fa-cloud-sun"></i> Condiciones Meteorológicas
-                    </h2>
-                </div>
-                <div class="data-grid">
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-temperature-high"></i></span>
-                        <h4>Temperatura máxima</h4>
-                        <p>{{ weather_daily.temperature_max|default:"--" }} <span class="unit">°C</span></p>
-                    </div>
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-temperature-low"></i></span>
-                        <h4>Temperatura mínima</h4>
-                        <p>{{ weather_daily.temperature_min|default:"--" }} <span class="unit">°C</span></p>
-                    </div>
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-sun"></i></span>
-                        <h4>Salida del sol</h4>
-                        <p>{{ weather_daily.sunrise|time:"H:i"|default:"--" }}</p>
-                    </div>
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-moon"></i></span>
-                        <h4>Puesta de sol</h4>
-                        <p>{{ weather_daily.sunset|time:"H:i"|default:"--" }}</p>
                     </div>
                 </div>
             </section>

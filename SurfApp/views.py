@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 from django.utils.timezone import localtime
 from SurfApp.models import MarineDailyData, WeatherDailyData, WeatherHourlyData, MarineHourlyData
 from django.contrib.auth.decorators import login_required
@@ -108,27 +108,43 @@ def _calcular_nivel_surf(current_marine, current_weather):
 def dashboard_playa_view(request, playa_id):
     if not request.user.is_authenticated and not request.session.get('guest_mode'):
         return redirect('login')
-    playa = get_object_or_404(Playa, id=playa_id)  # Obtiene la instancia de la playa correspondiente al ID recibido por la URL
+    playa = get_object_or_404(Playa, id=playa_id)
     hoy = date.today()
 
-    # Datos diarios
-    marine_daily = MarineDailyData.objects.filter(playa=playa, fecha=hoy).first()
-    weather_daily = WeatherDailyData.objects.filter(playa=playa, fecha=hoy).first()
+    dia_param = request.GET.get('dia')
+    try:
+        selected_date = date.fromisoformat(dia_param) if dia_param else hoy
+    except ValueError:
+        selected_date = hoy
 
-    # Datos horarios de hoy
-    marine_hourly = MarineHourlyData.objects.filter(playa=playa, timestamp__date=date.today()).order_by('timestamp')
-    weather_hourly = WeatherHourlyData.objects.filter(playa=playa, timestamp__date=date.today()).order_by('timestamp')
-  
-    # Si faltan datos marinos o meteorológicos, los obtiene de la API por separado
+    # Si faltan datos para el día seleccionado, descarga los 7 días de Open-Meteo Marine
+    marine_daily = MarineDailyData.objects.filter(playa=playa, fecha=selected_date).first()
+    marine_hourly = MarineHourlyData.objects.filter(playa=playa, timestamp__date=selected_date).order_by('timestamp')
     if not marine_daily or not marine_hourly:
         fetch_and_save_marine_data(playa)
-        marine_daily = MarineDailyData.objects.filter(playa=playa, fecha=hoy).first()
-        marine_hourly = MarineHourlyData.objects.filter(playa=playa, timestamp__date=hoy).order_by('timestamp')
+        marine_daily = MarineDailyData.objects.filter(playa=playa, fecha=selected_date).first()
+        marine_hourly = MarineHourlyData.objects.filter(playa=playa, timestamp__date=selected_date).order_by('timestamp')
 
-    if not weather_daily or not weather_hourly:
+    weather_hourly = WeatherHourlyData.objects.filter(playa=playa, timestamp__date=selected_date).order_by('timestamp')
+    if selected_date == hoy and not weather_hourly:
         fetch_and_save_weather_data(playa)
-        weather_daily = WeatherDailyData.objects.filter(playa=playa, fecha=hoy).first()
-        weather_hourly = WeatherHourlyData.objects.filter(playa=playa, timestamp__date=hoy).order_by('timestamp')
+        weather_hourly = WeatherHourlyData.objects.filter(playa=playa, timestamp__date=selected_date).order_by('timestamp')
+
+    dias_semana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
+    dias_disponibles = []
+    for offset in range(7):
+        d = hoy + timedelta(days=offset)
+        if offset == 0:
+            label = 'Hoy'
+        elif offset == 1:
+            label = 'Mañana'
+        else:
+            label = f"{dias_semana[d.weekday()]} {d.day}"
+        dias_disponibles.append({
+            'fecha_iso': d.isoformat(),
+            'label': label,
+            'activo': d == selected_date,
+        })
     
 
     # Datos actuales
@@ -174,7 +190,8 @@ def dashboard_playa_view(request, playa_id):
         'current_weather': current_weather,
         'surf_levels': _calcular_nivel_surf(current_marine, current_weather),
         'marine_daily': marine_daily,
-        'weather_daily': weather_daily,
+        'dias_disponibles': dias_disponibles,
+        'selected_date': selected_date.isoformat(),
         'weather_description': weather_description,
         'marine_hourly': list(marine_hourly),
         'weather_hourly': list(weather_hourly),

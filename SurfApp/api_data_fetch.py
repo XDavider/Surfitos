@@ -21,7 +21,7 @@ def fetch_and_save_marine_data(playa):
         f"https://marine-api.open-meteo.com/v1/marine?latitude={lat}&longitude={lon}"
         f"&daily=wave_height_max,wave_direction_dominant,wave_period_max,swell_wave_height_max,swell_wave_direction_dominant,swell_wave_period_max"
         f"&hourly=wave_height,wave_direction,wave_period,swell_wave_height,swell_wave_direction,swell_wave_period"
-        f"&start_date={hoy}&end_date={hoy}"
+        f"&forecast_days=7"
     )
     response = None
     try:
