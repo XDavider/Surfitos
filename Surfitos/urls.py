@@ -32,8 +32,9 @@ urlpatterns = [
     # Ruta al panel de administración de Django
     path('admin/', admin.site.urls),
 
-    # Página de inicio: muestra el login
+    # Página de inicio: muestra el login y logout
     path('login/', views.login_view, name='login' ),
+    path('logout/', views.logout_view, name='logout' ),
 
     # Vista principal que lista las playas (requiere login)
     path('playas/', views.playas_index_view, name='playas' ),

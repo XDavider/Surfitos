@@ -163,6 +163,40 @@ button[type="submit"]:active {
     transform: translateY(0);
 }
 
+.guest-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 16px 0 12px;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+}
+
+.guest-divider::before,
+.guest-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--border-subtle);
+}
+
+.btn-guest {
+    width: 100%;
+    margin-top: 0 !important;
+    padding: 11px 16px !important;
+    background: rgba(6, 19, 31, 0.55) !important;
+    border: 1px solid var(--border-subtle) !important;
+    color: var(--text-secondary) !important;
+    font-size: 0.88rem !important;
+    font-weight: 500 !important;
+}
+
+.btn-guest:hover {
+    color: var(--text-primary) !important;
+    border-color: var(--border-accent) !important;
+    box-shadow: none !important;
+}
+
 .app-footer {
     text-align: center;
     padding-top: 20px;

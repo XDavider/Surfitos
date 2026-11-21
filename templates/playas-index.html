@@ -25,9 +25,15 @@
                     <p class="header-subtitle">Selecciona un spot para ver la previsión completa</p>
                 </div>
             </div>
-            <button type="button" class="btn-agregar-header" onclick="agregarPlaya()" aria-label="Agregar playa">
-                <i class="fas fa-plus"></i> Añadir playa
-            </button>
+            {% if not is_guest %}
+                <button type="button" class="btn-agregar-header" onclick="agregarPlaya()" aria-label="Agregar playa">
+                    <i class="fas fa-plus"></i> Añadir playa
+                </button>
+            {% else %}
+                <a href="{% url 'logout' %}" class="btn-agregar-header" style="text-decoration: none;">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+                </a>
+            {% endif %}
         </header>
 
         <div id="contenedor-playas">
@@ -49,9 +55,11 @@
                         <button type="button" class="boton boton-dashboard" onclick="verDashboard({{ playa.id }})" title="Ver panel de datos" aria-label="Ver panel de datos de {{ playa.nombre }}">
                             <i class="fas fa-chart-line"></i>
                         </button>
-                        <button type="button" class="boton boton-eliminar" onclick="eliminarPlaya('{{ playa.id }}', '{{ playa.nombre|escapejs }}')" title="Eliminar playa" aria-label="Eliminar {{ playa.nombre }}">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                        {% if not is_guest %}
+                            <button type="button" class="boton boton-eliminar" onclick="eliminarPlaya('{{ playa.id }}', '{{ playa.nombre|escapejs }}')" title="Eliminar playa" aria-label="Eliminar {{ playa.nombre }}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        {% endif %}
                     </div>
                 </div>
             {% empty %}

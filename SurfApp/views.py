@@ -3,7 +3,7 @@ from django.utils.timezone import localtime
 from SurfApp.models import MarineDailyData, WeatherDailyData, WeatherHourlyData, MarineHourlyData
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import Playa
 from .endpoints import get_current_marine_data, get_current_weather_data
@@ -16,9 +16,14 @@ from SurfApp.utils import decode_weather_code
 import json
 
 
-# Vista para el login del usuario
+# Vista para el login del usuario (y acceso como invitado en modo solo lectura)
 def login_view(request):
     if request.method == 'POST':
+        if request.POST.get('action') == 'guest':
+            logout(request)
+            request.session['guest_mode'] = True
+            return redirect('playas')
+
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
 
@@ -26,6 +31,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
+            request.session.pop('guest_mode', None)
             login(request, user)  # Inicia sesión al usuario
             return redirect('playas')  # Redirige a la página principal o a alguna vista protegida
         else:
@@ -35,16 +41,25 @@ def login_view(request):
     return render(request, 'login.html')
 
 
-# Vista principal que muestra la lista de playas
-@login_required
+def logout_view(request):
+    request.session.pop('guest_mode', None)
+    logout(request)
+    return redirect('login')
+
+
+# Vista principal que muestra la lista de playas (autenticado o invitado)
 def playas_index_view(request):
+    if not request.user.is_authenticated and not request.session.get('guest_mode'):
+        return redirect('login')
     playas = Playa.objects.all().order_by('nombre')  # Obtiene todas las playas ordenadas por nombre
-    return render(request, 'playas-index.html', {'playas': playas})  # Renderiza plantilla con contexto
+    is_guest = not request.user.is_authenticated
+    return render(request, 'playas-index.html', {'playas': playas, 'is_guest': is_guest})
 
 
 # Vista que muestra la información del API sobre la playa en forma de dashboard
-@login_required
 def dashboard_playa_view(request, playa_id):
+    if not request.user.is_authenticated and not request.session.get('guest_mode'):
+        return redirect('login')
     playa = get_object_or_404(Playa, id=playa_id)  # Obtiene la instancia de la playa correspondiente al ID recibido por la URL
     hoy = date.today()
 
