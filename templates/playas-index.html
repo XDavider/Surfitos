@@ -3,24 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surfitos - Gestión de Playas</title>
+    <title>Surfitos - Mis Playas</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'SurfApp/css/playas-styles.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-      <!-- CSS de Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
-    <!-- JavaScript de Leaflet -->
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1><i class="fas fa-water"></i> Mis Playas</h1>
-        </div>
-        
+        <header class="header">
+            <div class="header-brand">
+                <div class="brand-badge">
+                    <i class="fas fa-water"></i>
+                </div>
+                <div>
+                    <h1>Mis Playas</h1>
+                    <p class="header-subtitle">Selecciona un spot para ver la previsión completa</p>
+                </div>
+            </div>
+        </header>
+
         <div id="contenedor-playas">
             {% for playa in playas %}
                 <div class="playa" data-id="{{ playa.id }}">
@@ -29,19 +35,18 @@
                             <span class="nombre-playa">{{ playa.nombre }}</span>
                         </div>
                         <span class="fecha">
-                            <i class="fas fa-map-marker-alt"></i> {{ playa.lugar }} 
-                            <br>
-                            <i class="fas fa-location-dot"></i> {{ playa.latitud|floatformat:5 }}, {{ playa.longitud|floatformat:5 }}
+                            <span><i class="fas fa-map-marker-alt"></i> {{ playa.lugar }}</span>
+                            <span><i class="fas fa-location-dot"></i> {{ playa.latitud|floatformat:5 }}, {{ playa.longitud|floatformat:5 }}</span>
                         </span>
                     </div>
                     <div class="acciones">
-                        <button class="boton boton-mapa" onclick="verEnMapa({{ playa.latitud }}, {{ playa.longitud }}, '{{ playa.nombre|escapejs }}', '{{ playa.lugar|escapejs }}')" title="Ver en mapa">
+                        <button type="button" class="boton boton-mapa" onclick="verEnMapa({{ playa.latitud }}, {{ playa.longitud }}, '{{ playa.nombre|escapejs }}', '{{ playa.lugar|escapejs }}')" title="Ver en mapa" aria-label="Ver {{ playa.nombre }} en mapa">
                             <i class="fas fa-map-pin"></i>
                         </button>
-                        <button class="boton boton-dashboard" onclick="verDashboard({{ playa.id }})" title="Ver panel de datos">
+                        <button type="button" class="boton boton-dashboard" onclick="verDashboard({{ playa.id }})" title="Ver panel de datos" aria-label="Ver panel de datos de {{ playa.nombre }}">
                             <i class="fas fa-chart-line"></i>
                         </button>
-                        <button class="boton boton-eliminar" onclick="eliminarPlaya('{{ playa.id }}')" title="Eliminar playa">
+                        <button type="button" class="boton boton-eliminar" onclick="eliminarPlaya('{{ playa.id }}', '{{ playa.nombre|escapejs }}')" title="Eliminar playa" aria-label="Eliminar {{ playa.nombre }}">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -55,44 +60,82 @@
             {% endfor %}
         </div>
     </div>
-    
+
     <!-- Botón flotante para agregar playas -->
     <button type="button" class="agregar" onclick="agregarPlaya()" aria-label="Agregar playa" title="Agregar playa">
         <i class="fas fa-plus"></i>
     </button>
-    
+
     <!-- Modal para agregar playas -->
-    <div id="modalAgregar" class="modal">
+    <div id="modalAgregar" class="modal" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-agregar">
         <div class="modal-content">
             <div class="modal-header">
-                <h3><i class="fas fa-umbrella-beach"></i> Agregar Playa</h3>
+                <h3 id="titulo-modal-agregar"><i class="fas fa-umbrella-beach"></i> Agregar Playa</h3>
+                <button type="button" class="modal-close" onclick="cerrarModal()" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <input type="text" id="inputNombre" placeholder="Nombre de la playa">
-            <input type="text" id="inputLugar" placeholder="Ciudad / Localidad">
+            <input type="text" id="inputNombre" placeholder="Nombre de la playa (ej. Playa de Razo)">
+            <input type="text" id="inputLugar" placeholder="Ciudad / Localidad (ej. Carballo)">
             <div class="modal-buttons">
-                <button class="btn cancelar" onclick="cerrarModal()">Cancelar</button>
-                <button class="btn guardar" onclick="enviarNuevaPlaya()">Guardar</button>
+                <button type="button" class="btn cancelar" onclick="cerrarModal()">Cancelar</button>
+                <button type="button" class="btn guardar" onclick="enviarNuevaPlaya()">Guardar</button>
             </div>
         </div>
     </div>
-    
+
+    <!-- Modal de confirmación para eliminar playa -->
+    <div id="modalEliminar" class="modal" role="dialog" aria-modal="true" aria-labelledby="titulo-modal-eliminar">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="titulo-modal-eliminar"><i class="fas fa-trash-alt"></i> Eliminar Playa</h3>
+                <button type="button" class="modal-close" onclick="cerrarModalEliminar()" aria-label="Cerrar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <p id="texto-confirmar-eliminar" class="modal-description">
+                ¿Seguro que quieres eliminar esta playa? Esta acción no se puede deshacer.
+            </p>
+            <div class="modal-buttons">
+                <button type="button" class="btn cancelar" onclick="cerrarModalEliminar()">Cancelar</button>
+                <button type="button" id="btnConfirmarEliminar" class="btn eliminar" onclick="confirmarEliminarPlaya()">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal para mostrar el mapa -->
-    <div id="modalMapa" class="modal">
+    <div id="modalMapa" class="modal" role="dialog" aria-modal="true" aria-labelledby="mapa-titulo">
         <div class="modal-content mapa-content">
             <div class="modal-header">
                 <h3 id="mapa-titulo"></h3>
-                <button class="modal-close" onclick="cerrarModalMapa()">
+                <button type="button" class="modal-close" onclick="cerrarModalMapa()" aria-label="Cerrar mapa">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div id="mapa-view" style="height: 400px; width: 100%;"></div>
         </div>
     </div>
-    
+
     <!-- Notificación Toast -->
     <div id="toast" class="toast">Playa guardada correctamente</div>
-    
-    {% load static %}
+
+    <footer class="app-footer">
+        <div class="footer-content">
+            <span>Creado por <strong>XDavider</strong> · Proyecto Surfitos</span>
+            <div class="social-links">
+                <a class="social-link" href="https://github.com/XDavider/Surfitos" target="_blank" rel="noopener noreferrer" aria-label="Repositorio en GitHub" title="Repositorio en GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a class="social-link" href="#" aria-label="LinkedIn" title="LinkedIn (pendiente de enlace)">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a class="social-link" href="#" aria-label="Instagram" title="Instagram (pendiente de enlace)">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
     <script src="{% static 'SurfApp/js/playas.js' %}"></script>
 </body>
 </html>

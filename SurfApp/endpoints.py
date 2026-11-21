@@ -1,4 +1,5 @@
 import requests
+from django.core.cache import cache
 from django.http import JsonResponse
 from geopy.geocoders import Nominatim
 from .models import Playa
@@ -81,8 +82,13 @@ def eliminar_playa(request, playa_id):
 
 
 # === Datos Actuales del API MARINE ===
-# Llama al endpoint de Open-Meteo MARINE para obtener condiciones actuales del mar
+# Llama al endpoint de Open-Meteo MARINE con caché de 10 minutos para reducir llamadas
 def get_current_marine_data(lat, lon):
+    cache_key = f"current_marine_{round(float(lat), 4)}_{round(float(lon), 4)}"
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return cached
+
     url = (
         f"https://marine-api.open-meteo.com/v1/marine"
         f"?latitude={lat}&longitude={lon}"
@@ -92,17 +98,25 @@ def get_current_marine_data(lat, lon):
     try:
         response = requests.get(url, headers={"User-Agent": "SurfitosApp/1.0"}, timeout=10)
     except requests.RequestException as exc:
-        print(f"[Open-Meteo Current Weather] request error: {exc}")
+        print(f"[Open-Meteo Current Marine] request error: {exc}")
         return None
     if response.status_code == 200:
-        return response.json().get("current", {})
-    print(f"[Open-Meteo Current Weather] status={response.status_code} body={response.text[:200]}")
+        data = response.json().get("current", {})
+        if data:
+            cache.set(cache_key, data, 600)
+        return data
+    print(f"[Open-Meteo Current Marine] status={response.status_code} body={response.text[:200]}")
     return None
 
 
 # === Datos Actuales del API WEATHER ===
-# Llama al endpoint de Open-Meteo FORECAST para obtener condiciones meteorológicas actuales
+# Llama al endpoint de Open-Meteo FORECAST con caché de 10 minutos para reducir llamadas
 def get_current_weather_data(lat, lon):
+    cache_key = f"current_weather_{round(float(lat), 4)}_{round(float(lon), 4)}"
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return cached
+
     url = (
         f"https://api.open-meteo.com/v1/forecast"
         f"?latitude={lat}&longitude={lon}"
@@ -115,6 +129,9 @@ def get_current_weather_data(lat, lon):
         print(f"[Open-Meteo Current Weather] request error: {exc}")
         return None
     if response.status_code == 200:
-        return response.json().get("current", {})
+        data = response.json().get("current", {})
+        if data:
+            cache.set(cache_key, data, 600)
+        return data
     print(f"[Open-Meteo Current Weather] status={response.status_code} body={response.text[:200]}")
     return None

@@ -26,33 +26,50 @@ function cerrarModal() {    document.getElementById("modalAgregar").classList.re
     document.getElementById("inputLugar").value = '';
 }
 
-// Elimina una playa de la base de datos usando su ID
-function eliminarPlaya(id) {
-    // Evita la propagación del evento
-    event.stopPropagation();
-    
-    // Confirma con el usuario antes de eliminar
-    if (!confirm("¿Estás seguro de que quieres eliminar esta playa?")) return;
+let playaIdAEliminar = null;
 
-    // Realiza una solicitud DELETE al backend
+// Abre el modal propio de confirmación para eliminar una playa
+function eliminarPlaya(id, nombre = '') {
+    if (window.event) {
+        window.event.stopPropagation();
+    }
+    playaIdAEliminar = id;
+    const texto = document.getElementById('texto-confirmar-eliminar');
+    if (texto) {
+        texto.textContent = nombre
+            ? `¿Seguro que quieres eliminar "${nombre}"? Esta acción no se puede deshacer.`
+            : '¿Seguro que quieres eliminar esta playa? Esta acción no se puede deshacer.';
+    }
+    document.getElementById('modalEliminar').classList.add('show');
+}
+
+function cerrarModalEliminar() {
+    playaIdAEliminar = null;
+    document.getElementById('modalEliminar').classList.remove('show');
+}
+
+// Ejecuta la eliminación tras confirmar en el modal propio
+function confirmarEliminarPlaya() {
+    if (!playaIdAEliminar) return;
+    const id = playaIdAEliminar;
+
     fetch(`/api/eliminar-playa/${id}`, {
         method: 'DELETE',
         headers: {
-            'X-CSRFToken': getCookie('csrftoken') // Token CSRF para protección Django
+            'X-CSRFToken': getCookie('csrftoken')
         }
     })
     .then(res => res.json())
     .then(data => {
+        cerrarModalEliminar();
         if (data.ok) {
             showToast("Playa eliminada correctamente");
-              // Elimina la tarjeta con animación en lugar de recargar
             const card = document.querySelector(`.playa[data-id="${id}"]`);
             if (card) {
                 card.style.opacity = '0';
-                card.style.transform = 'scale(0.8)';
+                card.style.transform = 'scale(0.95)';
                 setTimeout(() => {
                     card.remove();
-                    // Check if there are no more beaches
                     if (document.querySelectorAll('.playa').length === 0) {
                         const emptyState = document.createElement('div');
                         emptyState.className = 'empty-state';
@@ -69,7 +86,10 @@ function eliminarPlaya(id) {
             showToast("Error: " + data.error, true);
         }
     })
-    .catch(() => showToast("Error al conectar con el servidor", true));
+    .catch(() => {
+        cerrarModalEliminar();
+        showToast("Error al conectar con el servidor", true);
+    });
 }
 
 // Abre un mapa con Leaflet en un modal para mostrar la ubicación de la playa
