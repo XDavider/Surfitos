@@ -17,6 +17,7 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.http import HttpResponse
 from django.urls import path
 from django.shortcuts import redirect
 from SurfApp import views
@@ -26,6 +27,7 @@ from SurfApp import endpoints  # ← nuevo
 urlpatterns = [
 
     path('', lambda request: redirect('playas')),
+    path('favicon.ico', lambda request: HttpResponse(status=204)),
 
     # Ruta al panel de administración de Django
     path('admin/', admin.site.urls),

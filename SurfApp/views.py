@@ -69,6 +69,14 @@ def dashboard_playa_view(request, playa_id):
     # Datos actuales
     current_marine = get_current_marine_data(playa.latitud, playa.longitud)
     current_weather = get_current_weather_data(playa.latitud, playa.longitud)
+    if not current_weather and weather_hourly.exists():
+        current_hour = localtime().hour
+        fallback = min(weather_hourly, key=lambda d: abs(localtime(d.timestamp).hour - current_hour))
+        current_weather = {
+            "temperature_2m": fallback.temperature,
+            "apparent_temperature": fallback.apparent_temperature,
+            "weather_code": fallback.weather_code,
+        }
     weather_description = decode_weather_code(current_weather.get("weather_code")) if current_weather else "N/D"
 
     # Formatea los datos para el frontend

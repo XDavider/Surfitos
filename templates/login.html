@@ -26,10 +26,10 @@
         <form method="POST">
             {% csrf_token %}
             <div class="input-group">
-                <input type="text" name="username" placeholder="Usuario" required>
+                <input type="text" name="username" placeholder="Usuario" autocomplete="username" required>
             </div>
             <div class="input-group">
-                <input type="password" name="password" placeholder="Contraseña" required>
+                <input type="password" name="password" placeholder="Contraseña" autocomplete="current-password" required>
             </div>
             <button type="submit">
                 <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
