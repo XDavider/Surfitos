@@ -1,6 +1,6 @@
 import requests
 import pytz
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from django.utils.timezone import make_aware
 from .models import (
     MarineDailyData, MarineHourlyData,
@@ -10,18 +10,17 @@ from .models import (
 # === Función para guardar datos de Marine ===
 # Esta función obtiene datos marinos de una playa específica y los guarda en la base de datos.
 # Se utiliza la API de Open Meteo para obtener datos como altura de olas, dirección de olas, etc.
-def fetch_and_save_marine_data(playa):
-    # Obtener la fecha actual
+def fetch_and_save_marine_data(playa, start_date=None, end_date=None):
     hoy = datetime.now().date()
-    # Formatear la fecha como cadena
-    hoy = hoy.isoformat()
+    start_str = (start_date or hoy).isoformat()
+    end_str = (end_date or (hoy + timedelta(days=6))).isoformat()
     lat = playa.latitud
     lon = playa.longitud
     url = (
         f"https://marine-api.open-meteo.com/v1/marine?latitude={lat}&longitude={lon}"
         f"&daily=wave_height_max,wave_direction_dominant,wave_period_max,swell_wave_height_max,swell_wave_direction_dominant,swell_wave_period_max"
         f"&hourly=wave_height,wave_direction,wave_period,swell_wave_height,swell_wave_direction,swell_wave_period"
-        f"&forecast_days=7"
+        f"&start_date={start_str}&end_date={end_str}"
     )
     response = None
     try:
