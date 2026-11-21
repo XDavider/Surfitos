@@ -23,13 +23,61 @@ def fetch_and_save_marine_data(playa):
         f"&hourly=wave_height,wave_direction,wave_period,swell_wave_height,swell_wave_direction,swell_wave_period"
         f"&start_date={hoy}&end_date={hoy}"
     )
+    response = None
     try:
-        response = requests.get(url, headers={"User-Agent": "SurfitosApp/1.0"}, timeout=10)
-    except requests.RequestException as exc:
-        print(f"[Open-Meteo Weather] request error: {exc}")
-        return
-    if response.status_code != 200:
-        print(f"[Open-Meteo Weather] status={response.status_code} body={response.text[:200]}")
+        resp = requests.get(url, headers={"User-Agent": "SurfitosApp/1.0"}, timeout=10)
+        if resp.status_code == 200:
+            response = resp
+    except requests.RequestException:
+        pass
+
+    if response is None:
+        # Fallback a api.met.no (Yr.no) para rellenar WeatherDailyData y WeatherHourlyData
+        try:
+            met_url = f"https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={round(float(lat), 4)}&lon={round(float(lon), 4)}"
+            met_resp = requests.get(met_url, headers={"User-Agent": "SurfitosApp/1.0 github.com/XDavider/Surfitos"}, timeout=10)
+            if met_resp.status_code != 200:
+                return
+            ts_list = met_resp.json().get("properties", {}).get("timeseries", [])
+            hoy_date = datetime.now().date()
+            temps = []
+            hourly_objs = []
+            for entry in ts_list:
+                dt = datetime.fromisoformat(entry["time"].replace("Z", "+00:00"))
+                if dt.date() != hoy_date:
+                    continue
+                details = entry.get("data", {}).get("instant", {}).get("details", {})
+                temp = details.get("air_temperature")
+                clouds = details.get("cloud_area_fraction") or 0
+                if temp is not None:
+                    temps.append(temp)
+                    hourly_objs.append(
+                        WeatherHourlyData(
+                            playa=playa,
+                            timestamp=dt,
+                            temperature=temp,
+                            apparent_temperature=temp,
+                            weather_code=3 if clouds > 70 else (2 if clouds > 30 else 0),
+                        )
+                    )
+            if temps:
+                WeatherDailyData.objects.update_or_create(
+                    playa=playa,
+                    fecha=hoy_date,
+                    defaults={
+                        'temperature_max': max(temps),
+                        'temperature_min': min(temps),
+                    }
+                )
+            if hourly_objs:
+                WeatherHourlyData.objects.bulk_create(
+                    hourly_objs,
+                    update_conflicts=True,
+                    unique_fields=['playa', 'timestamp'],
+                    update_fields=['temperature', 'apparent_temperature', 'weather_code'],
+                )
+        except Exception as exc:
+            print(f"[Met.no Weather Fallback] error: {exc}")
         return
 
     data = response.json()
@@ -101,13 +149,61 @@ def fetch_and_save_weather_data(playa):
         f"&hourly=temperature_2m,apparent_temperature,weather_code"
         f"&start_date={hoy}&end_date={hoy}"
     )
+    response = None
     try:
-        response = requests.get(url, headers={"User-Agent": "SurfitosApp/1.0"}, timeout=10)
-    except requests.RequestException as exc:
-        print(f"[Open-Meteo Weather] request error: {exc}")
-        return
-    if response.status_code != 200:
-        print(f"[Open-Meteo Weather] status={response.status_code} body={response.text[:200]}")
+        resp = requests.get(url, headers={"User-Agent": "SurfitosApp/1.0"}, timeout=10)
+        if resp.status_code == 200:
+            response = resp
+    except requests.RequestException:
+        pass
+
+    if response is None:
+        # Fallback a api.met.no (Yr.no) para rellenar WeatherDailyData y WeatherHourlyData
+        try:
+            met_url = f"https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={round(float(lat), 4)}&lon={round(float(lon), 4)}"
+            met_resp = requests.get(met_url, headers={"User-Agent": "SurfitosApp/1.0 github.com/XDavider/Surfitos"}, timeout=10)
+            if met_resp.status_code != 200:
+                return
+            ts_list = met_resp.json().get("properties", {}).get("timeseries", [])
+            hoy_date = datetime.now().date()
+            temps = []
+            hourly_objs = []
+            for entry in ts_list:
+                dt = datetime.fromisoformat(entry["time"].replace("Z", "+00:00"))
+                if dt.date() != hoy_date:
+                    continue
+                details = entry.get("data", {}).get("instant", {}).get("details", {})
+                temp = details.get("air_temperature")
+                clouds = details.get("cloud_area_fraction") or 0
+                if temp is not None:
+                    temps.append(temp)
+                    hourly_objs.append(
+                        WeatherHourlyData(
+                            playa=playa,
+                            timestamp=dt,
+                            temperature=temp,
+                            apparent_temperature=temp,
+                            weather_code=3 if clouds > 70 else (2 if clouds > 30 else 0),
+                        )
+                    )
+            if temps:
+                WeatherDailyData.objects.update_or_create(
+                    playa=playa,
+                    fecha=hoy_date,
+                    defaults={
+                        'temperature_max': max(temps),
+                        'temperature_min': min(temps),
+                    }
+                )
+            if hourly_objs:
+                WeatherHourlyData.objects.bulk_create(
+                    hourly_objs,
+                    update_conflicts=True,
+                    unique_fields=['playa', 'timestamp'],
+                    update_fields=['temperature', 'apparent_temperature', 'weather_code'],
+                )
+        except Exception as exc:
+            print(f"[Met.no Weather Fallback] error: {exc}")
         return
     
     # Procesar la respuesta

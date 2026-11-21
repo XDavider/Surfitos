@@ -56,6 +56,54 @@ def playas_index_view(request):
     return render(request, 'playas-index.html', {'playas': playas, 'is_guest': is_guest})
 
 
+def _calcular_nivel_surf(current_marine, current_weather):
+    """Calcula una puntuación de 1 a 5 estrellas por nivel según olas, periodo y viento."""
+    wave = (current_marine or {}).get("wave_height")
+    period = (current_marine or {}).get("wave_period") or 0
+    wind = (current_weather or {}).get("wind_speed_10m")
+
+    if wave is None:
+        return [
+            {"nivel": "Principiante", "stars": 0, "nota": "Sin datos"},
+            {"nivel": "Intermedio", "stars": 0, "nota": "Sin datos"},
+            {"nivel": "Profesional", "stars": 0, "nota": "Sin datos"},
+        ]
+
+    wind_val = wind if wind is not None else 15
+
+    # Principiante: olas suaves (0.4 - 1.3 m) y poco viento
+    if 0.4 <= wave <= 1.2 and wind_val <= 18:
+        s_beg, n_beg = 5, "Condiciones ideales"
+    elif wave <= 1.6 and wind_val <= 25:
+        s_beg, n_beg = 3, "Aceptable con precaución"
+    elif wave > 2.0 or wind_val > 35:
+        s_beg, n_beg = 1, "Demasiado fuerte"
+    else:
+        s_beg, n_beg = 2, "Algo exigente"
+
+    # Intermedio: olas medianas (0.9 - 2.3 m), buen periodo
+    if 0.9 <= wave <= 2.3 and period >= 8 and wind_val <= 25:
+        s_int, n_int = 5, "Muy buenas condiciones"
+    elif 0.6 <= wave <= 2.8 and wind_val <= 35:
+        s_int, n_int = 3, "Surfeable"
+    else:
+        s_int, n_int = 2, "Condiciones difíciles"
+
+    # Profesional: tamaño (>= 1.6 m) y periodo largo
+    if wave >= 1.8 and period >= 9 and wind_val <= 35:
+        s_pro, n_pro = 5, "Potente y limpio"
+    elif wave >= 1.2 and wind_val <= 45:
+        s_pro, n_pro = 3, "Divertido"
+    else:
+        s_pro, n_pro = 2, "Pequeño o muy pasado"
+
+    return [
+        {"nivel": "Principiante", "stars": s_beg, "nota": n_beg},
+        {"nivel": "Intermedio", "stars": s_int, "nota": n_int},
+        {"nivel": "Profesional", "stars": s_pro, "nota": n_pro},
+    ]
+
+
 # Vista que muestra la información del API sobre la playa en forma de dashboard
 def dashboard_playa_view(request, playa_id):
     if not request.user.is_authenticated and not request.session.get('guest_mode'):
@@ -124,6 +172,7 @@ def dashboard_playa_view(request, playa_id):
         'playa': playa,
         'current_marine': current_marine,
         'current_weather': current_weather,
+        'surf_levels': _calcular_nivel_surf(current_marine, current_weather),
         'marine_daily': marine_daily,
         'weather_daily': weather_daily,
         'weather_description': weather_description,

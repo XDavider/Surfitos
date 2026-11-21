@@ -63,7 +63,33 @@
         </div>
 
         <div class="contenido-scroll">
-            <!-- Condiciones Actuales (Prioridad: Olas y Viento) -->
+            <!-- Nivel de Surf recomendado -->
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-star"></i> Condiciones por Nivel de Surf
+                    </h2>
+                </div>
+                <div class="surf-levels-grid">
+                    {% for item in surf_levels %}
+                        <div class="level-card">
+                            <h4>{{ item.nivel }}</h4>
+                            <div class="stars" aria-label="{{ item.stars }} de 5 estrellas">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= item.stars %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star star-empty"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <p class="level-note">{{ item.nota }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <!-- Condiciones Actuales en formato tabla -->
             <section class="section">
                 <div class="section-header">
                     <h2 class="section-title">
@@ -71,79 +97,38 @@
                     </h2>
                 </div>
 
-                <div class="data-grid">
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-water"></i></span>
-                        <h4>Altura de ola</h4>
-                        <p>{{ current_marine.wave_height|default:"--" }} <span class="unit">m</span></p>
-                    </div>
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-sync-alt"></i></span>
-                        <h4>Periodo de ola</h4>
-                        <p>{{ current_marine.wave_period|default:"--" }} <span class="unit">s</span></p>
-                    </div>
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-compass"></i></span>
-                        <h4>Dirección de ola</h4>
-                        <p>
-                            {{ current_marine.wave_direction|default:"--" }}°
-                            <i class="fas fa-long-arrow-alt-down" data-rotate="{{ current_marine.wave_direction|default:'0' }}"></i>
-                        </p>
-                    </div>
-
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-water"></i></span>
-                        <h4>Altura del swell</h4>
-                        <p>{{ current_marine.swell_wave_height|default:"--" }} <span class="unit">m</span></p>
-                    </div>
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-sync-alt"></i></span>
-                        <h4>Periodo del swell</h4>
-                        <p>{{ current_marine.swell_wave_period|default:"--" }} <span class="unit">s</span></p>
-                    </div>
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-compass"></i></span>
-                        <h4>Dirección del swell</h4>
-                        <p>
-                            {{ current_marine.swell_wave_direction|default:"--" }}°
-                            <i class="fas fa-long-arrow-alt-down" data-rotate="{{ current_marine.swell_wave_direction|default:'0' }}"></i>
-                        </p>
-                    </div>
-
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-wind"></i></span>
-                        <h4>Velocidad del viento</h4>
-                        <p>{{ current_weather.wind_speed_10m|default:"--" }} <span class="unit">km/h</span></p>
-                    </div>
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-wind"></i></span>
-                        <h4>Rachas de viento</h4>
-                        <p>{{ current_weather.wind_gusts_10m|default:"--" }} <span class="unit">km/h</span></p>
-                    </div>
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-compass"></i></span>
-                        <h4>Dirección del viento</h4>
-                        <p>
-                            {{ current_weather.wind_direction_10m|default:"--" }}°
-                            <i class="fas fa-long-arrow-alt-down" data-rotate="{{ current_weather.wind_direction_10m|default:'0' }}"></i>
-                        </p>
-                    </div>
-
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-temperature-high"></i></span>
-                        <h4>Temp. del agua</h4>
-                        <p>{{ current_marine.sea_surface_temperature|default:"--" }} <span class="unit">°C</span></p>
-                    </div>
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-cloud-rain"></i></span>
-                        <h4>Precipitación</h4>
-                        <p>{{ current_weather.precipitation|default:"0" }} <span class="unit">mm</span></p>
-                    </div>
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-cloud"></i></span>
-                        <h4>Nubosidad</h4>
-                        <p>{{ current_weather.cloud_cover|default:"--" }} <span class="unit">%</span></p>
-                    </div>
+                <div class="surf-table-wrap">
+                    <table class="surf-table">
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Valor actual</th>
+                                <th>Detalle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="metric-label"><i class="fas fa-water"></i> Olas</span></td>
+                                <td>{{ current_marine.wave_height|default:"--" }} m</td>
+                                <td>Periodo {{ current_marine.wave_period|default:"--" }} s · Dir. {{ current_marine.wave_direction|default:"--" }}° <i class="fas fa-long-arrow-alt-down" data-rotate="{{ current_marine.wave_direction|default:'0' }}"></i></td>
+                            </tr>
+                            <tr>
+                                <td><span class="metric-label"><i class="fas fa-water"></i> Mar de fondo (Swell)</span></td>
+                                <td>{{ current_marine.swell_wave_height|default:"--" }} m</td>
+                                <td>Periodo {{ current_marine.swell_wave_period|default:"--" }} s · Dir. {{ current_marine.swell_wave_direction|default:"--" }}° <i class="fas fa-long-arrow-alt-down" data-rotate="{{ current_marine.swell_wave_direction|default:'0' }}"></i></td>
+                            </tr>
+                            <tr>
+                                <td><span class="metric-label"><i class="fas fa-wind"></i> Viento</span></td>
+                                <td>{{ current_weather.wind_speed_10m|default:"--" }} km/h</td>
+                                <td>Dirección {{ current_weather.wind_direction_10m|default:"--" }}° <i class="fas fa-long-arrow-alt-down" data-rotate="{{ current_weather.wind_direction_10m|default:'0' }}"></i></td>
+                            </tr>
+                            <tr>
+                                <td><span class="metric-label"><i class="fas fa-temperature-high"></i> Agua y Clima</span></td>
+                                <td>{{ current_marine.sea_surface_temperature|default:"--" }} °C (agua)</td>
+                                <td>Lluvia {{ current_weather.precipitation|default:"0" }} mm · Nubes {{ current_weather.cloud_cover|default:"--" }}%</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </section>
 

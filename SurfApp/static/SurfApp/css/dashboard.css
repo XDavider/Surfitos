@@ -408,7 +408,97 @@ body {
     transform: translateY(-2px);
 }
 
+/* Nivel de Surf (estrellas) */
+.surf-levels-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.level-card {
+    background: rgba(6, 19, 31, 0.65);
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
+    padding: 14px 16px;
+}
+
+.level-card h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+.stars {
+    color: #fbbf24;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+}
+
+.stars .star-empty {
+    color: rgba(148, 163, 184, 0.3);
+}
+
+.level-note {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+/* Tablas limpias de datos */
+.surf-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.surf-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+}
+
+.surf-table th,
+.surf-table td {
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.surf-table th {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+}
+
+.surf-table td {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.surf-table tr:last-child td {
+    border-bottom: none;
+}
+
+.surf-table .metric-label {
+    color: var(--text-secondary);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.surf-table .metric-label i {
+    color: var(--accent);
+    width: 16px;
+    text-align: center;
+}
+
 @media (max-width: 768px) {
+    .surf-levels-grid {
+        grid-template-columns: 1fr;
+    }
     .dashboard-container {
         padding: 16px 12px 28px;
     }
