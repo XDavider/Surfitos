@@ -25,7 +25,7 @@
         <button type="button" class="back-button" onclick="window.location.href='/playas/'">
             <i class="fas fa-arrow-left"></i> Volver
         </button>
-        <h1><img src="{% static 'SurfApp/img/surfitos-logo.png' %}" alt="Surfitos" style="width: 28px; height: 28px; object-fit: contain;"> Surfitos</h1>
+        <h1><img src="{% static 'SurfApp/img/surfitos-logo.png' %}" alt="Surfitos" style="width: 36px; height: 36px; object-fit: contain;"> Surfitos</h1>
     </nav>
 
     <div class="dashboard-container">
@@ -66,9 +66,9 @@
         <!-- Barra deslizable de 7 días -->
         <nav class="day-selector-bar" aria-label="Selector de día de previsión">
             {% for d in dias_disponibles %}
-                <a href="?dia={{ d.fecha_iso }}" class="day-pill {% if d.activo %}active{% endif %}">
+                <button type="button" class="day-pill {% if d.activo %}active{% endif %}" data-date="{{ d.fecha_iso }}">
                     {{ d.label }}
-                </a>
+                </button>
             {% endfor %}
         </nav>
 
@@ -195,12 +195,12 @@
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-arrows-alt-v"></i></span>
                         <h4>Altura máx. de ola</h4>
-                        <p>{{ marine_daily.wave_height_max|default:"--" }} <span class="unit">m</span></p>
+                        <p id="daily-wave-max">{{ marine_daily.wave_height_max|default:"--" }} <span class="unit">m</span></p>
                     </div>
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-compass"></i></span>
                         <h4>Dirección dominante</h4>
-                        <p>
+                        <p id="daily-wave-dir">
                             {{ marine_daily.wave_direction_dominant|default:"--" }}°
                             <i class="fas fa-long-arrow-alt-down" data-rotate="{{ marine_daily.wave_direction_dominant|default:0 }}"></i>
                         </p>
@@ -208,17 +208,17 @@
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-stopwatch"></i></span>
                         <h4>Periodo máx. de ola</h4>
-                        <p>{{ marine_daily.wave_period_max|default:"--" }} <span class="unit">s</span></p>
+                        <p id="daily-wave-period">{{ marine_daily.wave_period_max|default:"--" }} <span class="unit">s</span></p>
                     </div>
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-water"></i></span>
                         <h4>Altura máx. del swell</h4>
-                        <p>{{ marine_daily.swell_wave_height_max|default:"--" }} <span class="unit">m</span></p>
+                        <p id="daily-swell-max">{{ marine_daily.swell_wave_height_max|default:"--" }} <span class="unit">m</span></p>
                     </div>
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-compass"></i></span>
                         <h4>Dirección del swell</h4>
-                        <p>
+                        <p id="daily-swell-dir">
                             {{ marine_daily.swell_wave_direction_dominant|default:"--" }}°
                             <i class="fas fa-long-arrow-alt-down" data-rotate="{{ marine_daily.swell_wave_direction_dominant|default:0 }}"></i>
                         </p>
@@ -226,7 +226,7 @@
                     <div class="data-card">
                         <span class="icon"><i class="fas fa-stopwatch"></i></span>
                         <h4>Periodo máx. del swell</h4>
-                        <p>{{ marine_daily.swell_wave_period_max|default:"--" }} <span class="unit">s</span></p>
+                        <p id="daily-swell-period">{{ marine_daily.swell_wave_period_max|default:"--" }} <span class="unit">s</span></p>
                     </div>
                 </div>
             </section>
@@ -270,6 +270,9 @@
     </script>
     <script id="weather-data" type="application/json">
         {{ weather_hourly_json|safe }}
+    </script>
+    <script id="week-data" type="application/json">
+        {{ week_data_json|safe }}
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {

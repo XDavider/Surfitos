@@ -226,6 +226,37 @@ def dashboard_playa_view(request, playa_id):
         for d in weather_hourly
     ])
 
+    # Prepara los 7 días completos en JSON para cambiar de día al instante en el navegador
+    week_daily = MarineDailyData.objects.filter(playa=playa, fecha__gte=hoy, fecha__lte=fin_semana)
+    week_hourly = MarineHourlyData.objects.filter(
+        playa=playa, timestamp__date__gte=hoy, timestamp__date__lte=fin_semana
+    ).order_by('timestamp')
+
+    daily_by_date = {
+        d.fecha.isoformat(): {
+            "wave_height_max": d.wave_height_max,
+            "wave_direction_dominant": d.wave_direction_dominant,
+            "wave_period_max": d.wave_period_max,
+            "swell_wave_height_max": d.swell_wave_height_max,
+            "swell_wave_direction_dominant": d.swell_wave_direction_dominant,
+            "swell_wave_period_max": d.swell_wave_period_max,
+        }
+        for d in week_daily
+    }
+    hourly_by_date = {}
+    for d in week_hourly:
+        key = localtime(d.timestamp).date().isoformat()
+        hourly_by_date.setdefault(key, []).append({
+            "time": localtime(d.timestamp).strftime('%H:%M'),
+            "wave_height": d.wave_height,
+            "wave_period": d.wave_period,
+            "wave_direction": d.wave_direction,
+            "swell_wave_height": d.swell_wave_height,
+            "swell_wave_period": d.swell_wave_period,
+            "swell_wave_direction": d.swell_wave_direction,
+        })
+    week_data_json = json.dumps({"daily": daily_by_date, "hourly": hourly_by_date})
+
     context = {
         'playa': playa,
         'current_marine': current_marine,
@@ -234,6 +265,7 @@ def dashboard_playa_view(request, playa_id):
         'marine_daily': marine_daily,
         'dias_disponibles': dias_disponibles,
         'selected_date': selected_date.isoformat(),
+        'week_data_json': week_data_json,
         'weather_description': weather_description,
         'marine_hourly': list(marine_hourly),
         'weather_hourly': list(weather_hourly),

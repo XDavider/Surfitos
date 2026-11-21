@@ -412,6 +412,58 @@ function initializeCharts() {
 
     initializeFilters();
     updateDatasets();
+    initializeDaySelector();
+}
+
+// Cambio instantáneo entre días sin recargar la página
+function initializeDaySelector() {
+    const weekEl = document.getElementById("week-data");
+    if (!weekEl) return;
+    const weekData = JSON.parse(weekEl.textContent);
+    const pills = document.querySelectorAll(".day-pill[data-date]");
+
+    pills.forEach(pill => {
+        pill.addEventListener("click", () => {
+            const dateIso = pill.dataset.date;
+            pills.forEach(p => p.classList.remove("active"));
+            pill.classList.add("active");
+
+            // Actualizar gráfica horaria
+            const dayHourly = (weekData.hourly && weekData.hourly[dateIso]) || [];
+            if (window.chartConfig) {
+                const { chart, datasetConfigs } = window.chartConfig;
+                chart.data.labels = dayHourly.map(d => formatTime(d.time));
+                datasetConfigs['wave'].data = dayHourly.map(d => d.wave_height);
+                datasetConfigs['wave-period'].data = dayHourly.map(d => d.wave_period);
+                datasetConfigs['wave-direction'].data = dayHourly.map(d => d.wave_direction);
+                datasetConfigs['swell'].data = dayHourly.map(d => d.swell_wave_height);
+                datasetConfigs['swell-period'].data = dayHourly.map(d => d.swell_wave_period);
+                datasetConfigs['swell-direction'].data = dayHourly.map(d => d.swell_wave_direction);
+                updateDatasets();
+            }
+
+            // Actualizar tarjetas de Pronóstico Diario
+            const d = (weekData.daily && weekData.daily[dateIso]) || {};
+            const setVal = (id, val, unit) => {
+                const el = document.getElementById(id);
+                if (el) el.innerHTML = `${val ?? '--'} <span class="unit">${unit}</span>`;
+            };
+            setVal('daily-wave-max', d.wave_height_max, 'm');
+            setVal('daily-wave-period', d.wave_period_max, 's');
+            setVal('daily-swell-max', d.swell_wave_height_max, 'm');
+            setVal('daily-swell-period', d.swell_wave_period_max, 's');
+
+            const setDir = (id, deg) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    const rot = deg ?? 0;
+                    el.innerHTML = `${deg ?? '--'}° <i class="fas fa-long-arrow-alt-down" style="transform: rotate(${rot}deg)"></i>`;
+                }
+            };
+            setDir('daily-wave-dir', d.wave_direction_dominant);
+            setDir('daily-swell-dir', d.swell_wave_direction_dominant);
+        });
+    });
 }
 
 // Inicializa los filtros
