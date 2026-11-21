@@ -126,26 +126,38 @@ function initializeCharts() {
                 legend: {
                     display: true,
                     position: 'top',
+                    align: 'end',
                     labels: {
-                        color: "#fff",
+                        color: "#cbd5e1",
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        boxWidth: 8,
+                        padding: 16,
                         font: {
                             family: "'Poppins', sans-serif",
-                            size: 12
+                            size: 12,
+                            weight: '500'
                         }
                     }
                 },
                 tooltip: {
-                    backgroundColor: "rgba(0, 0, 0, 0.8)",
+                    backgroundColor: "rgba(6, 19, 31, 0.94)",
+                    borderColor: "rgba(45, 212, 191, 0.4)",
+                    borderWidth: 1,
+                    titleColor: "#f1f5f9",
+                    bodyColor: "#cbd5e1",
                     titleFont: {
                         family: "'Poppins', sans-serif",
-                        size: 14
+                        size: 13,
+                        weight: '600'
                     },
                     bodyFont: {
                         family: "'Poppins', sans-serif",
-                        size: 13
+                        size: 12
                     },
                     padding: 12,
-                    cornerRadius: 8,
+                    cornerRadius: 10,
+                    displayColors: true,
                     callbacks: {
                         label: function(context) {
                             const value = context.raw;
@@ -153,7 +165,7 @@ function initializeCharts() {
                             if (dataType === 'weather-code') {
                                 return weatherCodeMap[value] || 'N/D';
                             }
-                            return `${context.dataset.label}: ${value}`;
+                            return ` ${context.dataset.label}: ${value}`;
                         }
                     }
                 }
@@ -275,17 +287,19 @@ function initializeCharts() {
                     }
                 },
                 x: {
+                    border: { display: false },
                     grid: {
-                        color: "rgba(255, 255, 255, 0.1)"
+                        display: false
                     },
                     ticks: {
-                        color: "rgba(255, 255, 255, 0.8)",
+                        color: "#94a3b8",
                         font: {
                             family: "'Poppins', sans-serif",
                             size: 11
                         },
-                        maxRotation: 45,
-                        minRotation: 45
+                        maxRotation: 0,
+                        autoSkip: true,
+                        maxTicksLimit: 8
                     }
                 }
             },
@@ -324,64 +338,64 @@ function initializeCharts() {
             'wave': {
                 label: "Altura de ola (m)",
                 data: marineData.map(d => d.wave_height),
-                borderColor: "#89CFF0", // Azul claro
-                backgroundColor: "rgba(137, 207, 240, 0.2)",
+                borderColor: "#2dd4bf",
+                backgroundColor: "rgba(45, 212, 191, 0.18)",
                 dataType: 'wave',
                 yAxisID: 'y_altura'
             },
             'wave-period': {
                 label: "Periodo de olas (s)",
                 data: marineData.map(d => d.wave_period),
-                borderColor: "#3494E6", // Azul medio
-                backgroundColor: "rgba(52, 148, 230, 0.2)",
+                borderColor: "#818cf8",
+                backgroundColor: "rgba(129, 140, 248, 0.14)",
                 dataType: 'wave-period',
                 yAxisID: 'y_periodo'
             },
             'wave-direction': {
                 label: "Dirección de olas (°)",
                 data: marineData.map(d => d.wave_direction),
-                borderColor: "#1B4B82", // Azul oscuro
-                backgroundColor: "rgba(27, 75, 130, 0.2)",
+                borderColor: "#60a5fa",
+                backgroundColor: "rgba(96, 165, 250, 0.12)",
                 dataType: 'wave-direction',
                 yAxisID: 'y_direccion'
             },
             'swell': {
-                label: "Altura del Mar de fondo (m)",
+                label: "Mar de fondo (m)",
                 data: marineData.map(d => d.swell_wave_height),
-                borderColor: "#FFB6C1", // Rosa claro
-                backgroundColor: "rgba(255, 182, 193, 0.2)",
+                borderColor: "#0ea5e9",
+                backgroundColor: "rgba(14, 165, 233, 0.16)",
                 dataType: 'swell',
                 yAxisID: 'y_altura'
             },
             'swell-period': {
-                label: "Periodo del Mar de fondo (s)",
+                label: "Periodo del swell (s)",
                 data: marineData.map(d => d.swell_wave_period),
-                borderColor: "#FF69B4", // Rosa medio
-                backgroundColor: "rgba(255, 105, 180, 0.2)",
+                borderColor: "#c084fc",
+                backgroundColor: "rgba(192, 132, 252, 0.14)",
                 dataType: 'swell-period',
                 yAxisID: 'y_periodo'
             },
             'swell-direction': {
-                label: "Dirección del Mar de fondo (°)",
+                label: "Dirección del swell (°)",
                 data: marineData.map(d => d.swell_wave_direction),
-                borderColor: "#C71585", // Rosa oscuro
-                backgroundColor: "rgba(199, 21, 133, 0.2)",
+                borderColor: "#f472b6",
+                backgroundColor: "rgba(244, 114, 182, 0.12)",
                 dataType: 'swell-direction',
                 yAxisID: 'y_direccion'
             },
             'temperature': {
                 label: "Temperatura (°C)",
                 data: weatherData.map(d => d.temperature),
-                borderColor: "#FFA07A", // Naranja claro
-                backgroundColor: "rgba(255, 160, 122, 0.2)",
+                borderColor: "#fbbf24",
+                backgroundColor: "rgba(251, 191, 36, 0.15)",
                 dataType: 'temperature',
                 yAxisID: 'y_temp'
             },
             'apparent-temperature': {
                 label: "Sensación térmica (°C)",
                 data: weatherData.map(d => d.apparent_temperature),
-                borderColor: "#FF6347", // Naranja medio
-                backgroundColor: "rgba(255, 99, 71, 0.2)",
+                borderColor: "#fb923c",
+                backgroundColor: "rgba(251, 146, 60, 0.15)",
                 dataType: 'apparent-temperature',
                 yAxisID: 'y_temp'
             },
@@ -429,10 +443,12 @@ function updateDatasets() {
                 data: config.data,
                 borderColor: config.borderColor,
                 backgroundColor: config.backgroundColor,
-                borderWidth: 3,
-                pointRadius: 4,
+                borderWidth: 2.5,
+                pointRadius: 0,
                 pointHoverRadius: 6,
-                pointBackgroundColor: "#fff",
+                pointHoverBackgroundColor: config.borderColor,
+                pointHoverBorderColor: "#06131f",
+                pointHoverBorderWidth: 2,
                 tension: 0.4,
                 fill: true,
                 dataType: config.dataType,
