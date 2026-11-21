@@ -24,10 +24,12 @@ def fetch_and_save_marine_data(playa):
         f"&start_date={hoy}&end_date={hoy}"
     )
     try:
-        response = requests.get(url, timeout=10)
-    except requests.RequestException:
+        response = requests.get(url, headers={"User-Agent": "SurfitosApp/1.0"}, timeout=10)
+    except requests.RequestException as exc:
+        print(f"[Open-Meteo Weather] request error: {exc}")
         return
     if response.status_code != 200:
+        print(f"[Open-Meteo Weather] status={response.status_code} body={response.text[:200]}")
         return
 
     data = response.json()
@@ -100,10 +102,12 @@ def fetch_and_save_weather_data(playa):
         f"&start_date={hoy}&end_date={hoy}"
     )
     try:
-        response = requests.get(url, timeout=10)
-    except requests.RequestException:
+        response = requests.get(url, headers={"User-Agent": "SurfitosApp/1.0"}, timeout=10)
+    except requests.RequestException as exc:
+        print(f"[Open-Meteo Weather] request error: {exc}")
         return
     if response.status_code != 200:
+        print(f"[Open-Meteo Weather] status={response.status_code} body={response.text[:200]}")
         return
     
     # Procesar la respuesta

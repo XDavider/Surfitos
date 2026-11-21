@@ -90,11 +90,13 @@ def get_current_marine_data(lat, lon):
         f"swell_wave_height,swell_wave_direction,swell_wave_period,sea_surface_temperature"
     )
     try:
-        response = requests.get(url, timeout=10)
-    except requests.RequestException:
+        response = requests.get(url, headers={"User-Agent": "SurfitosApp/1.0"}, timeout=10)
+    except requests.RequestException as exc:
+        print(f"[Open-Meteo Current Weather] request error: {exc}")
         return None
     if response.status_code == 200:
         return response.json().get("current", {})
+    print(f"[Open-Meteo Current Weather] status={response.status_code} body={response.text[:200]}")
     return None
 
 
@@ -108,9 +110,11 @@ def get_current_weather_data(lat, lon):
         f"&timezone=Europe%2FBerlin&forecast_days=1"
     )
     try:
-        response = requests.get(url, timeout=10)
-    except requests.RequestException:
+        response = requests.get(url, headers={"User-Agent": "SurfitosApp/1.0"}, timeout=10)
+    except requests.RequestException as exc:
+        print(f"[Open-Meteo Current Weather] request error: {exc}")
         return None
     if response.status_code == 200:
         return response.json().get("current", {})
+    print(f"[Open-Meteo Current Weather] status={response.status_code} body={response.text[:200]}")
     return None
