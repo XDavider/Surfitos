@@ -67,41 +67,40 @@ def _calcular_nivel_surf(current_marine, current_weather):
             {"nivel": "Principiante", "stars": 0, "nota": "Sin datos"},
             {"nivel": "Progresión", "stars": 0, "nota": "Sin datos"},
             {"nivel": "Intermedio", "stars": 0, "nota": "Sin datos"},
-            {"nivel": "Profesional", "stars": 0, "nota": "Sin datos"},
         ]
 
     wind_val = wind if wind is not None else 15
 
     # Principiante (espumas / primeras olas)
-    if 0.3 <= wave <= 1.3 and wind_val <= 22:
+    if 0.3 <= wave <= 1.2 and wind_val <= 20:
         s_beg, n_beg = 5, "Condiciones ideales"
-    elif wave <= 1.5 and wind_val <= 26:
+    elif wave <= 1.4 and wind_val <= 25:
         s_beg, n_beg = 4, "Muy bueno para empezar"
-    elif wave <= 1.8 and wind_val <= 32:
+    elif wave <= 1.7 and wind_val <= 30:
         s_beg, n_beg = 3, "Aceptable con precaución"
-    elif wave > 2.2 and wind_val > 38:
+    elif wave > 2.0 and wind_val > 35:
         s_beg, n_beg = 1, "Mar grande y mucho viento"
-    elif wave > 2.2:
+    elif wave > 2.0:
         s_beg, n_beg = 1, "Demasiada fuerza de ola"
-    elif wind_val > 38:
+    elif wind_val > 35:
         s_beg, n_beg = 1, "Demasiado viento"
     elif wave < 0.3:
         s_beg, n_beg = 2, "Mar muy pequeño"
     else:
-        s_beg, n_beg = 2, "Ola exigente" if wave > 1.8 else "Viento molesto"
+        s_beg, n_beg = 2, "Ola exigente" if wave > 1.7 else "Viento molesto"
 
     # Progresión (pasa la rompiente / primeras paredes)
-    if 0.6 <= wave <= 1.7 and wind_val <= 26:
+    if 0.6 <= wave <= 1.6 and wind_val <= 25:
         s_prog, n_prog = 5, "Ideal para progresar"
-    elif wave <= 2.0 and wind_val <= 32:
+    elif wave <= 1.9 and wind_val <= 30:
         s_prog, n_prog = 4, "Buenas olas"
-    elif wave <= 2.3 and wind_val <= 38:
+    elif wave <= 2.2 and wind_val <= 36:
         s_prog, n_prog = 3, "Retador"
-    elif wave > 2.3 and wind_val > 38:
+    elif wave > 2.2 and wind_val > 36:
         s_prog, n_prog = 2, "Olas grandes y viento fuerte"
-    elif wave > 2.3:
+    elif wave > 2.2:
         s_prog, n_prog = 2, "Demasiado tamaño"
-    elif wind_val > 38:
+    elif wind_val > 36:
         s_prog, n_prog = 2, "Mucho viento"
     else:
         s_prog, n_prog = 2, "Olas pequeñas"
@@ -109,34 +108,21 @@ def _calcular_nivel_surf(current_marine, current_weather):
     # Intermedio (olas con fuerza y giro)
     if 0.9 <= wave <= 2.5 and period >= 7 and wind_val <= 30:
         s_int, n_int = 5, "Muy buenas condiciones"
-    elif 0.7 <= wave <= 2.8 and wind_val <= 36:
+    elif 0.7 <= wave <= 2.9 and wind_val <= 38:
         s_int, n_int = 4, "Divertido y surfeable"
-    elif 0.5 <= wave <= 3.2 and wind_val <= 42:
+    elif 0.5 <= wave <= 3.3 and wind_val <= 44:
         s_int, n_int = 3, "Surfeable"
-    elif wind_val > 42:
+    elif wind_val > 44:
         s_int, n_int = 2, "Demasiado viento"
-    elif wave > 3.2:
+    elif wave > 3.3:
         s_int, n_int = 2, "Mar muy grande"
     else:
         s_int, n_int = 2, "Falta tamaño" if wave < 0.5 else "Periodo corto"
-
-    # Profesional (tamaño y potencia)
-    if wave >= 1.6 and period >= 8 and wind_val <= 40:
-        s_pro, n_pro = 5, "Potente y limpio"
-    elif wave >= 1.2 and wind_val <= 48:
-        s_pro, n_pro = 4, "Buena sesión"
-    elif wave >= 0.9 and wind_val <= 50:
-        s_pro, n_pro = 3, "Entretenido"
-    elif wind_val > 50:
-        s_pro, n_pro = 2, "Viento extremo"
-    else:
-        s_pro, n_pro = 2, "Mar pequeño"
 
     return [
         {"nivel": "Principiante", "stars": s_beg, "nota": n_beg},
         {"nivel": "Progresión", "stars": s_prog, "nota": n_prog},
         {"nivel": "Intermedio", "stars": s_int, "nota": n_int},
-        {"nivel": "Profesional", "stars": s_pro, "nota": n_pro},
     ]
 
 

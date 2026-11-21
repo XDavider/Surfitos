@@ -168,6 +168,38 @@
                 </div>
             </section>
 
+            <!-- Pronóstico Diario en formato tabla justo debajo de Condiciones por Nivel -->
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-calendar-day"></i> Pronóstico Diario (Máximas del Día)
+                    </h2>
+                </div>
+                <div class="surf-table-wrap">
+                    <table class="surf-table">
+                        <thead>
+                            <tr>
+                                <th>Parámetro</th>
+                                <th>Máximo del día</th>
+                                <th>Detalle</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="metric-label"><i class="fas fa-water"></i> Olas</span></td>
+                                <td id="daily-wave-max">{{ marine_daily.wave_height_max|default:"--" }} <span class="unit">m</span></td>
+                                <td>Periodo máx. <span id="daily-wave-period">{{ marine_daily.wave_period_max|default:"--" }} <span class="unit">s</span></span> · Dir. <span id="daily-wave-dir">{{ marine_daily.wave_direction_dominant|default:"--" }}° <i class="fas fa-long-arrow-alt-down" data-rotate="{{ marine_daily.wave_direction_dominant|default:0 }}"></i></span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="metric-label"><i class="fas fa-water"></i> Mar de fondo (Swell)</span></td>
+                                <td id="daily-swell-max">{{ marine_daily.swell_wave_height_max|default:"--" }} <span class="unit">m</span></td>
+                                <td>Periodo máx. <span id="daily-swell-period">{{ marine_daily.swell_wave_period_max|default:"--" }} <span class="unit">s</span></span> · Dir. <span id="daily-swell-dir">{{ marine_daily.swell_wave_direction_dominant|default:"--" }}° <i class="fas fa-long-arrow-alt-down" data-rotate="{{ marine_daily.swell_wave_direction_dominant|default:0 }}"></i></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
             <!-- Pronóstico Horario -->
             <section class="section">
                 <div class="section-header">
@@ -202,57 +234,6 @@
 
                     <div class="grafica">
                         <canvas id="grafico-hourly"></canvas>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Pronóstico Diario -->
-            <h2 class="section-heading-standalone">
-                <i class="fas fa-calendar-day"></i> Pronóstico Diario
-            </h2>
-
-            <section class="section">
-                <div class="section-header">
-                    <h2 class="section-title">
-                        <i class="fas fa-water"></i> Condiciones Marítimas
-                    </h2>
-                </div>
-                <div class="data-grid">
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-arrows-alt-v"></i></span>
-                        <h4>Altura máx. de ola</h4>
-                        <p id="daily-wave-max">{{ marine_daily.wave_height_max|default:"--" }} <span class="unit">m</span></p>
-                    </div>
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-compass"></i></span>
-                        <h4>Dirección dominante</h4>
-                        <p id="daily-wave-dir">
-                            {{ marine_daily.wave_direction_dominant|default:"--" }}°
-                            <i class="fas fa-long-arrow-alt-down" data-rotate="{{ marine_daily.wave_direction_dominant|default:0 }}"></i>
-                        </p>
-                    </div>
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-stopwatch"></i></span>
-                        <h4>Periodo máx. de ola</h4>
-                        <p id="daily-wave-period">{{ marine_daily.wave_period_max|default:"--" }} <span class="unit">s</span></p>
-                    </div>
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-water"></i></span>
-                        <h4>Altura máx. del swell</h4>
-                        <p id="daily-swell-max">{{ marine_daily.swell_wave_height_max|default:"--" }} <span class="unit">m</span></p>
-                    </div>
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-compass"></i></span>
-                        <h4>Dirección del swell</h4>
-                        <p id="daily-swell-dir">
-                            {{ marine_daily.swell_wave_direction_dominant|default:"--" }}°
-                            <i class="fas fa-long-arrow-alt-down" data-rotate="{{ marine_daily.swell_wave_direction_dominant|default:0 }}"></i>
-                        </p>
-                    </div>
-                    <div class="data-card">
-                        <span class="icon"><i class="fas fa-stopwatch"></i></span>
-                        <h4>Periodo máx. del swell</h4>
-                        <p id="daily-swell-period">{{ marine_daily.swell_wave_period_max|default:"--" }} <span class="unit">s</span></p>
                     </div>
                 </div>
             </section>
