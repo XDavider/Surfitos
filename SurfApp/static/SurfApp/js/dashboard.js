@@ -462,6 +462,26 @@ function initializeDaySelector() {
             };
             setDir('daily-wave-dir', d.wave_direction_dominant);
             setDir('daily-swell-dir', d.swell_wave_direction_dominant);
+
+            // Actualizar Condiciones por Nivel del día seleccionado
+            const levelsGrid = document.getElementById('day-levels-grid');
+            if (levelsGrid && Array.isArray(d.levels)) {
+                levelsGrid.innerHTML = d.levels.map(item => {
+                    let starsHtml = '';
+                    for (let i = 1; i <= 5; i++) {
+                        starsHtml += i <= item.stars
+                            ? '<i class="fas fa-star"></i>'
+                            : '<i class="far fa-star star-empty"></i>';
+                    }
+                    return `
+                        <div class="level-card">
+                            <h4>${item.nivel}</h4>
+                            <div class="stars" aria-label="${item.stars} de 5 estrellas">${starsHtml}</div>
+                            <p class="level-note">${item.nota}</p>
+                        </div>
+                    `;
+                }).join('');
+            }
         });
     });
 }

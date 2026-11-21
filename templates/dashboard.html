@@ -142,6 +142,32 @@
                 {% endfor %}
             </nav>
 
+            <!-- Condiciones por nivel para el día seleccionado -->
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-star"></i> Condiciones por Nivel (Previsión del Día)
+                    </h2>
+                </div>
+                <div id="day-levels-grid" class="surf-levels-grid">
+                    {% for item in day_surf_levels %}
+                        <div class="level-card">
+                            <h4>{{ item.nivel }}</h4>
+                            <div class="stars" aria-label="{{ item.stars }} de 5 estrellas">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= item.stars %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star star-empty"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <p class="level-note">{{ item.nota }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+
             <!-- Pronóstico Horario -->
             <section class="section">
                 <div class="section-header">

@@ -240,6 +240,10 @@ def dashboard_playa_view(request, playa_id):
             "swell_wave_height_max": d.swell_wave_height_max,
             "swell_wave_direction_dominant": d.swell_wave_direction_dominant,
             "swell_wave_period_max": d.swell_wave_period_max,
+            "levels": _calcular_nivel_surf(
+                {"wave_height": d.wave_height_max, "wave_period": d.wave_period_max},
+                None,
+            ),
         }
         for d in week_daily
     }
@@ -262,6 +266,10 @@ def dashboard_playa_view(request, playa_id):
         'current_marine': current_marine,
         'current_weather': current_weather,
         'surf_levels': _calcular_nivel_surf(current_marine, current_weather),
+        'day_surf_levels': (daily_by_date.get(selected_date.isoformat()) or {}).get(
+            'levels',
+            _calcular_nivel_surf(None, None),
+        ),
         'marine_daily': marine_daily,
         'dias_disponibles': dias_disponibles,
         'selected_date': selected_date.isoformat(),
