@@ -184,20 +184,18 @@ body {
     color: var(--text-primary);
 }
 
-/* Barra deslizable de 7 días */
+/* Barra de 7 días adaptada al ancho */
 .day-selector-bar {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 6px;
     margin-bottom: 20px;
-    scrollbar-width: thin;
 }
 
 .day-pill {
-    flex: 0 0 auto;
-    padding: 9px 16px;
-    border-radius: 999px;
+    text-align: center;
+    padding: 10px 8px;
+    border-radius: 12px;
     background: var(--bg-card);
     border: 1px solid var(--border-subtle);
     color: var(--text-secondary);
@@ -205,6 +203,7 @@ body {
     font-size: 0.86rem;
     font-weight: 500;
     transition: all 0.2s ease;
+    white-space: nowrap;
 }
 
 .day-pill:hover {
@@ -532,6 +531,17 @@ body {
 }
 
 @media (max-width: 768px) {
+    .day-selector-bar {
+        display: flex;
+        overflow-x: auto;
+        padding-bottom: 6px;
+    }
+
+    .day-pill {
+        flex: 0 0 auto;
+        padding: 9px 14px;
+    }
+
     .surf-levels-grid {
         grid-template-columns: 1fr;
     }
