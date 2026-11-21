@@ -195,6 +195,16 @@
                                 <td id="daily-swell-max">{{ marine_daily.swell_wave_height_max|default:"--" }} <span class="unit">m</span></td>
                                 <td>Periodo máx. <span id="daily-swell-period">{{ marine_daily.swell_wave_period_max|default:"--" }} <span class="unit">s</span></span> · Dir. <span id="daily-swell-dir">{{ marine_daily.swell_wave_direction_dominant|default:"--" }}° <i class="fas fa-long-arrow-alt-down" data-rotate="{{ marine_daily.swell_wave_direction_dominant|default:0 }}"></i></span></td>
                             </tr>
+                            <tr>
+                                <td><span class="metric-label"><i class="fas fa-wind"></i> Viento</span></td>
+                                <td>{{ current_weather.wind_speed_10m|default:"--" }} <span class="unit">km/h</span></td>
+                                <td>Dirección {{ current_weather.wind_direction_10m|default:"--" }}° <i class="fas fa-long-arrow-alt-down" data-rotate="{{ current_weather.wind_direction_10m|default:'0' }}"></i></td>
+                            </tr>
+                            <tr>
+                                <td><span class="metric-label"><i class="fas fa-temperature-high"></i> Agua y Clima</span></td>
+                                <td>{{ current_marine.sea_surface_temperature|default:"--" }} <span class="unit">°C (agua)</span></td>
+                                <td>Lluvia {{ current_weather.precipitation|default:"0" }} mm · Nubes {{ current_weather.cloud_cover|default:"--" }}%</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
