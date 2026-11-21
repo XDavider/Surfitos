@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surfitos - Mis Playas</title>
     {% load static %}
+    <link rel="icon" type="image/png" href="{% static 'SurfApp/img/surfitos-logo.png' %}">
     <link rel="stylesheet" href="{% static 'SurfApp/css/playas-styles.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,7 +19,7 @@
         <header class="header">
             <div class="header-brand">
                 <div class="brand-badge">
-                    <i class="fas fa-water"></i>
+                    <img src="{% static 'SurfApp/img/surfitos-logo.png' %}" alt="Surfitos" style="width: 36px; height: 36px; object-fit: contain;">
                 </div>
                 <div>
                     <h1>Mis Playas</h1>

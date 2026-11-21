@@ -1,4 +1,6 @@
-<h1 align="center"> Surfitos <br><br>
+<h1 align="center">
+  <img src="SurfApp/static/SurfApp/img/surfitos-logo.png" alt="Surfitos Logo" width="110"><br>
+  Surfitos <br><br>
   
 ![github-header-image](https://github.com/XDavider/Surfitos/blob/main/capturas/github-header-image.png)
 

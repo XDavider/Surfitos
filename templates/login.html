@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surfitos - Iniciar Sesión</title>
     {% load static %}
+    <link rel="icon" type="image/png" href="{% static 'SurfApp/img/surfitos-logo.png' %}">
     <link rel="stylesheet" href="{% static 'SurfApp/css/login-styles.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,7 +17,7 @@
         <div class="login-container">
             <div class="brand-header">
                 <div class="brand-badge">
-                    <i class="fas fa-water"></i>
+                    <img src="{% static 'SurfApp/img/surfitos-logo.png' %}" alt="Surfitos" class="brand-logo" style="width: 44px; height: 44px; object-fit: contain;">
                 </div>
                 <h1>Surfitos</h1>
                 <p>Previsión de olas y condiciones del mar</p>
