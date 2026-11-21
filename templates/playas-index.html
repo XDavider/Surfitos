@@ -25,9 +25,14 @@
                 </div>
             </div>
             {% if not is_guest %}
-                <button type="button" class="btn-agregar-header" onclick="agregarPlaya()" aria-label="Agregar playa">
-                    <i class="fas fa-plus"></i> Añadir playa
-                </button>
+                <div class="header-actions">
+                    <button type="button" class="btn-agregar-header" onclick="agregarPlaya()" aria-label="Agregar playa">
+                        <i class="fas fa-plus"></i> Añadir playa
+                    </button>
+                    <a href="{% url 'logout' %}" class="btn-logout-header" title="Cerrar sesión" aria-label="Cerrar sesión">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                    </a>
+                </div>
             {% else %}
                 <a href="{% url 'logout' %}" class="btn-agregar-header" style="text-decoration: none;">
                     <i class="fas fa-sign-in-alt"></i> Iniciar sesión
@@ -131,13 +136,13 @@
         <div class="footer-content">
             <span>Creado por <strong>XDavider</strong> · Proyecto Surfitos</span>
             <div class="social-links">
-                <a class="social-link" href="https://github.com/XDavider/Surfitos" target="_blank" rel="noopener noreferrer" aria-label="Repositorio en GitHub" title="Repositorio en GitHub">
+                <a class="social-link social-github" href="https://github.com/XDavider/Surfitos" target="_blank" rel="noopener noreferrer" aria-label="Repositorio en GitHub" title="Repositorio en GitHub">
                     <i class="fab fa-github"></i>
                 </a>
-                <a class="social-link" href="#" aria-label="LinkedIn" title="LinkedIn (pendiente de enlace)">
+                <a class="social-link social-linkedin" href="https://www.linkedin.com/in/david-bermudez-445785403/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn">
                     <i class="fab fa-linkedin-in"></i>
                 </a>
-                <a class="social-link" href="#" aria-label="Instagram" title="Instagram (pendiente de enlace)">
+                <a class="social-link social-instagram" href="https://www.instagram.com/david_de_dora/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
                     <i class="fab fa-instagram"></i>
                 </a>
             </div>

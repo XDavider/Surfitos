@@ -199,6 +199,32 @@ body {
     margin-bottom: 12px;
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-logout-header {
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border-subtle);
+    background: rgba(13, 33, 50, 0.85);
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-logout-header:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
 .btn-agregar-header {
     padding: 10px 16px;
     border-radius: 12px;
@@ -434,9 +460,37 @@ body {
 }
 
 .social-link:hover {
-    color: var(--accent);
-    border-color: var(--border-accent);
     transform: translateY(-2px);
+}
+
+.social-github {
+    color: #f1f5f9;
+}
+
+.social-github:hover {
+    border-color: rgba(241, 245, 249, 0.5);
+}
+
+.social-linkedin {
+    color: #0a66c2;
+    border-color: rgba(10, 102, 194, 0.35);
+}
+
+.social-linkedin:hover {
+    background: #0a66c2;
+    color: #fff;
+    border-color: #0a66c2;
+}
+
+.social-instagram {
+    color: #e1306c;
+    border-color: rgba(225, 48, 108, 0.35);
+}
+
+.social-instagram:hover {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    color: #fff;
+    border-color: transparent;
 }
 
 @media (max-width: 600px) {
@@ -450,7 +504,33 @@ body {
         padding-bottom: 14px;
     }
 
-    .btn-agregar-header {
+    .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-logout-header {
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border-subtle);
+    background: rgba(13, 33, 50, 0.85);
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-logout-header:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.btn-agregar-header {
         width: 100%;
         justify-content: center;
     }

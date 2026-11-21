@@ -233,9 +233,37 @@ button[type="submit"]:active {
 }
 
 .social-link:hover {
-    color: var(--accent);
-    border-color: var(--border-accent);
     transform: translateY(-2px);
+}
+
+.social-github {
+    color: #f1f5f9;
+}
+
+.social-github:hover {
+    border-color: rgba(241, 245, 249, 0.5);
+}
+
+.social-linkedin {
+    color: #0a66c2;
+    border-color: rgba(10, 102, 194, 0.35);
+}
+
+.social-linkedin:hover {
+    background: #0a66c2;
+    color: #fff;
+    border-color: #0a66c2;
+}
+
+.social-instagram {
+    color: #e1306c;
+    border-color: rgba(225, 48, 108, 0.35);
+}
+
+.social-instagram:hover {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    color: #fff;
+    border-color: transparent;
 }
 
 @media (max-width: 480px) {

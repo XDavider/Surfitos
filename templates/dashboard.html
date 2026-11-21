@@ -63,15 +63,6 @@
             </div>
         </div>
 
-        <!-- Barra deslizable de 7 días -->
-        <nav class="day-selector-bar" aria-label="Selector de día de previsión">
-            {% for d in dias_disponibles %}
-                <button type="button" class="day-pill {% if d.activo %}active{% endif %}" data-date="{{ d.fecha_iso }}">
-                    {{ d.label }}
-                </button>
-            {% endfor %}
-        </nav>
-
         <div class="contenido-scroll">
             <!-- Nivel de Surf recomendado -->
             <section class="section">
@@ -141,6 +132,15 @@
                     </table>
                 </div>
             </section>
+
+            <!-- Barra de 7 días justo antes de la previsión por día -->
+            <nav class="day-selector-bar" aria-label="Selector de día de previsión">
+                {% for d in dias_disponibles %}
+                    <button type="button" class="day-pill {% if d.activo %}active{% endif %}" data-date="{{ d.fecha_iso }}">
+                        {{ d.label }}
+                    </button>
+                {% endfor %}
+            </nav>
 
             <!-- Pronóstico Horario -->
             <section class="section">
@@ -251,13 +251,13 @@
         <div class="footer-content">
             <span>Creado por <strong>XDavider</strong> · Proyecto Surfitos</span>
             <div class="social-links">
-                <a class="social-link" href="https://github.com/XDavider/Surfitos" target="_blank" rel="noopener noreferrer" aria-label="Repositorio en GitHub" title="Repositorio en GitHub">
+                <a class="social-link social-github" href="https://github.com/XDavider/Surfitos" target="_blank" rel="noopener noreferrer" aria-label="Repositorio en GitHub" title="Repositorio en GitHub">
                     <i class="fab fa-github"></i>
                 </a>
-                <a class="social-link" href="#" aria-label="LinkedIn" title="LinkedIn (pendiente de enlace)">
+                <a class="social-link social-linkedin" href="https://www.linkedin.com/in/david-bermudez-445785403/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn">
                     <i class="fab fa-linkedin-in"></i>
                 </a>
-                <a class="social-link" href="#" aria-label="Instagram" title="Instagram (pendiente de enlace)">
+                <a class="social-link social-instagram" href="https://www.instagram.com/david_de_dora/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
                     <i class="fab fa-instagram"></i>
                 </a>
             </div>
