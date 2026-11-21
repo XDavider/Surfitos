@@ -56,14 +56,16 @@ def dashboard_playa_view(request, playa_id):
     marine_hourly = MarineHourlyData.objects.filter(playa=playa, timestamp__date=date.today()).order_by('timestamp')
     weather_hourly = WeatherHourlyData.objects.filter(playa=playa, timestamp__date=date.today()).order_by('timestamp')
   
-    # Si no hay datos, los obtiene de la API
-    if not marine_daily or not weather_daily or not marine_hourly or not weather_hourly:
+    # Si faltan datos marinos o meteorológicos, los obtiene de la API por separado
+    if not marine_daily or not marine_hourly:
         fetch_and_save_marine_data(playa)
-        fetch_and_save_weather_data(playa)
         marine_daily = MarineDailyData.objects.filter(playa=playa, fecha=hoy).first()
+        marine_hourly = MarineHourlyData.objects.filter(playa=playa, timestamp__date=hoy).order_by('timestamp')
+
+    if not weather_daily or not weather_hourly:
+        fetch_and_save_weather_data(playa)
         weather_daily = WeatherDailyData.objects.filter(playa=playa, fecha=hoy).first()
-        marine_hourly = MarineHourlyData.objects.filter(playa=playa, timestamp__date=date.today()).order_by('timestamp')
-        weather_hourly = WeatherHourlyData.objects.filter(playa=playa, timestamp__date=date.today()).order_by('timestamp')
+        weather_hourly = WeatherHourlyData.objects.filter(playa=playa, timestamp__date=hoy).order_by('timestamp')
     
 
     # Datos actuales
