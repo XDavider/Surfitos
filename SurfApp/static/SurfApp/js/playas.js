@@ -145,11 +145,13 @@ function agregarPlaya() {
     setCompassValue('ola', null);
     setCompassValue('viento', null);
     setTideValue(null);
+    const vivaEl = document.getElementById('inputMareaViva');
+    if (vivaEl) vivaEl.checked = false;
     abrirModalPlaya('Añadir Playa');
 }
 
 // Muestra el modal precargado para editar una playa existente
-function editarPlaya(id, nombre, lugar, lat, lon, olaOptima, vientoOptimo, mareaOptima) {
+function editarPlaya(id, nombre, lugar, lat, lon, olaOptima, vientoOptimo, mareaOptima, mareaViva) {
     if (window.event) window.event.stopPropagation();
     editingPlayaId = id;
     document.getElementById("inputNombre").value = nombre;
@@ -162,6 +164,8 @@ function editarPlaya(id, nombre, lugar, lat, lon, olaOptima, vientoOptimo, marea
     setCompassValue('ola', olaOptima);
     setCompassValue('viento', vientoOptimo);
     setTideValue(selectedMareaOptima);
+    const vivaEl = document.getElementById('inputMareaViva');
+    if (vivaEl) vivaEl.checked = Boolean(mareaViva);
     abrirModalPlaya('Editar Playa', lat, lon, 12, true);
 }
 
@@ -353,7 +357,8 @@ function enviarNuevaPlaya() {
             longitud: selectedLon,
             ola_optima: selectedOlaOptima,
             viento_optimo: selectedVientoOptimo,
-            marea_optima: selectedMareaOptima
+            marea_optima: selectedMareaOptima,
+            marea_viva: Boolean(document.getElementById('inputMareaViva')?.checked)
         })
     })
     .then(res => res.json())

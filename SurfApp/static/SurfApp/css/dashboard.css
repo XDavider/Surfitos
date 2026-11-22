@@ -258,6 +258,106 @@ body {
     border-bottom: 1px solid var(--border-subtle);
 }
 
+.section-header-with-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.info-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--border-accent);
+    background: rgba(45, 212, 191, 0.12);
+    color: var(--accent);
+    font-size: 0.78rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.info-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(3, 10, 18, 0.78);
+    backdrop-filter: blur(6px);
+    z-index: 1200;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.info-modal.show {
+    display: flex;
+}
+
+.info-modal-content {
+    width: 100%;
+    max-width: 460px;
+    background: #0d2234;
+    border: 1px solid var(--border-subtle);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+}
+
+.info-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.info-modal-header h3 {
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.info-modal-header h3 i {
+    color: #fbbf24;
+}
+
+.info-modal-close {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 1px solid var(--border-subtle);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.info-modal-body {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.55;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.info-modal-body ul {
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.info-modal-body strong {
+    color: var(--text-primary);
+}
+
+.info-modal-body code {
+    color: var(--accent);
+}
+
 .section-title,
 .section-title1 {
     font-size: 1.15rem;

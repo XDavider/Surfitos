@@ -49,8 +49,8 @@
                             {% if playa.viento_optimo is not None %}
                                 <span class="optimal-pill"><i class="fas fa-wind"></i> Viento óptimo <i class="fas fa-long-arrow-alt-down" style="transform: rotate({{ playa.viento_optimo }}deg)"></i></span>
                             {% endif %}
-                            {% if playa.marea_optima %}
-                                <span class="optimal-pill"><i class="fas fa-arrow-up"></i> Marea óptima: {{ playa.get_marea_optima_display }}</span>
+                            {% if playa.marea_optima or playa.marea_viva %}
+                                <span class="optimal-pill"><i class="fas fa-arrow-up"></i> Marea óptima: {{ playa.get_marea_optima_display|default:"Cualquiera" }}{% if playa.marea_viva %} (Marea viva){% endif %}</span>
                             {% endif %}
                         </div>
                     {% endif %}
@@ -79,10 +79,13 @@
         <div class="contenido-scroll">
             <!-- Nivel de Surf recomendado -->
             <section class="section">
-                <div class="section-header">
+                <div class="section-header section-header-with-info">
                     <h2 class="section-title">
                         <i class="fas fa-star"></i> Condiciones por Nivel de Surf
                     </h2>
+                    <button type="button" class="info-btn" onclick="abrirModalInfoEstrellas()" aria-label="Cómo se calculan las estrellas" title="Cómo se calculan las estrellas">
+                        <i class="fas fa-info"></i>
+                    </button>
                 </div>
                 <div class="surf-levels-grid">
                     {% for item in surf_levels %}
@@ -157,10 +160,13 @@
 
             <!-- Condiciones por nivel para el día seleccionado -->
             <section class="section">
-                <div class="section-header">
+                <div class="section-header section-header-with-info">
                     <h2 class="section-title">
                         <i class="fas fa-star"></i> Condiciones por Nivel (Previsión del Día)
                     </h2>
+                    <button type="button" class="info-btn" onclick="abrirModalInfoEstrellas()" aria-label="Cómo se calculan las estrellas" title="Cómo se calculan las estrellas">
+                        <i class="fas fa-info"></i>
+                    </button>
                 </div>
                 <div id="day-levels-grid" class="surf-levels-grid">
                     {% for item in day_surf_levels %}
@@ -310,6 +316,25 @@
         </div>
     </footer>
 
+    <!-- Modal informativo de cálculo de estrellas -->
+    <div id="modalInfoEstrellas" class="info-modal" role="dialog" aria-modal="true" aria-labelledby="titulo-info-estrellas" onclick="if(event.target===this)cerrarModalInfoEstrellas()">
+        <div class="info-modal-content">
+            <div class="info-modal-header">
+                <h3 id="titulo-info-estrellas"><i class="fas fa-star"></i> Cómo se calculan las estrellas</h3>
+                <button type="button" class="info-modal-close" onclick="cerrarModalInfoEstrellas()" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="info-modal-body">
+                <p>Cada nivel valora de <strong>1 a 5 estrellas</strong> combinando altura de ola, periodo, viento y la orientación óptima de la playa:</p>
+                <ul>
+                    <li><strong>Principiante:</strong> ideal entre <code>0.3 – 1.2 m</code> y viento <code>≤ 20 km/h</code>. Penaliza olas fuertes (<code>&gt; 2.0 m</code>) o viento alto.</li>
+                    <li><strong>Progresión:</strong> ideal entre <code>0.6 – 1.6 m</code> y viento <code>≤ 25 km/h</code>. Pensado para pasar la rompiente y correr paredes.</li>
+                    <li><strong>Intermedio:</strong> ideal entre <code>0.9 – 2.5 m</code>, periodo <code>≥ 7 s</code> y viento <code>≤ 30 km/h</code>.</li>
+                </ul>
+                <p>Si configuraste la <strong>dirección óptima de olas o viento</strong> de la playa y el mar/viento entra cruzado o en contra (<code>&gt; 75°</code> en olas o <code>&gt; 90°</code> en viento), la puntuación se ajusta a la baja indicando el motivo.</p>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script id="marine-data" type="application/json">
         {{ marine_hourly_json|safe }}
@@ -321,6 +346,12 @@
         {{ week_data_json|safe }}
     </script>
     <script>
+        function abrirModalInfoEstrellas() {
+            document.getElementById('modalInfoEstrellas').classList.add('show');
+        }
+        function cerrarModalInfoEstrellas() {
+            document.getElementById('modalInfoEstrellas').classList.remove('show');
+        }
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll('[data-rotate]').forEach(function (element) {
                 const rotation = element.getAttribute('data-rotate') || '0';

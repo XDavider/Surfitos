@@ -9,11 +9,17 @@ class Playa(models.Model):
     ola_optima = models.IntegerField(null=True, blank=True)
     viento_optimo = models.IntegerField(null=True, blank=True)
     marea_optima = models.CharField(
-        max_length=20,
-        choices=[('pleamar', 'Pleamar'), ('media', 'Media marea'), ('bajamar', 'Bajamar')],
+        max_length=25,
+        choices=[
+            ('pleamar', 'Pleamar'),
+            ('media_subiendo', 'Media subiendo'),
+            ('media_bajando', 'Media bajando'),
+            ('bajamar', 'Bajamar'),
+        ],
         null=True,
         blank=True,
     )
+    marea_viva = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.nombre} - {self.lugar}"

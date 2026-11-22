@@ -71,7 +71,7 @@
                             <i class="fas fa-chart-line"></i>
                         </button>
                         {% if not is_guest %}
-                            <button type="button" class="boton boton-editar" onclick="editarPlaya('{{ playa.id }}', '{{ playa.nombre|escapejs }}', '{{ playa.lugar|escapejs }}', {{ playa.latitud }}, {{ playa.longitud }}, {{ playa.ola_optima|default_if_none:'null' }}, {{ playa.viento_optimo|default_if_none:'null' }}, '{{ playa.marea_optima|default_if_none:''|escapejs }}')" title="Editar playa" aria-label="Editar {{ playa.nombre }}">
+                            <button type="button" class="boton boton-editar" onclick="editarPlaya('{{ playa.id }}', '{{ playa.nombre|escapejs }}', '{{ playa.lugar|escapejs }}', {{ playa.latitud }}, {{ playa.longitud }}, {{ playa.ola_optima|default_if_none:'null' }}, {{ playa.viento_optimo|default_if_none:'null' }}, '{{ playa.marea_optima|default_if_none:''|escapejs }}', {{ playa.marea_viva|yesno:'true,false' }})" title="Editar playa" aria-label="Editar {{ playa.nombre }}">
                                 <i class="fas fa-pen"></i>
                             </button>
                             <button type="button" class="boton boton-eliminar" onclick="eliminarPlaya('{{ playa.id }}', '{{ playa.nombre|escapejs }}')" title="Eliminar playa" aria-label="Eliminar {{ playa.nombre }}">
@@ -143,9 +143,15 @@
                 <span class="compass-title"><i class="fas fa-water"></i> Marea óptima</span>
                 <div class="tide-options">
                     <button type="button" class="tide-btn" data-tide="pleamar">Pleamar</button>
-                    <button type="button" class="tide-btn" data-tide="media">Media marea</button>
+                    <button type="button" class="tide-btn" data-tide="media_subiendo">Media subiendo</button>
+                    <button type="button" class="tide-btn" data-tide="media_bajando">Media bajando</button>
                     <button type="button" class="tide-btn" data-tide="bajamar">Bajamar</button>
                 </div>
+                <label class="switch-row">
+                    <span>Requiere marea viva</span>
+                    <input type="checkbox" id="inputMareaViva" class="switch-input">
+                    <span class="switch-slider"></span>
+                </label>
             </div>
 
             <div class="modal-buttons">
@@ -171,9 +177,15 @@
                 <span class="compass-title"><i class="fas fa-water"></i> Marea óptima</span>
                 <div class="tide-options">
                     <button type="button" class="tide-btn" data-tide="pleamar">Pleamar</button>
-                    <button type="button" class="tide-btn" data-tide="media">Media marea</button>
+                    <button type="button" class="tide-btn" data-tide="media_subiendo">Media subiendo</button>
+                    <button type="button" class="tide-btn" data-tide="media_bajando">Media bajando</button>
                     <button type="button" class="tide-btn" data-tide="bajamar">Bajamar</button>
                 </div>
+                <label class="switch-row">
+                    <span>Requiere marea viva</span>
+                    <input type="checkbox" id="inputMareaViva" class="switch-input">
+                    <span class="switch-slider"></span>
+                </label>
             </div>
 
             <div class="modal-buttons">
