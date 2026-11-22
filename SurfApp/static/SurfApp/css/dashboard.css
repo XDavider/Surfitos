@@ -154,6 +154,30 @@ body {
     margin-right: 4px;
 }
 
+.banner-optimal-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.optimal-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(6, 19, 31, 0.78);
+    border: 1px solid var(--border-accent);
+    font-size: 0.78rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.optimal-pill i {
+    color: var(--accent);
+}
+
 .stats-row {
     display: flex;
     flex-wrap: wrap;
@@ -560,6 +584,40 @@ body {
 }
 
 @media (max-width: 768px) {
+    .navbar {
+        padding: 12px 14px;
+    }
+
+    .dashboard-container {
+        padding: 14px 10px 28px;
+    }
+
+    .header-content {
+        padding: 56px 16px 18px;
+    }
+
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .stat-card {
+        min-width: 0;
+        padding: 8px 10px;
+    }
+
+    .section {
+        padding: 16px 14px;
+        border-radius: 14px;
+    }
+
+    .surf-table th,
+    .surf-table td {
+        padding: 10px 8px;
+        font-size: 0.82rem;
+    }
+
     .day-selector-bar {
         display: flex;
         overflow-x: auto;
@@ -568,7 +626,8 @@ body {
 
     .day-pill {
         flex: 0 0 auto;
-        padding: 9px 14px;
+        padding: 8px 12px;
+        font-size: 0.82rem;
     }
 
     .surf-levels-grid {
