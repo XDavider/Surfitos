@@ -43,10 +43,11 @@
         <div id="contenedor-playas">
             {% for playa in playas %}
                 <div class="playa" data-id="{{ playa.id }}">
+                    <div class="playa-map-bg" data-lat="{{ playa.latitud }}" data-lon="{{ playa.longitud }}"></div>
+                    <div class="playa-map-overlay"></div>
                     <div class="playa-content">
                         <div class="playa-header">
                             <span class="nombre-playa">{{ playa.nombre }}</span>
-                            <span class="playa-spot-icon"><i class="fas fa-water"></i></span>
                         </div>
                         <span class="fecha">
                             <span><i class="fas fa-map-marker-alt"></i> {{ playa.lugar }}</span>
@@ -55,10 +56,10 @@
                         {% if playa.ola_optima is not None or playa.viento_optimo is not None %}
                             <div class="playa-badges">
                                 {% if playa.ola_optima is not None %}
-                                    <span class="spot-badge"><i class="fas fa-water"></i> Ola {{ playa.ola_optima }}°</span>
+                                    <span class="spot-badge"><i class="fas fa-water"></i> Ola <i class="fas fa-long-arrow-alt-down" style="transform: rotate({{ playa.ola_optima }}deg)"></i></span>
                                 {% endif %}
                                 {% if playa.viento_optimo is not None %}
-                                    <span class="spot-badge"><i class="fas fa-wind"></i> Viento {{ playa.viento_optimo }}°</span>
+                                    <span class="spot-badge"><i class="fas fa-wind"></i> Viento <i class="fas fa-long-arrow-alt-down" style="transform: rotate({{ playa.viento_optimo }}deg)"></i></span>
                                 {% endif %}
                             </div>
                         {% endif %}

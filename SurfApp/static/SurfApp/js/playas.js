@@ -1,5 +1,27 @@
 // Escuchador de eventos para cuando el DOM esté completamente cargado
 document.addEventListener('DOMContentLoaded', function() {
+    // Inicializa mini mapas satélite de fondo en cada tarjeta panorámica
+    document.querySelectorAll('.playa-map-bg').forEach(el => {
+        const lat = parseFloat(el.dataset.lat);
+        const lon = parseFloat(el.dataset.lon);
+        if (isNaN(lat) || isNaN(lon)) return;
+        const miniMap = L.map(el, {
+            center: [lat, lon],
+            zoom: 13,
+            zoomControl: false,
+            attributionControl: false,
+            dragging: false,
+            scrollWheelZoom: false,
+            doubleClickZoom: false,
+            boxZoom: false,
+            keyboard: false,
+            touchZoom: false
+        });
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            maxZoom: 18
+        }).addTo(miniMap);
+    });
+
     // Añade escuchadores de eventos para los clics en las tarjetas para permitir la navegación al dashboard
     const playaCards = document.querySelectorAll('.playa');
     playaCards.forEach(card => {

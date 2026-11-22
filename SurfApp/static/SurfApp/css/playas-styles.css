@@ -84,34 +84,45 @@ body {
 
 #contenedor-playas {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 18px;
 }
 
 .playa {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(180deg, rgba(16, 40, 61, 0.92) 0%, rgba(11, 29, 45, 0.95) 100%);
+    background: #0b1d2e;
     border: 1px solid var(--border-subtle);
     border-radius: 18px;
-    padding: 20px 20px 16px;
+    padding: 20px 22px 16px;
+    min-height: 176px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 16px;
+    gap: 14px;
     transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, opacity 0.3s ease;
     box-shadow: 0 14px 30px rgba(0, 0, 0, 0.28);
 }
 
-.playa::before {
-    content: "";
+.playa-map-bg {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, var(--accent) 0%, var(--accent-strong) 100%);
-    opacity: 0.75;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.playa-map-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(90deg, #0b1d2e 0%, rgba(11, 29, 46, 0.96) 46%, rgba(11, 29, 46, 0.25) 100%);
+}
+
+.playa-content,
+.acciones {
+    position: relative;
+    z-index: 3;
 }
 
 .playa:hover {
