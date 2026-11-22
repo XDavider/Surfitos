@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             maxZoom: 18
         }).addTo(miniMap);
+        miniMap.panBy([-95, 0], { animate: false });
     });
 
     // Añade escuchadores de eventos para los clics en las tarjetas para permitir la navegación al dashboard
