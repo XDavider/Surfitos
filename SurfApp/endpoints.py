@@ -149,7 +149,7 @@ def get_current_marine_data(lat, lon):
         f"?latitude={lat}&longitude={lon}"
         f"&current=wave_height,wave_direction,wave_period,"
         f"swell_wave_height,swell_wave_direction,swell_wave_period,"
-        f"wind_wave_height,wind_wave_period,sea_surface_temperature"
+        f"wind_wave_height,wind_wave_period,sea_surface_temperature,sea_level_height_msl"
     )
     for attempt in range(2):
         try:
@@ -165,6 +165,39 @@ def get_current_marine_data(lat, lon):
         if attempt == 0:
             time.sleep(0.5)
     return None
+
+
+def get_today_tides(lat, lon):
+    """Obtiene la altura horaria de marea (sea_level_height_msl) de hoy desde Open-Meteo Marine."""
+    cache_key = f"tides_{round(float(lat), 4)}_{round(float(lon), 4)}"
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return cached
+
+    url = (
+        f"https://marine-api.open-meteo.com/v1/marine"
+        f"?latitude={lat}&longitude={lon}"
+        f"&hourly=sea_level_height_msl&forecast_days=1&timezone=Europe%2FBerlin"
+    )
+    try:
+        resp = requests.get(url, headers={"User-Agent": "SurfitosApp/1.0"}, timeout=10)
+        if resp.status_code == 200:
+            hourly = resp.json().get("hourly", {})
+            times = hourly.get("time", [])
+            levels = hourly.get("sea_level_height_msl", [])
+            rows = []
+            for i, ts in enumerate(times):
+                val = levels[i] if i < len(levels) else None
+                prev = levels[i - 1] if i > 0 and i - 1 < len(levels) else val
+                trend = "Subiendo" if (val is not None and prev is not None and val > prev + 0.02) else (
+                    "Bajando" if (val is not None and prev is not None and val < prev - 0.02) else "Estable"
+                )
+                rows.append({"hora": ts[-5:], "altura": val, "estado": trend})
+            cache.set(cache_key, rows, 1800)
+            return rows
+    except requests.RequestException:
+        pass
+    return []
 
 
 # === Datos Actuales del API WEATHER ===

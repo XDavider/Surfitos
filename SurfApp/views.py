@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import Playa
-from .endpoints import get_current_marine_data, get_current_weather_data
+from .endpoints import get_current_marine_data, get_current_weather_data, get_today_tides
 from .api_data_fetch import (
     fetch_and_save_marine_data,
     fetch_and_save_weather_data,
@@ -209,6 +209,10 @@ def dashboard_playa_view(request, playa_id):
     # Datos actuales
     current_marine = get_current_marine_data(playa.latitud, playa.longitud)
     current_weather = get_current_weather_data(playa.latitud, playa.longitud)
+    tides_today = get_today_tides(playa.latitud, playa.longitud)
+    current_hour_str = f"{localtime().hour:02d}:00"
+    current_tide = next((t for t in tides_today if t["hora"] == current_hour_str), None)
+    tide_table = [t for t in tides_today if t["hora"] in {"00:00", "03:00", "06:00", "09:00", "12:00", "15:00", "18:00", "21:00"}]
     if not current_weather and weather_hourly.exists():
         current_hour = localtime().hour
         fallback = min(weather_hourly, key=lambda d: abs(localtime(d.timestamp).hour - current_hour))
@@ -287,6 +291,8 @@ def dashboard_playa_view(request, playa_id):
         'playa': playa,
         'current_marine': current_marine,
         'current_weather': current_weather,
+        'current_tide': current_tide,
+        'tide_table': tide_table,
         'surf_levels': _calcular_nivel_surf(current_marine, current_weather, playa=playa),
         'day_surf_levels': (daily_by_date.get(selected_date.isoformat()) or {}).get(
             'levels',

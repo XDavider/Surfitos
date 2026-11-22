@@ -50,7 +50,7 @@
                                 <span class="optimal-pill"><i class="fas fa-wind"></i> Viento óptimo <i class="fas fa-long-arrow-alt-down" style="transform: rotate({{ playa.viento_optimo }}deg)"></i></span>
                             {% endif %}
                             {% if playa.marea_optima %}
-                                <span class="optimal-pill"><i class="fas fa-arrow-up"></i> Marea: {{ playa.get_marea_optima_display }}</span>
+                                <span class="optimal-pill"><i class="fas fa-arrow-up"></i> Marea óptima: {{ playa.get_marea_optima_display }}</span>
                             {% endif %}
                         </div>
                     {% endif %}
@@ -69,8 +69,8 @@
                         <p>{{ current_weather.wind_speed_10m|default:"--" }} km/h</p>
                     </div>
                     <div class="stat-card">
-                        <h3>Temperatura</h3>
-                        <p>{{ current_weather.temperature_2m|default:"--" }} °C</p>
+                        <h3>Marea</h3>
+                        <p>{% if current_tide %}{{ current_tide.estado }} ({{ current_tide.altura|floatformat:2 }} m){% else %}--{% endif %}</p>
                     </div>
                 </div>
             </div>
@@ -222,6 +222,37 @@
                     </table>
                 </div>
             </section>
+
+            {% if tide_table %}
+            <!-- Tabla de marea del día -->
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-water"></i> Marea del Día
+                    </h2>
+                </div>
+                <div class="surf-table-wrap">
+                    <table class="surf-table">
+                        <thead>
+                            <tr>
+                                <th>Hora</th>
+                                <th>Nivel (msl)</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for t in tide_table %}
+                                <tr>
+                                    <td>{{ t.hora }}</td>
+                                    <td>{{ t.altura|floatformat:2|default:"--" }} m</td>
+                                    <td>{{ t.estado }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            {% endif %}
 
             <!-- Pronóstico Horario -->
             <section class="section">

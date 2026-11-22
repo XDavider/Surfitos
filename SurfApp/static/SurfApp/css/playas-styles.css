@@ -480,6 +480,8 @@ body {
 .modal-content {
     width: 100%;
     max-width: 420px;
+    max-height: 90dvh;
+    overflow-y: auto;
     background: #0d2234;
     border: 1px solid var(--border-subtle);
     border-radius: 18px;
@@ -776,6 +778,16 @@ body {
     }
 
     .compass-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .compass-ring {
+        width: 104px;
+        height: 104px;
+    }
+
+    #mapa-agregar {
+        height: 150px !important;
     }
 }
