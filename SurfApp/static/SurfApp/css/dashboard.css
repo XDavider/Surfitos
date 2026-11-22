@@ -349,13 +349,29 @@ body {
     gap: 18px;
 }
 
-.filtros h2 {
-    font-size: 0.9rem;
+.filtros-toggle {
+    list-style: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 10px;
+    background: rgba(6, 19, 31, 0.7);
+    border: 1px solid var(--border-subtle);
+    font-size: 0.85rem;
     font-weight: 600;
-    color: var(--text-secondary);
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    color: var(--text-primary);
+    user-select: none;
+}
+
+.filtros-toggle i {
+    color: var(--accent);
+}
+
+.filtros[open] .filtros-toggle {
+    margin-bottom: 12px;
+    border-color: var(--border-accent);
 }
 
 .grupo-filtros {
