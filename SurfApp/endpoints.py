@@ -170,9 +170,9 @@ def get_current_marine_data(lat, lon):
     return None
 
 
-def get_today_tides(lat, lon):
-    """Obtiene la altura horaria de marea (sea_level_height_msl) de hoy desde Open-Meteo Marine."""
-    cache_key = f"tides_{round(float(lat), 4)}_{round(float(lon), 4)}"
+def get_7day_tides(lat, lon):
+    """Obtiene la altura horaria de marea (sea_level_height_msl) de los próximos 7 días."""
+    cache_key = f"tides_7d_{round(float(lat), 4)}_{round(float(lon), 4)}"
     cached = cache.get(cache_key)
     if cached is not None:
         return cached
@@ -180,27 +180,29 @@ def get_today_tides(lat, lon):
     url = (
         f"https://marine-api.open-meteo.com/v1/marine"
         f"?latitude={lat}&longitude={lon}"
-        f"&hourly=sea_level_height_msl&forecast_days=1&timezone=Europe%2FBerlin"
+        f"&hourly=sea_level_height_msl&forecast_days=7&timezone=Europe%2FBerlin"
     )
+    by_day = {}
     try:
         resp = requests.get(url, headers={"User-Agent": "SurfitosApp/1.0"}, timeout=10)
         if resp.status_code == 200:
             hourly = resp.json().get("hourly", {})
             times = hourly.get("time", [])
             levels = hourly.get("sea_level_height_msl", [])
-            rows = []
             for i, ts in enumerate(times):
+                day_key = ts[:10]
+                hora = ts[11:16]
                 val = levels[i] if i < len(levels) else None
                 prev = levels[i - 1] if i > 0 and i - 1 < len(levels) else val
                 trend = "Subiendo" if (val is not None and prev is not None and val > prev + 0.02) else (
                     "Bajando" if (val is not None and prev is not None and val < prev - 0.02) else "Estable"
                 )
-                rows.append({"hora": ts[-5:], "altura": val, "estado": trend})
-            cache.set(cache_key, rows, 1800)
-            return rows
+                by_day.setdefault(day_key, []).append({"hora": hora, "altura": val, "estado": trend})
+            if by_day:
+                cache.set(cache_key, by_day, 1800)
     except requests.RequestException:
         pass
-    return []
+    return by_day
 
 
 def get_7day_wind_summary(lat, lon):

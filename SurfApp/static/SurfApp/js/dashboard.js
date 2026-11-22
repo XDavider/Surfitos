@@ -439,54 +439,98 @@ function initializeCharts() {
 
 function initializeTideChart() {
     const tideEl = document.getElementById("tide-data");
+    const marineEl = document.getElementById("marine-data");
     const canvas = document.getElementById("grafico-marea");
     if (!tideEl || !canvas) return;
     const tideData = JSON.parse(tideEl.textContent || "[]");
+    const marineData = marineEl ? JSON.parse(marineEl.textContent || "[]") : [];
     if (!tideData.length) return;
 
     const isMobile = window.innerWidth <= 640;
-    new Chart(canvas.getContext("2d"), {
+    const energyByTime = Object.fromEntries(marineData.map(d => [formatTime(d.time), d.wave_energy]));
+    window.tideChartInstance = new Chart(canvas.getContext("2d"), {
         type: "line",
         data: {
             labels: tideData.map(d => d.hora),
-            datasets: [{
-                label: "Nivel de marea (m)",
-                data: tideData.map(d => d.altura),
-                borderColor: "#38bdf8",
-                backgroundColor: "rgba(56, 189, 248, 0.18)",
-                borderWidth: 2.5,
-                pointRadius: 0,
-                pointHoverRadius: 5,
-                pointHoverBackgroundColor: "#38bdf8",
-                tension: 0.45,
-                fill: true,
-            }]
+            datasets: [
+                {
+                    label: "Marea (m)",
+                    data: tideData.map(d => d.altura),
+                    borderColor: "#38bdf8",
+                    backgroundColor: "rgba(56, 189, 248, 0.18)",
+                    borderWidth: 2.5,
+                    pointRadius: 0,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "#38bdf8",
+                    tension: 0.45,
+                    fill: true,
+                    yAxisID: "y_marea",
+                },
+                {
+                    label: "Fuerza (kW/m)",
+                    data: tideData.map(d => energyByTime[d.hora] ?? null),
+                    borderColor: "#fb7185",
+                    backgroundColor: "rgba(251, 113, 133, 0.10)",
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    pointHoverRadius: 5,
+                    pointHoverBackgroundColor: "#fb7185",
+                    tension: 0.4,
+                    fill: false,
+                    yAxisID: "y_fuerza",
+                }
+            ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { display: false },
+                legend: {
+                    display: true,
+                    position: isMobile ? "bottom" : "top",
+                    labels: {
+                        color: "#cbd5e1",
+                        usePointStyle: true,
+                        pointStyle: "circle",
+                        boxWidth: 8,
+                        font: { family: "'Poppins', sans-serif", size: isMobile ? 10 : 11 }
+                    }
+                },
                 tooltip: {
                     backgroundColor: "rgba(6, 19, 31, 0.94)",
                     borderColor: "rgba(56, 189, 248, 0.45)",
                     borderWidth: 1,
                     callbacks: {
                         label: (ctx) => {
-                            const row = tideData[ctx.dataIndex];
-                            return ` ${ctx.raw?.toFixed(2)} m · ${row ? row.estado : ""}`;
+                            if (ctx.dataset.yAxisID === "y_marea") {
+                                const row = window.currentTideRows?.[ctx.dataIndex] || tideData[ctx.dataIndex];
+                                return ` Marea: ${ctx.raw?.toFixed(2)} m · ${row ? row.estado : ""}`;
+                            }
+                            return ` Fuerza: ${ctx.raw ?? "--"} kW/m`;
                         }
                     }
                 }
             },
             scales: {
-                y: {
+                y_marea: {
+                    position: "left",
                     border: { display: false },
                     grid: { color: "rgba(148, 163, 184, 0.1)" },
                     ticks: {
-                        color: "#94a3b8",
+                        color: "#38bdf8",
                         font: { family: "'Poppins', sans-serif", size: 10 },
                         callback: v => `${v} m`
+                    }
+                },
+                y_fuerza: {
+                    position: "right",
+                    beginAtZero: true,
+                    border: { display: false },
+                    grid: { drawOnChartArea: false },
+                    ticks: {
+                        color: "#fb7185",
+                        font: { family: "'Poppins', sans-serif", size: 10 },
+                        callback: v => `${v} kW`
                     }
                 },
                 x: {
@@ -504,6 +548,7 @@ function initializeTideChart() {
             interaction: { mode: "index", intersect: false }
         }
     });
+    window.currentTideRows = tideData;
 }
 
 // Cambio instantáneo entre días sin recargar la página
@@ -532,6 +577,17 @@ function initializeDaySelector() {
                 datasetConfigs['swell-direction'].data = dayHourly.map(d => d.swell_wave_direction);
                 datasetConfigs['wave-energy'].data = dayHourly.map(d => d.wave_energy);
                 updateDatasets();
+            }
+
+            // Actualizar gráfica de Marea y Fuerza del día seleccionado
+            const dayTides = (weekData.tides && weekData.tides[dateIso]) || [];
+            if (window.tideChartInstance && dayTides.length) {
+                const eByTime = Object.fromEntries(dayHourly.map(h => [formatTime(h.time), h.wave_energy]));
+                window.currentTideRows = dayTides;
+                window.tideChartInstance.data.labels = dayTides.map(t => t.hora);
+                window.tideChartInstance.data.datasets[0].data = dayTides.map(t => t.altura);
+                window.tideChartInstance.data.datasets[1].data = dayTides.map(t => eByTime[t.hora] ?? null);
+                window.tideChartInstance.update();
             }
 
             // Actualizar tarjetas de Pronóstico Diario
