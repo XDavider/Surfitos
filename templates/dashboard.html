@@ -92,9 +92,11 @@
                         <div class="level-card">
                             <h4>{{ item.nivel }}</h4>
                             <div class="stars" aria-label="{{ item.stars }} de 5 estrellas">
-                                {% for i in "12345" %}
-                                    {% if forloop.counter <= item.stars %}
+                                {% for st in item.star_icons %}
+                                    {% if st == "full" %}
                                         <i class="fas fa-star"></i>
+                                    {% elif st == "half" %}
+                                        <i class="fas fa-star-half-alt"></i>
                                     {% else %}
                                         <i class="far fa-star star-empty"></i>
                                     {% endif %}
@@ -173,9 +175,11 @@
                         <div class="level-card">
                             <h4>{{ item.nivel }}</h4>
                             <div class="stars" aria-label="{{ item.stars }} de 5 estrellas">
-                                {% for i in "12345" %}
-                                    {% if forloop.counter <= item.stars %}
+                                {% for st in item.star_icons %}
+                                    {% if st == "full" %}
                                         <i class="fas fa-star"></i>
+                                    {% elif st == "half" %}
+                                        <i class="fas fa-star-half-alt"></i>
                                     {% else %}
                                         <i class="far fa-star star-empty"></i>
                                     {% endif %}

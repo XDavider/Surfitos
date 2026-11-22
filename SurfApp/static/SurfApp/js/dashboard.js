@@ -471,9 +471,13 @@ function initializeDaySelector() {
                 levelsGrid.innerHTML = d.levels.map(item => {
                     let starsHtml = '';
                     for (let i = 1; i <= 5; i++) {
-                        starsHtml += i <= item.stars
-                            ? '<i class="fas fa-star"></i>'
-                            : '<i class="far fa-star star-empty"></i>';
+                        if (item.stars >= i) {
+                            starsHtml += '<i class="fas fa-star"></i>';
+                        } else if (item.stars >= i - 0.5) {
+                            starsHtml += '<i class="fas fa-star-half-alt"></i>';
+                        } else {
+                            starsHtml += '<i class="far fa-star star-empty"></i>';
+                        }
                     }
                     return `
                         <div class="level-card">
