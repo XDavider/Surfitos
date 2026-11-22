@@ -89,7 +89,7 @@
                 </div>
                 <div class="surf-levels-grid">
                     {% for item in surf_levels %}
-                        <div class="level-card">
+                        <div class="level-card level-card-clickable" data-nivel="{{ item.nivel }}" data-breakdown='{{ item.breakdown_json|safe }}' onclick="abrirDesgloseNivel(this)">
                             <h4>{{ item.nivel }}</h4>
                             <div class="stars" aria-label="{{ item.stars }} de 5 estrellas">
                                 {% for st in item.star_icons %}
@@ -172,7 +172,7 @@
                 </div>
                 <div id="day-levels-grid" class="surf-levels-grid">
                     {% for item in day_surf_levels %}
-                        <div class="level-card">
+                        <div class="level-card level-card-clickable" data-nivel="{{ item.nivel }}" data-breakdown='{{ item.breakdown_json|safe }}' onclick="abrirDesgloseNivel(this)">
                             <h4>{{ item.nivel }}</h4>
                             <div class="stars" aria-label="{{ item.stars }} de 5 estrellas">
                                 {% for st in item.star_icons %}
@@ -350,8 +350,23 @@
         {{ week_data_json|safe }}
     </script>
     <script>
-        function abrirModalInfoEstrellas() {
-            document.getElementById('modalInfoEstrellas').classList.add('show');
+        function abrirModalInfoEstrellas(tituloCustom, rows) {
+            const modal = document.getElementById('modalInfoEstrellas');
+            const titleEl = document.getElementById('titulo-info-estrellas');
+            const bodyEl = modal.querySelector('.info-modal-body');
+            if (tituloCustom && Array.isArray(rows)) {
+                titleEl.innerHTML = `<i class="fas fa-star"></i> Desglose: ${tituloCustom}`;
+                bodyEl.innerHTML = rows.map(r => `<div class="breakdown-row"><span>${r.label}</span><strong>${r.value}</strong></div>`).join('');
+            } else {
+                titleEl.innerHTML = `<i class="fas fa-star"></i> Cómo se calculan las estrellas`;
+                bodyEl.innerHTML = `<p>Cada nivel valora de <strong>1 a 5 estrellas</strong> combinando altura de ola, periodo, viento y la orientación óptima de la playa. Pulsa sobre cualquier tarjeta de nivel para ver su cómputo exacto.</p>`;
+            }
+            modal.classList.add('show');
+        }
+        function abrirDesgloseNivel(card) {
+            const nivel = card.dataset.nivel || '';
+            const rows = JSON.parse(card.dataset.breakdown || '[]');
+            abrirModalInfoEstrellas(nivel, rows);
         }
         function cerrarModalInfoEstrellas() {
             document.getElementById('modalInfoEstrellas').classList.remove('show');

@@ -635,6 +635,30 @@ body {
     padding: 14px 16px;
 }
 
+.level-card-clickable {
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.15s ease;
+}
+
+.level-card-clickable:hover {
+    border-color: var(--border-accent);
+    transform: translateY(-2px);
+}
+
+.breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: 0.85rem;
+}
+
+.breakdown-row:last-child {
+    border-bottom: none;
+    color: var(--accent);
+}
+
 .level-card h4 {
     font-size: 0.9rem;
     font-weight: 600;

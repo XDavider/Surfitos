@@ -479,8 +479,9 @@ function initializeDaySelector() {
                             starsHtml += '<i class="far fa-star star-empty"></i>';
                         }
                     }
+                    const bJson = (item.breakdown_json || '[]').replace(/'/g, '&#39;');
                     return `
-                        <div class="level-card">
+                        <div class="level-card level-card-clickable" data-nivel="${item.nivel}" data-breakdown='${bJson}' onclick="abrirDesgloseNivel(this)">
                             <h4>${item.nivel}</h4>
                             <div class="stars" aria-label="${item.stars} de 5 estrellas">${starsHtml}</div>
                             <p class="level-note">${item.nota}</p>

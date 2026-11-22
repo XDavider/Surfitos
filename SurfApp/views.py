@@ -128,33 +128,39 @@ def _calcular_nivel_surf(current_marine, current_weather, playa=None):
         s_int, n_int = 2, "Falta tamaño" if wave < 0.5 else "Periodo corto"
 
     # Ajuste por orientación óptima de la playa (olas y viento) con medias estrellas
-    penalizacion = 0.0
+    pen_ola = 0.0
+    nota_ola = "Sin configurar"
+    pen_viento = 0.0
+    nota_viento = "Sin configurar"
     motivo_orientacion = None
+
     if playa is not None:
         if playa.ola_optima is not None and wave_dir is not None:
             diff_ola = _diferencia_angular(wave_dir, playa.ola_optima)
             if diff_ola > 95:
-                penalizacion += 1.0
+                pen_ola = 1.0
+                nota_ola = f"-1.0★ (desvío {int(diff_ola)}°)"
                 motivo_orientacion = "Dirección de ola desfavorable"
             elif diff_ola > 60:
-                penalizacion += 0.5
+                pen_ola = 0.5
+                nota_ola = f"-0.5★ (desvío {int(diff_ola)}°)"
                 motivo_orientacion = "Ola algo cruzada"
+            else:
+                nota_ola = f"0★ (óptima, desvío {int(diff_ola)}°)"
         if playa.viento_optimo is not None and wind_dir is not None:
             diff_viento = _diferencia_angular(wind_dir, playa.viento_optimo)
             if diff_viento > 110:
-                penalizacion += 1.0
+                pen_viento = 1.0
+                nota_viento = f"-1.0★ (desvío {int(diff_viento)}°)"
                 motivo_orientacion = "Viento desfavorable" if not motivo_orientacion else "Ola y viento desfavorables"
             elif diff_viento > 75:
-                penalizacion += 0.5
+                pen_viento = 0.5
+                nota_viento = f"-0.5★ (desvío {int(diff_viento)}°)"
                 motivo_orientacion = "Viento algo cruzado" if not motivo_orientacion else "Ola y viento algo cruzados"
+            else:
+                nota_viento = f"0★ (offshore, desvío {int(diff_viento)}°)"
 
-    if penalizacion > 0:
-        s_beg = max(1.0, s_beg - penalizacion)
-        s_prog = max(1.0, s_prog - penalizacion)
-        s_int = max(1.0, s_int - penalizacion)
-        n_beg = motivo_orientacion
-        n_prog = motivo_orientacion
-        n_int = motivo_orientacion
+    penalizacion = pen_ola + pen_viento
 
     def _build_stars(score):
         icons = []
@@ -167,10 +173,27 @@ def _calcular_nivel_surf(current_marine, current_weather, playa=None):
                 icons.append("empty")
         return icons
 
+    def _make_item(nivel, base_score, base_note):
+        final_score = max(1.0, base_score - penalizacion) if penalizacion > 0 else float(base_score)
+        final_note = motivo_orientacion if penalizacion > 0 else base_note
+        breakdown = [
+            {"label": f"Base (ola {wave}m, periodo {period}s, viento {wind_val} km/h)", "value": f"{base_score:.1f}★ ({base_note})"},
+            {"label": "Ajuste dirección de ola", "value": nota_ola},
+            {"label": "Ajuste dirección de viento", "value": nota_viento},
+            {"label": "Puntuación final", "value": f"{final_score:.1f}★ / 5.0★"},
+        ]
+        return {
+            "nivel": nivel,
+            "stars": final_score,
+            "star_icons": _build_stars(final_score),
+            "nota": final_note,
+            "breakdown_json": json.dumps(breakdown),
+        }
+
     return [
-        {"nivel": "Principiante", "stars": s_beg, "star_icons": _build_stars(s_beg), "nota": n_beg},
-        {"nivel": "Progresión", "stars": s_prog, "star_icons": _build_stars(s_prog), "nota": n_prog},
-        {"nivel": "Intermedio", "stars": s_int, "star_icons": _build_stars(s_int), "nota": n_int},
+        _make_item("Principiante", s_beg, n_beg),
+        _make_item("Progresión", s_prog, n_prog),
+        _make_item("Intermedio", s_int, n_int),
     ]
 
 
