@@ -182,9 +182,10 @@ body {
 }
 
 .nombre-playa {
-    font-size: 1.38rem;
+    font-size: 1.65rem;
     font-weight: 700;
-    letter-spacing: -0.01em;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
     color: var(--text-primary);
 }
 
@@ -206,10 +207,17 @@ body {
 .acciones {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    gap: 8px;
+    justify-content: space-between;
+    gap: 10px;
     padding-top: 12px;
     border-top: 1px solid var(--border-subtle);
+}
+
+.acciones-botones {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
 }
 
 .boton {
