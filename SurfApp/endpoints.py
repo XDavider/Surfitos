@@ -203,6 +203,43 @@ def get_today_tides(lat, lon):
     return []
 
 
+def get_7day_wind_summary(lat, lon):
+    """Devuelve {YYYY-MM-DD: {wind_speed_10m, wind_direction_10m}} para los próximos 7 días usando Met.no."""
+    cache_key = f"wind_7d_{round(float(lat), 4)}_{round(float(lon), 4)}"
+    cached = cache.get(cache_key)
+    if cached is not None:
+        return cached
+
+    summary = {}
+    try:
+        met_url = f"https://api.met.no/weatherapi/locationforecast/2.0/compact?lat={round(float(lat), 4)}&lon={round(float(lon), 4)}"
+        resp = requests.get(met_url, headers={"User-Agent": "SurfitosApp/1.0 github.com/XDavider/Surfitos"}, timeout=10)
+        if resp.status_code == 200:
+            for entry in resp.json().get("properties", {}).get("timeseries", []):
+                dt_str = entry.get("time", "")
+                day_key = dt_str[:10]
+                hour = int(dt_str[11:13]) if len(dt_str) >= 13 else 12
+                details = entry.get("data", {}).get("instant", {}).get("details", {})
+                ws = details.get("wind_speed")
+                wd = details.get("wind_from_direction")
+                if ws is None or wd is None:
+                    continue
+                # Prioriza la lectura más cercana a las 13:00 UTC
+                if day_key not in summary or abs(hour - 13) < summary[day_key]["_dist"]:
+                    summary[day_key] = {
+                        "wind_speed_10m": round(ws * 3.6, 1),
+                        "wind_direction_10m": round(wd),
+                        "_dist": abs(hour - 13),
+                    }
+            for v in summary.values():
+                v.pop("_dist", None)
+            if summary:
+                cache.set(cache_key, summary, 1800)
+    except requests.RequestException:
+        pass
+    return summary
+
+
 # === Datos Actuales del API WEATHER ===
 # Llama al endpoint de Open-Meteo FORECAST con caché de 10 minutos para reducir llamadas
 def get_current_weather_data(lat, lon):

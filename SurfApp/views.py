@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import Playa
-from .endpoints import get_current_marine_data, get_current_weather_data, get_today_tides
+from .endpoints import get_current_marine_data, get_current_weather_data, get_today_tides, get_7day_wind_summary
 from .api_data_fetch import (
     fetch_and_save_marine_data,
     fetch_and_save_weather_data,
@@ -293,6 +293,7 @@ def dashboard_playa_view(request, playa_id):
         playa=playa, timestamp__date__gte=hoy, timestamp__date__lte=fin_semana
     ).order_by('timestamp')
 
+    wind_by_date = get_7day_wind_summary(playa.latitud, playa.longitud)
     daily_by_date = {
         d.fecha.isoformat(): {
             "wave_height_max": d.wave_height_max,
@@ -307,7 +308,7 @@ def dashboard_playa_view(request, playa_id):
                     "wave_period": d.wave_period_max,
                     "wave_direction": d.wave_direction_dominant,
                 },
-                None,
+                wind_by_date.get(d.fecha.isoformat()),
                 playa=playa,
             ),
         }
