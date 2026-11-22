@@ -490,7 +490,7 @@ function initializeDaySelector() {
 
 // Inicializa los filtros
 function initializeFilters() {
-    const checkboxes = document.querySelectorAll('.filtros input[type="checkbox"]');
+    const checkboxes = document.querySelectorAll('.filter-chips input[type="checkbox"], .filtros input[type="checkbox"]');
     checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', updateDatasets);
     });
@@ -499,7 +499,7 @@ function initializeFilters() {
 // Actualiza los datasets mostrados en la gráfica
 function updateDatasets() {
     const { chart, datasetConfigs } = window.chartConfig;
-    const checkboxes = document.querySelectorAll('.filtros input[type="checkbox"]:checked');
+    const checkboxes = document.querySelectorAll('.filter-chips input[type="checkbox"]:checked, .filtros input[type="checkbox"]:checked');
     
     // Limpia los datasets actuales
     chart.data.datasets = [];
