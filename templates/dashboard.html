@@ -234,32 +234,15 @@
             </section>
 
             {% if tide_table %}
-            <!-- Tabla de marea del día -->
+            <!-- Gráfica senoidal de marea del día -->
             <section class="section">
                 <div class="section-header">
                     <h2 class="section-title">
                         <i class="fas fa-water"></i> Marea del Día
                     </h2>
                 </div>
-                <div class="surf-table-wrap">
-                    <table class="surf-table">
-                        <thead>
-                            <tr>
-                                <th>Hora</th>
-                                <th>Nivel (msl)</th>
-                                <th>Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for t in tide_table %}
-                                <tr>
-                                    <td>{{ t.hora }}</td>
-                                    <td>{{ t.altura|floatformat:2|default:"--" }} m</td>
-                                    <td>{{ t.estado }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                <div class="grafica" style="height: 220px;">
+                    <canvas id="grafico-marea"></canvas>
                 </div>
             </section>
             {% endif %}
@@ -348,6 +331,9 @@
     </script>
     <script id="week-data" type="application/json">
         {{ week_data_json|safe }}
+    </script>
+    <script id="tide-data" type="application/json">
+        {{ tides_today_json|safe }}
     </script>
     <script>
         function abrirModalInfoEstrellas(tituloCustom, rows) {

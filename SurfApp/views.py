@@ -334,6 +334,7 @@ def dashboard_playa_view(request, playa_id):
         'current_weather': current_weather,
         'current_tide': current_tide,
         'tide_table': tide_table,
+        'tides_today_json': json.dumps(tides_today),
         'surf_levels': _calcular_nivel_surf(current_marine, current_weather, playa=playa),
         'day_surf_levels': (daily_by_date.get(selected_date.isoformat()) or {}).get(
             'levels',

@@ -415,6 +415,76 @@ function initializeCharts() {
     initializeFilters();
     updateDatasets();
     initializeDaySelector();
+    initializeTideChart();
+}
+
+function initializeTideChart() {
+    const tideEl = document.getElementById("tide-data");
+    const canvas = document.getElementById("grafico-marea");
+    if (!tideEl || !canvas) return;
+    const tideData = JSON.parse(tideEl.textContent || "[]");
+    if (!tideData.length) return;
+
+    const isMobile = window.innerWidth <= 640;
+    new Chart(canvas.getContext("2d"), {
+        type: "line",
+        data: {
+            labels: tideData.map(d => d.hora),
+            datasets: [{
+                label: "Nivel de marea (m)",
+                data: tideData.map(d => d.altura),
+                borderColor: "#38bdf8",
+                backgroundColor: "rgba(56, 189, 248, 0.18)",
+                borderWidth: 2.5,
+                pointRadius: 0,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: "#38bdf8",
+                tension: 0.45,
+                fill: true,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: "rgba(6, 19, 31, 0.94)",
+                    borderColor: "rgba(56, 189, 248, 0.45)",
+                    borderWidth: 1,
+                    callbacks: {
+                        label: (ctx) => {
+                            const row = tideData[ctx.dataIndex];
+                            return ` ${ctx.raw?.toFixed(2)} m · ${row ? row.estado : ""}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    border: { display: false },
+                    grid: { color: "rgba(148, 163, 184, 0.1)" },
+                    ticks: {
+                        color: "#94a3b8",
+                        font: { family: "'Poppins', sans-serif", size: 10 },
+                        callback: v => `${v} m`
+                    }
+                },
+                x: {
+                    border: { display: false },
+                    grid: { display: false },
+                    ticks: {
+                        color: "#94a3b8",
+                        font: { family: "'Poppins', sans-serif", size: isMobile ? 10 : 11 },
+                        maxRotation: 0,
+                        autoSkip: true,
+                        maxTicksLimit: isMobile ? 5 : 8
+                    }
+                }
+            },
+            interaction: { mode: "index", intersect: false }
+        }
+    });
 }
 
 // Cambio instantáneo entre días sin recargar la página
