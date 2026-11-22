@@ -137,6 +137,11 @@
                                 <td>Periodo {{ current_marine.swell_wave_period|default:"--" }} s · Dir. {{ current_marine.swell_wave_direction|default:"--" }}° <i class="fas fa-long-arrow-alt-down" data-rotate="{{ current_marine.swell_wave_direction|default:'0' }}"></i></td>
                             </tr>
                             <tr>
+                                <td><span class="metric-label"><i class="fas fa-bolt"></i> Fuerza del mar</span></td>
+                                <td>{{ current_energy|default:"--" }} kW/m</td>
+                                <td>Energía estimada del oleaje</td>
+                            </tr>
+                            <tr>
                                 <td><span class="metric-label"><i class="fas fa-wind"></i> Viento</span></td>
                                 <td>{{ current_weather.wind_speed_10m|default:"--" }} km/h</td>
                                 <td>Dirección {{ current_weather.wind_direction_10m|default:"--" }}° <i class="fas fa-long-arrow-alt-down" data-rotate="{{ current_weather.wind_direction_10m|default:'0' }}"></i></td>
@@ -219,6 +224,11 @@
                                 <td>Periodo máx. <span id="daily-swell-period">{{ marine_daily.swell_wave_period_max|default:"--" }} <span class="unit">s</span></span> · Dir. <span id="daily-swell-dir">{{ marine_daily.swell_wave_direction_dominant|default:"--" }}° <i class="fas fa-long-arrow-alt-down" data-rotate="{{ marine_daily.swell_wave_direction_dominant|default:0 }}"></i></span></td>
                             </tr>
                             <tr>
+                                <td><span class="metric-label"><i class="fas fa-bolt"></i> Fuerza del mar</span></td>
+                                <td>{{ current_energy|default:"--" }} kW/m</td>
+                                <td>Energía estimada del oleaje</td>
+                            </tr>
+                            <tr>
                                 <td><span class="metric-label"><i class="fas fa-wind"></i> Viento</span></td>
                                 <td>{{ current_weather.wind_speed_10m|default:"--" }} <span class="unit">km/h</span></td>
                                 <td>Dirección {{ current_weather.wind_direction_10m|default:"--" }}° <i class="fas fa-long-arrow-alt-down" data-rotate="{{ current_weather.wind_direction_10m|default:'0' }}"></i></td>
@@ -262,6 +272,7 @@
                         <label class="filter-chip"><input type="checkbox" data-type="swell" checked><span>Altura swell</span></label>
                         <label class="filter-chip"><input type="checkbox" data-type="swell-period"><span>Periodo swell</span></label>
                         <label class="filter-chip"><input type="checkbox" data-type="swell-direction"><span>Dir. swell</span></label>
+                        <label class="filter-chip"><input type="checkbox" data-type="wave-energy"><span>Fuerza (kW/m)</span></label>
                     </div>
 
                     <div class="grafica">

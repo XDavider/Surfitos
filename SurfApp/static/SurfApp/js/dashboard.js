@@ -288,6 +288,17 @@ function initializeCharts() {
                         display: false
                     }
                 },
+                y_energia: {
+                    type: 'linear',
+                    position: 'left',
+                    beginAtZero: true,
+                    grid: { drawOnChartArea: false },
+                    ticks: {
+                        color: "rgba(251, 113, 133, 0.9)",
+                        font: { family: "'Poppins', sans-serif", size: 10 },
+                        callback: v => `${v} kW`
+                    }
+                },
                 x: {
                     border: { display: false },
                     grid: {
@@ -384,6 +395,14 @@ function initializeCharts() {
                 backgroundColor: "rgba(244, 114, 182, 0.12)",
                 dataType: 'swell-direction',
                 yAxisID: 'y_direccion'
+            },
+            'wave-energy': {
+                label: "Fuerza del mar (kW/m)",
+                data: marineData.map(d => d.wave_energy),
+                borderColor: "#fb7185",
+                backgroundColor: "rgba(251, 113, 133, 0.16)",
+                dataType: 'wave-energy',
+                yAxisID: 'y_energia'
             },
             'temperature': {
                 label: "Temperatura (°C)",
@@ -511,6 +530,7 @@ function initializeDaySelector() {
                 datasetConfigs['swell'].data = dayHourly.map(d => d.swell_wave_height);
                 datasetConfigs['swell-period'].data = dayHourly.map(d => d.swell_wave_period);
                 datasetConfigs['swell-direction'].data = dayHourly.map(d => d.swell_wave_direction);
+                datasetConfigs['wave-energy'].data = dayHourly.map(d => d.wave_energy);
                 updateDatasets();
             }
 

@@ -56,6 +56,13 @@ def playas_index_view(request):
     return render(request, 'playas-index.html', {'playas': playas, 'is_guest': is_guest})
 
 
+def _calcular_energia_ola(wave_height, wave_period):
+    """Calcula la fuerza/energía del mar en kW/m: P ≈ 0.49 * H² * T."""
+    if wave_height is None or wave_period is None:
+        return None
+    return round(0.49 * (float(wave_height) ** 2) * float(wave_period), 1)
+
+
 def _diferencia_angular(a, b):
     """Devuelve la diferencia angular mínima (0..180°) entre dos direcciones."""
     diff = abs(float(a) - float(b)) % 360
@@ -161,6 +168,7 @@ def _calcular_nivel_surf(current_marine, current_weather, playa=None):
                 nota_viento = f"0★ (offshore, desvío {int(diff_viento)}°)"
 
     penalizacion = pen_ola + pen_viento
+    energia = _calcular_energia_ola(wave, period)
 
     def _build_stars(score):
         icons = []
@@ -174,10 +182,27 @@ def _calcular_nivel_surf(current_marine, current_weather, playa=None):
         return icons
 
     def _make_item(nivel, base_score, base_note):
-        final_score = max(1.0, base_score - penalizacion) if penalizacion > 0 else float(base_score)
-        final_note = motivo_orientacion if penalizacion > 0 else base_note
+        pen_energia = 0.0
+        nota_energia = f"{energia} kW/m (normal)" if energia is not None else "Sin datos"
+        if energia is not None:
+            if nivel == "Principiante" and energia > 50:
+                pen_energia = 1.0
+                nota_energia = f"-1.0★ ({energia} kW/m, mucha fuerza)"
+            elif nivel == "Principiante" and energia > 30:
+                pen_energia = 0.5
+                nota_energia = f"-0.5★ ({energia} kW/m, fuerza media-alta)"
+            elif nivel == "Progresión" and energia > 75:
+                pen_energia = 0.5
+                nota_energia = f"-0.5★ ({energia} kW/m, mar potente)"
+
+        total_pen = penalizacion + pen_energia
+        final_score = max(1.0, base_score - total_pen) if total_pen > 0 else float(base_score)
+        final_note = motivo_orientacion if penalizacion > 0 else (
+            "Mucha fuerza de mar" if pen_energia > 0 else base_note
+        )
         breakdown = [
             {"label": f"Base (ola {wave}m, periodo {period}s, viento {wind_val} km/h)", "value": f"{base_score:.1f}★ ({base_note})"},
+            {"label": "Fuerza del mar", "value": nota_energia},
             {"label": "Ajuste dirección de ola", "value": nota_ola},
             {"label": "Ajuste dirección de viento", "value": nota_viento},
             {"label": "Puntuación final", "value": f"{final_score:.1f}★ / 5.0★"},
@@ -273,6 +298,7 @@ def dashboard_playa_view(request, playa_id):
             "swell_wave_height": d.swell_wave_height,
             "swell_wave_period": d.swell_wave_period,
             "swell_wave_direction": d.swell_wave_direction,
+            "wave_energy": _calcular_energia_ola(d.wave_height, d.wave_period),
         }
         for d in marine_hourly
     ])
@@ -325,12 +351,19 @@ def dashboard_playa_view(request, playa_id):
             "swell_wave_height": d.swell_wave_height,
             "swell_wave_period": d.swell_wave_period,
             "swell_wave_direction": d.swell_wave_direction,
+            "wave_energy": _calcular_energia_ola(d.wave_height, d.wave_period),
         })
     week_data_json = json.dumps({"daily": daily_by_date, "hourly": hourly_by_date})
+
+    current_energy = _calcular_energia_ola(
+        (current_marine or {}).get("wave_height"),
+        (current_marine or {}).get("wave_period"),
+    )
 
     context = {
         'playa': playa,
         'current_marine': current_marine,
+        'current_energy': current_energy,
         'current_weather': current_weather,
         'current_tide': current_tide,
         'tide_table': tide_table,
