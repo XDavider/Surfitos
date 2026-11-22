@@ -6,6 +6,8 @@ class Playa(models.Model):
     lugar = models.CharField(max_length=100)
     latitud = models.FloatField()
     longitud = models.FloatField()
+    ola_optima = models.IntegerField(null=True, blank=True)
+    viento_optimo = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.nombre} - {self.lugar}"

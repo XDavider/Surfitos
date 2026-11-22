@@ -60,6 +60,9 @@
                             <i class="fas fa-chart-line"></i>
                         </button>
                         {% if not is_guest %}
+                            <button type="button" class="boton boton-editar" onclick="editarPlaya('{{ playa.id }}', '{{ playa.nombre|escapejs }}', '{{ playa.lugar|escapejs }}', {{ playa.latitud }}, {{ playa.longitud }}, {{ playa.ola_optima|default_if_none:'null' }}, {{ playa.viento_optimo|default_if_none:'null' }})" title="Editar playa" aria-label="Editar {{ playa.nombre }}">
+                                <i class="fas fa-pen"></i>
+                            </button>
                             <button type="button" class="boton boton-eliminar" onclick="eliminarPlaya('{{ playa.id }}', '{{ playa.nombre|escapejs }}')" title="Eliminar playa" aria-label="Eliminar {{ playa.nombre }}">
                                 <i class="fas fa-trash"></i>
                             </button>
@@ -88,8 +91,42 @@
             <input type="text" id="inputNombre" placeholder="Nombre de la playa (ej. Playa de Razo)">
             <input type="text" id="inputLugar" placeholder="Zona / Localidad (opcional)">
             <p class="mapa-agregar-hint">Haz clic en el mapa para marcar la ubicación exacta:</p>
-            <div id="mapa-agregar" style="height: 230px; width: 100%; border-radius: 12px; margin-bottom: 8px;"></div>
+            <div id="mapa-agregar" style="height: 200px; width: 100%; border-radius: 12px; margin-bottom: 8px;"></div>
             <p id="coords-seleccionadas" class="mapa-agregar-coords">Ninguna ubicación seleccionada</p>
+
+            <div class="compass-grid">
+                <div class="compass-box">
+                    <span class="compass-title"><i class="fas fa-water"></i> Olas óptimas (desde)</span>
+                    <div class="compass-ring" data-compass="ola">
+                        <button type="button" class="dir-btn dir-n" data-deg="0">N</button>
+                        <button type="button" class="dir-btn dir-ne" data-deg="45">NE</button>
+                        <button type="button" class="dir-btn dir-e" data-deg="90">E</button>
+                        <button type="button" class="dir-btn dir-se" data-deg="135">SE</button>
+                        <button type="button" class="dir-btn dir-s" data-deg="180">S</button>
+                        <button type="button" class="dir-btn dir-so" data-deg="225">SO</button>
+                        <button type="button" class="dir-btn dir-o" data-deg="270">O</button>
+                        <button type="button" class="dir-btn dir-no" data-deg="315">NO</button>
+                        <div class="compass-center"><i id="arrow-ola" class="fas fa-long-arrow-alt-down"></i></div>
+                    </div>
+                    <span id="label-ola" class="compass-value">Sin definir</span>
+                </div>
+                <div class="compass-box">
+                    <span class="compass-title"><i class="fas fa-wind"></i> Viento óptimo (offshore)</span>
+                    <div class="compass-ring" data-compass="viento">
+                        <button type="button" class="dir-btn dir-n" data-deg="0">N</button>
+                        <button type="button" class="dir-btn dir-ne" data-deg="45">NE</button>
+                        <button type="button" class="dir-btn dir-e" data-deg="90">E</button>
+                        <button type="button" class="dir-btn dir-se" data-deg="135">SE</button>
+                        <button type="button" class="dir-btn dir-s" data-deg="180">S</button>
+                        <button type="button" class="dir-btn dir-so" data-deg="225">SO</button>
+                        <button type="button" class="dir-btn dir-o" data-deg="270">O</button>
+                        <button type="button" class="dir-btn dir-no" data-deg="315">NO</button>
+                        <div class="compass-center"><i id="arrow-viento" class="fas fa-long-arrow-alt-down"></i></div>
+                    </div>
+                    <span id="label-viento" class="compass-value">Sin definir</span>
+                </div>
+            </div>
+
             <div class="modal-buttons">
                 <button type="button" class="btn cancelar" onclick="cerrarModal()">Cancelar</button>
                 <button type="button" class="btn guardar" onclick="enviarNuevaPlaya()">Guardar</button>

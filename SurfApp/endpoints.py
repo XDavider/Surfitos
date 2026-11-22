@@ -39,12 +39,19 @@ def agregar_playa(request):
             if existe:
                 return JsonResponse({'ok': False, 'error': 'Ya existe una playa con ese nombre y lugar.'})
 
+            ola_optima = data.get('ola_optima')
+            viento_optimo = data.get('viento_optimo')
+            ola_optima = int(ola_optima) if ola_optima not in (None, '') else None
+            viento_optimo = int(viento_optimo) if viento_optimo not in (None, '') else None
+
             if latitud is not None and longitud is not None:
                 Playa.objects.create(
                     nombre=nombre,
                     lugar=lugar,
                     latitud=float(latitud),
                     longitud=float(longitud),
+                    ola_optima=ola_optima,
+                    viento_optimo=viento_optimo,
                 )
                 return JsonResponse({'ok': True})
 
@@ -66,6 +73,44 @@ def agregar_playa(request):
             return JsonResponse({'ok': False, 'error': str(e)})
 
     # Rechaza métodos distintos de POST
+    return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
+
+
+# === Editar Playa ===
+def editar_playa(request, playa_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({'ok': False, 'error': 'Autenticación requerida.'}, status=401)
+
+    if request.method == 'PUT':
+        try:
+            playa = Playa.objects.get(id=playa_id)
+            data = json.loads(request.body)
+            nombre = data.get('nombre', '').strip()
+            lugar = data.get('lugar', '').strip() or 'Ubicación personalizada'
+            latitud = data.get('latitud')
+            longitud = data.get('longitud')
+            ola_optima = data.get('ola_optima')
+            viento_optimo = data.get('viento_optimo')
+
+            if not nombre:
+                return JsonResponse({'ok': False, 'error': 'El nombre es obligatorio.'})
+            if len(nombre) > 100 or len(lugar) > 100:
+                return JsonResponse({'ok': False, 'error': 'Máximo 100 caracteres.'}, status=400)
+
+            playa.nombre = nombre
+            playa.lugar = lugar
+            if latitud is not None and longitud is not None:
+                playa.latitud = float(latitud)
+                playa.longitud = float(longitud)
+            playa.ola_optima = int(ola_optima) if ola_optima not in (None, '') else None
+            playa.viento_optimo = int(viento_optimo) if viento_optimo not in (None, '') else None
+            playa.save()
+            return JsonResponse({'ok': True})
+        except Playa.DoesNotExist:
+            return JsonResponse({'ok': False, 'error': 'Playa no encontrada'})
+        except Exception as e:
+            return JsonResponse({'ok': False, 'error': str(e)})
+
     return JsonResponse({'ok': False, 'error': 'Método no permitido'}, status=405)
 
 

@@ -17,19 +17,58 @@ let addMap = null;
 let addMarker = null;
 let selectedLat = null;
 let selectedLon = null;
+let editingPlayaId = null;
+let selectedOlaOptima = null;
+let selectedVientoOptimo = null;
 
-// Muestra el modal para agregar una nueva playa con mapa interactivo
-function agregarPlaya() {
+const DIR_LABELS = { 0: 'N', 45: 'NE', 90: 'E', 135: 'SE', 180: 'S', 225: 'SO', 270: 'O', 315: 'NO' };
+
+function setCompassValue(type, deg) {
+    const ring = document.querySelector(`.compass-ring[data-compass="${type}"]`);
+    const arrow = document.getElementById(`arrow-${type}`);
+    const label = document.getElementById(`label-${type}`);
+    if (!ring || !arrow || !label) return;
+
+    ring.querySelectorAll('.dir-btn').forEach(b => b.classList.remove('active'));
+    if (deg === null || deg === undefined) {
+        arrow.style.transform = 'rotate(0deg)';
+        arrow.style.opacity = '0.35';
+        label.textContent = 'Sin definir';
+        return;
+    }
+    const btn = ring.querySelector(`.dir-btn[data-deg="${deg}"]`);
+    if (btn) btn.classList.add('active');
+    arrow.style.opacity = '1';
+    arrow.style.transform = `rotate(${deg}deg)`;
+    label.textContent = `${DIR_LABELS[deg] || ''} (${deg}°)`;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.compass-ring').forEach(ring => {
+        const type = ring.dataset.compass;
+        ring.querySelectorAll('.dir-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const deg = parseInt(btn.dataset.deg, 10);
+                if (type === 'ola') {
+                    selectedOlaOptima = selectedOlaOptima === deg ? null : deg;
+                    setCompassValue('ola', selectedOlaOptima);
+                } else {
+                    selectedVientoOptimo = selectedVientoOptimo === deg ? null : deg;
+                    setCompassValue('viento', selectedVientoOptimo);
+                }
+            });
+        });
+    });
+});
+
+function abrirModalPlaya(titulo, lat = 43.0, lon = -8.5, zoom = 6, hasPoint = false) {
+    document.getElementById('titulo-modal-agregar').innerHTML = `<i class="fas fa-umbrella-beach"></i> ${titulo}`;
     document.getElementById("modalAgregar").classList.add("show");
     document.getElementById("inputNombre").focus();
 
     setTimeout(() => {
         if (!addMap) {
-            addMap = L.map('mapa-agregar', {
-                center: [43.0, -8.5],
-                zoom: 6,
-                zoomControl: true
-            });
+            addMap = L.map('mapa-agregar', { center: [lat, lon], zoom, zoomControl: true });
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap',
                 maxZoom: 19
@@ -46,18 +85,54 @@ function agregarPlaya() {
                 document.getElementById('coords-seleccionadas').textContent =
                     `Ubicación: ${selectedLat.toFixed(5)}, ${selectedLon.toFixed(5)}`;
             });
+        } else {
+            addMap.setView([lat, lon], zoom);
+        }
+        if (hasPoint) {
+            if (addMarker) addMarker.setLatLng([lat, lon]);
+            else addMarker = L.marker([lat, lon]).addTo(addMap);
+            document.getElementById('coords-seleccionadas').textContent =
+                `Ubicación: ${lat.toFixed(5)}, ${lon.toFixed(5)}`;
         }
         addMap.invalidateSize();
     }, 120);
 }
 
-// Cierra el modal de agregar playa
+// Muestra el modal para agregar una nueva playa con mapa interactivo
+function agregarPlaya() {
+    editingPlayaId = null;
+    selectedOlaOptima = null;
+    selectedVientoOptimo = null;
+    setCompassValue('ola', null);
+    setCompassValue('viento', null);
+    abrirModalPlaya('Añadir Playa');
+}
+
+// Muestra el modal precargado para editar una playa existente
+function editarPlaya(id, nombre, lugar, lat, lon, olaOptima, vientoOptimo) {
+    if (window.event) window.event.stopPropagation();
+    editingPlayaId = id;
+    document.getElementById("inputNombre").value = nombre;
+    document.getElementById("inputLugar").value = lugar;
+    selectedLat = lat;
+    selectedLon = lon;
+    selectedOlaOptima = olaOptima;
+    selectedVientoOptimo = vientoOptimo;
+    setCompassValue('ola', olaOptima);
+    setCompassValue('viento', vientoOptimo);
+    abrirModalPlaya('Editar Playa', lat, lon, 12, true);
+}
+
+// Cierra el modal de agregar/editar playa
 function cerrarModal() {
     document.getElementById("modalAgregar").classList.remove("show");
     document.getElementById("inputNombre").value = '';
     document.getElementById("inputLugar").value = '';
+    editingPlayaId = null;
     selectedLat = null;
     selectedLon = null;
+    selectedOlaOptima = null;
+    selectedVientoOptimo = null;
     if (addMarker && addMap) {
         addMap.removeLayer(addMarker);
         addMarker = null;
@@ -220,8 +295,11 @@ function enviarNuevaPlaya() {
     saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
     saveButton.disabled = true;
 
-    fetch('/api/agregar-playa/', {
-        method: 'POST',
+    const url = editingPlayaId ? `/api/editar-playa/${editingPlayaId}` : '/api/agregar-playa/';
+    const method = editingPlayaId ? 'PUT' : 'POST';
+
+    fetch(url, {
+        method,
         headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': getCookie('csrftoken')
@@ -230,7 +308,9 @@ function enviarNuevaPlaya() {
             nombre,
             lugar,
             latitud: selectedLat,
-            longitud: selectedLon
+            longitud: selectedLon,
+            ola_optima: selectedOlaOptima,
+            viento_optimo: selectedVientoOptimo
         })
     })
     .then(res => res.json())

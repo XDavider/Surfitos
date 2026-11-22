@@ -45,10 +45,9 @@ urlpatterns = [
 
     # API
 
-    # API para agregar una nueva playa vía POST
+    # API para agregar, editar y eliminar playas
     path('api/agregar-playa/', endpoints.agregar_playa, name='agregar_playa'),
-
-    # API para eliminar una playa por ID vía DELETE
+    path('api/editar-playa/<int:playa_id>', endpoints.editar_playa, name='editar_playa'),
     path('api/eliminar-playa/<int:playa_id>', endpoints.eliminar_playa, name='eliminar_playa'),
 
 # Añade soporte para servir archivos estáticos durante el desarrollo

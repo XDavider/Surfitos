@@ -56,11 +56,19 @@ def playas_index_view(request):
     return render(request, 'playas-index.html', {'playas': playas, 'is_guest': is_guest})
 
 
-def _calcular_nivel_surf(current_marine, current_weather):
-    """Calcula una puntuación de 1 a 5 estrellas para 4 niveles de surf."""
+def _diferencia_angular(a, b):
+    """Devuelve la diferencia angular mínima (0..180°) entre dos direcciones."""
+    diff = abs(float(a) - float(b)) % 360
+    return 360 - diff if diff > 180 else diff
+
+
+def _calcular_nivel_surf(current_marine, current_weather, playa=None):
+    """Calcula una puntuación de 1 a 5 estrellas para 3 niveles teniendo en cuenta orientación óptima."""
     wave = (current_marine or {}).get("wave_height")
     period = (current_marine or {}).get("wave_period") or 0
+    wave_dir = (current_marine or {}).get("wave_direction")
     wind = (current_weather or {}).get("wind_speed_10m")
+    wind_dir = (current_weather or {}).get("wind_direction_10m")
 
     if wave is None:
         return [
@@ -118,6 +126,29 @@ def _calcular_nivel_surf(current_marine, current_weather):
         s_int, n_int = 2, "Mar muy grande"
     else:
         s_int, n_int = 2, "Falta tamaño" if wave < 0.5 else "Periodo corto"
+
+    # Ajuste por orientación óptima de la playa (olas y viento)
+    penalizacion = 0
+    motivo_orientacion = None
+    if playa is not None:
+        if playa.ola_optima is not None and wave_dir is not None:
+            diff_ola = _diferencia_angular(wave_dir, playa.ola_optima)
+            if diff_ola > 75:
+                penalizacion += 1
+                motivo_orientacion = "Dirección de ola desfavorable"
+        if playa.viento_optimo is not None and wind_dir is not None:
+            diff_viento = _diferencia_angular(wind_dir, playa.viento_optimo)
+            if diff_viento > 90:
+                penalizacion += 1
+                motivo_orientacion = "Viento desfavorable" if not motivo_orientacion else "Ola y viento desfavorables"
+
+    if penalizacion > 0:
+        s_beg = max(1, s_beg - penalizacion)
+        s_prog = max(1, s_prog - penalizacion)
+        s_int = max(1, s_int - penalizacion)
+        n_beg = motivo_orientacion
+        n_prog = motivo_orientacion
+        n_int = motivo_orientacion
 
     return [
         {"nivel": "Principiante", "stars": s_beg, "nota": n_beg},
@@ -227,8 +258,13 @@ def dashboard_playa_view(request, playa_id):
             "swell_wave_direction_dominant": d.swell_wave_direction_dominant,
             "swell_wave_period_max": d.swell_wave_period_max,
             "levels": _calcular_nivel_surf(
-                {"wave_height": d.wave_height_max, "wave_period": d.wave_period_max},
+                {
+                    "wave_height": d.wave_height_max,
+                    "wave_period": d.wave_period_max,
+                    "wave_direction": d.wave_direction_dominant,
+                },
                 None,
+                playa=playa,
             ),
         }
         for d in week_daily
@@ -251,7 +287,7 @@ def dashboard_playa_view(request, playa_id):
         'playa': playa,
         'current_marine': current_marine,
         'current_weather': current_weather,
-        'surf_levels': _calcular_nivel_surf(current_marine, current_weather),
+        'surf_levels': _calcular_nivel_surf(current_marine, current_weather, playa=playa),
         'day_surf_levels': (daily_by_date.get(selected_date.isoformat()) or {}).get(
             'levels',
             _calcular_nivel_surf(None, None),

@@ -177,6 +177,11 @@ body {
     color: var(--accent-strong);
 }
 
+.boton-editar:hover {
+    border-color: #fbbf24;
+    color: #fbbf24;
+}
+
 .boton-eliminar:hover {
     border-color: var(--danger);
     color: var(--danger);
@@ -259,6 +264,95 @@ body {
     color: var(--accent);
     margin-bottom: 12px;
     min-height: 18px;
+}
+
+/* Brújulas interactivas */
+.compass-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.compass-box {
+    background: rgba(6, 19, 31, 0.65);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.compass-title {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.compass-title i {
+    color: var(--accent);
+    margin-right: 4px;
+}
+
+.compass-ring {
+    position: relative;
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    border: 1px solid var(--border-subtle);
+    background: radial-gradient(circle, rgba(45, 212, 191, 0.08) 0%, transparent 70%);
+}
+
+.compass-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    color: var(--accent);
+    font-size: 1.35rem;
+}
+
+.compass-center i {
+    transition: transform 0.2s ease;
+}
+
+.dir-btn {
+    position: absolute;
+    width: 26px;
+    height: 22px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background: rgba(13, 33, 50, 0.9);
+    color: var(--text-secondary);
+    font-size: 0.68rem;
+    font-weight: 600;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+    transition: all 0.15s ease;
+}
+
+.dir-btn:hover,
+.dir-btn.active {
+    background: var(--accent);
+    color: #04131f;
+}
+
+.dir-n  { top: 10%; left: 50%; }
+.dir-ne { top: 22%; left: 80%; }
+.dir-e  { top: 50%; left: 92%; }
+.dir-se { top: 78%; left: 80%; }
+.dir-s  { top: 90%; left: 50%; }
+.dir-so { top: 78%; left: 20%; }
+.dir-o  { top: 50%; left: 8%; }
+.dir-no { top: 22%; left: 20%; }
+
+.compass-value {
+    font-size: 0.76rem;
+    color: var(--accent);
 }
 
 /* Modales */
