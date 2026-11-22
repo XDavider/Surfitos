@@ -110,6 +110,7 @@ function initializeCharts() {
     const marineData = JSON.parse(document.getElementById("marine-data").textContent);
     const weatherData = JSON.parse(document.getElementById("weather-data").textContent);
 
+    const isMobile = window.innerWidth <= 640;
     const ctx = document.getElementById("grafico-hourly").getContext("2d");
     const labels = marineData.map(d => formatTime(d.time));
     const weatherByTime = Object.fromEntries(weatherData.map(d => [formatTime(d.time), d]));
@@ -126,17 +127,17 @@ function initializeCharts() {
             plugins: {
                 legend: {
                     display: true,
-                    position: 'top',
-                    align: 'end',
+                    position: isMobile ? 'bottom' : 'top',
+                    align: isMobile ? 'center' : 'end',
                     labels: {
                         color: "#cbd5e1",
                         usePointStyle: true,
                         pointStyle: 'circle',
                         boxWidth: 8,
-                        padding: 16,
+                        padding: isMobile ? 10 : 16,
                         font: {
                             family: "'Poppins', sans-serif",
-                            size: 12,
+                            size: isMobile ? 10 : 12,
                             weight: '500'
                         }
                     }
@@ -176,7 +177,7 @@ function initializeCharts() {
                     type: 'linear',
                     position: 'right',
                     title: { 
-                        display: true, 
+                        display: !isMobile, 
                         text: 'Altura (m)',
                         color: 'rgba(255, 255, 255, 0.8)',
                         font: {
@@ -199,7 +200,7 @@ function initializeCharts() {
                     type: 'linear',
                     position: 'right',
                     title: { 
-                        display: true, 
+                        display: !isMobile, 
                         text: 'Periodo (s)',
                         color: 'rgba(255, 255, 255, 0.8)',
                         font: {
@@ -296,11 +297,11 @@ function initializeCharts() {
                         color: "#94a3b8",
                         font: {
                             family: "'Poppins', sans-serif",
-                            size: 11
+                            size: isMobile ? 10 : 11
                         },
                         maxRotation: 0,
                         autoSkip: true,
-                        maxTicksLimit: 8
+                        maxTicksLimit: isMobile ? 5 : 8
                     }
                 }
             },
