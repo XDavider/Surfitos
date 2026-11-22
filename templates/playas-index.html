@@ -18,7 +18,7 @@
     <div class="container">
         <header class="header">
             <div class="header-brand">
-                <img src="{% static 'SurfApp/img/surfitos-logo.png' %}" alt="Surfitos" style="width: 56px; height: 56px; object-fit: contain; flex-shrink: 0;">
+                <img src="{% static 'SurfApp/img/surfitos-logo.png' %}" alt="Surfitos" style="width: 72px; height: 72px; object-fit: contain; flex-shrink: 0;">
                 <div>
                     <h1>Mis Playas</h1>
                     <p class="header-subtitle">Selecciona un spot para ver la previsión completa</p>
@@ -53,18 +53,17 @@
                             <span><i class="fas fa-map-marker-alt"></i> {{ playa.lugar }}</span>
                             <span><i class="fas fa-location-dot"></i> {{ playa.latitud|floatformat:5 }}, {{ playa.longitud|floatformat:5 }}</span>
                         </span>
-                        {% if playa.ola_optima is not None or playa.viento_optimo is not None %}
-                            <div class="playa-badges">
-                                {% if playa.ola_optima is not None %}
-                                    <span class="spot-badge"><i class="fas fa-water"></i> Ola <i class="fas fa-long-arrow-alt-down" style="transform: rotate({{ playa.ola_optima }}deg)"></i></span>
-                                {% endif %}
-                                {% if playa.viento_optimo is not None %}
-                                    <span class="spot-badge"><i class="fas fa-wind"></i> Viento <i class="fas fa-long-arrow-alt-down" style="transform: rotate({{ playa.viento_optimo }}deg)"></i></span>
-                                {% endif %}
-                            </div>
-                        {% endif %}
                     </div>
                     <div class="acciones">
+                        <div class="playa-badges">
+                            {% if playa.ola_optima is not None %}
+                                <span class="spot-badge"><i class="fas fa-water"></i> Ola <i class="fas fa-long-arrow-alt-down" style="transform: rotate({{ playa.ola_optima }}deg)"></i></span>
+                            {% endif %}
+                            {% if playa.viento_optimo is not None %}
+                                <span class="spot-badge"><i class="fas fa-wind"></i> Viento <i class="fas fa-long-arrow-alt-down" style="transform: rotate({{ playa.viento_optimo }}deg)"></i></span>
+                            {% endif %}
+                        </div>
+                        <div class="acciones-botones">
                         <button type="button" class="boton boton-mapa" onclick="verEnMapa({{ playa.latitud }}, {{ playa.longitud }}, '{{ playa.nombre|escapejs }}', '{{ playa.lugar|escapejs }}')" title="Ver en mapa" aria-label="Ver {{ playa.nombre }} en mapa">
                             <i class="fas fa-map-pin"></i>
                         </button>
@@ -79,6 +78,7 @@
                                 <i class="fas fa-trash"></i>
                             </button>
                         {% endif %}
+                        </div>
                     </div>
                 </div>
             {% empty %}
