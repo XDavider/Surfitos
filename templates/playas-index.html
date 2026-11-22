@@ -46,11 +46,22 @@
                     <div class="playa-content">
                         <div class="playa-header">
                             <span class="nombre-playa">{{ playa.nombre }}</span>
+                            <span class="playa-spot-icon"><i class="fas fa-water"></i></span>
                         </div>
                         <span class="fecha">
                             <span><i class="fas fa-map-marker-alt"></i> {{ playa.lugar }}</span>
                             <span><i class="fas fa-location-dot"></i> {{ playa.latitud|floatformat:5 }}, {{ playa.longitud|floatformat:5 }}</span>
                         </span>
+                        {% if playa.ola_optima is not None or playa.viento_optimo is not None %}
+                            <div class="playa-badges">
+                                {% if playa.ola_optima is not None %}
+                                    <span class="spot-badge"><i class="fas fa-water"></i> Ola {{ playa.ola_optima }}°</span>
+                                {% endif %}
+                                {% if playa.viento_optimo is not None %}
+                                    <span class="spot-badge"><i class="fas fa-wind"></i> Viento {{ playa.viento_optimo }}°</span>
+                                {% endif %}
+                            </div>
+                        {% endif %}
                     </div>
                     <div class="acciones">
                         <button type="button" class="boton boton-mapa" onclick="verEnMapa({{ playa.latitud }}, {{ playa.longitud }}, '{{ playa.nombre|escapejs }}', '{{ playa.lugar|escapejs }}')" title="Ver en mapa" aria-label="Ver {{ playa.nombre }} en mapa">

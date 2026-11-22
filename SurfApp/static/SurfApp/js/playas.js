@@ -69,8 +69,8 @@ function abrirModalPlaya(titulo, lat = 43.0, lon = -8.5, zoom = 6, hasPoint = fa
     setTimeout(() => {
         if (!addMap) {
             addMap = L.map('mapa-agregar', { center: [lat, lon], zoom, zoomControl: true });
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap',
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: 'Tiles &copy; Esri',
                 maxZoom: 19
             }).addTo(addMap);
 
@@ -225,9 +225,9 @@ function verEnMapa(lat, lon, nombre, lugar) {
             zoomControl: true
         });
         
-        // Use OpenStreetMap tiles directly
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        // Mosaicos satélite (Esri World Imagery)
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri',
             maxZoom: 19
         }).addTo(map);
         

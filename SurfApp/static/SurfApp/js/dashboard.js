@@ -75,10 +75,10 @@ function initializeMap() {
         boxZoom: false,
         keyboard: false,
         touchZoom: false
-    });    // Usa mosaicos de OpenStreetMap
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    });    // Mosaicos satélite (Esri World Imagery)
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        attribution: 'Tiles &copy; Esri'
     }).addTo(map);
 
     // Añade un marcador personalizado
