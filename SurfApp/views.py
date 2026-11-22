@@ -298,6 +298,7 @@ def dashboard_playa_view(request, playa_id):
             "wave_direction": d.wave_direction,
             "swell_wave_height": d.swell_wave_height,
             "swell_wave_period": d.swell_wave_period,
+            "wave_energy": _calcular_energia_ola(d.wave_height, d.wave_period),
             "swell_wave_direction": d.swell_wave_direction,
             "wave_energy": _calcular_energia_ola(d.wave_height, d.wave_period),
         }
