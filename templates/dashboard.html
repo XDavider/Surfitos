@@ -353,7 +353,12 @@
             const bodyEl = modal.querySelector('.info-modal-body');
             if (tituloCustom && Array.isArray(rows)) {
                 titleEl.innerHTML = `<i class="fas fa-star"></i> Desglose: ${tituloCustom}`;
-                bodyEl.innerHTML = rows.map(r => `<div class="breakdown-row"><span>${r.label}</span><strong>${r.value}</strong></div>`).join('');
+                bodyEl.innerHTML = rows.map(r => {
+                    if (r.is_summary) {
+                        return `<div class="breakdown-summary" style="margin-top: 12px; padding: 10px 12px; border-radius: 10px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25);"><strong style="display:block; margin-bottom:4px; color:#38bdf8;">${r.label}</strong><p style="margin:0; font-size:0.9rem; line-height:1.45; color:#cbd5e1;">${r.value}</p></div>`;
+                    }
+                    return `<div class="breakdown-row"><span>${r.label}</span><strong>${r.value}</strong></div>`;
+                }).join('');
             } else {
                 titleEl.innerHTML = `<i class="fas fa-star"></i> Cómo se calculan las estrellas`;
                 bodyEl.innerHTML = `<p>Cada nivel valora de <strong>1 a 5 estrellas</strong> combinando altura de ola, periodo, viento y la orientación óptima de la playa. Pulsa sobre cualquier tarjeta de nivel para ver su cómputo exacto.</p>`;

@@ -181,6 +181,53 @@ def _calcular_nivel_surf(current_marine, current_weather, playa=None):
                 icons.append("empty")
         return icons
 
+    def _generar_resumen_situacion(nivel, final_score, base_note, energia, pen_energia, nota_ola, nota_viento):
+        partes = []
+        # 1. Valoración global según puntuación final y nivel
+        if final_score >= 4.5:
+            partes.append(f"Condiciones excelentes para nivel {nivel.lower()}.")
+        elif final_score >= 3.5:
+            partes.append(f"Buenas condiciones para disfrutar en nivel {nivel.lower()}.")
+        elif final_score >= 2.5:
+            partes.append(f"Condiciones aceptables para nivel {nivel.lower()}, con matices a tener en cuenta.")
+        elif final_score >= 1.5:
+            partes.append(f"Condiciones exigentes o poco favorables para nivel {nivel.lower()}.")
+        else:
+            partes.append(f"Condiciones no recomendables actualmente para nivel {nivel.lower()}.")
+
+        # 2. Módulo de oleaje y fuerza del mar
+        if energia is not None:
+            if pen_energia >= 1.0:
+                partes.append(f"El mar viene con mucha fuerza ({energia} kW/m) y supera lo ideal para este nivel.")
+            elif pen_energia > 0:
+                partes.append(f"La energía del mar es media-alta ({energia} kW/m), exigiendo algo más de físico.")
+            elif energia < 15:
+                partes.append(f"Mar suave ({energia} kW/m) con {base_note.lower()}.")
+            else:
+                partes.append(f"Fuerza del mar moderada ({energia} kW/m) y {base_note.lower()}.")
+        else:
+            partes.append(f"Estado del oleaje: {base_note.lower()}.")
+
+        # 3. Módulo de dirección de ola
+        if "óptima" in nota_ola:
+            partes.append("El swell entra bien orientado a la playa.")
+        elif "-1.0★" in nota_ola:
+            partes.append("La dirección de ola llega muy desviada respecto a la orientación óptima.")
+        elif "-0.5★" in nota_ola:
+            partes.append("La dirección de ola entra algo cruzada.")
+
+        # 4. Módulo de viento
+        if "offshore" in nota_viento:
+            partes.append(f"Viento offshore ({wind_val} km/h) que ayuda a limpiar la pared de la ola.")
+        elif "onshore" in nota_viento or "-1.0★" in nota_viento:
+            partes.append(f"Viento desfavorable ({wind_val} km/h) que tiende a desordenar la superficie.")
+        elif "-0.5★" in nota_viento:
+            partes.append(f"Viento algo cruzado ({wind_val} km/h) que resta algo de limpieza.")
+        elif "Sin configurar" not in nota_viento:
+            partes.append(f"Viento de {wind_val} km/h en condiciones manejables.")
+
+        return " ".join(partes)
+
     def _make_item(nivel, base_score, base_note):
         pen_energia = 0.0
         nota_energia = f"{energia} kW/m (normal)" if energia is not None else "Sin datos"
@@ -200,12 +247,16 @@ def _calcular_nivel_surf(current_marine, current_weather, playa=None):
         final_note = motivo_orientacion if penalizacion > 0 else (
             "Mucha fuerza de mar" if pen_energia > 0 else base_note
         )
+        resumen = _generar_resumen_situacion(
+            nivel, final_score, base_note, energia, pen_energia, nota_ola, nota_viento
+        )
         breakdown = [
             {"label": f"Base (ola {wave}m, periodo {period}s, viento {wind_val} km/h)", "value": f"{base_score:.1f}★ ({base_note})"},
             {"label": "Fuerza del mar", "value": nota_energia},
             {"label": "Ajuste dirección de ola", "value": nota_ola},
             {"label": "Ajuste dirección de viento", "value": nota_viento},
             {"label": "Puntuación final", "value": f"{final_score:.1f}★ / 5.0★"},
+            {"label": "Resumen de la situación", "value": resumen, "is_summary": True},
         ]
         return {
             "nivel": nivel,
