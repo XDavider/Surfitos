@@ -41,13 +41,16 @@
                 <div class="playa-info">
                     <h1>{{ playa.nombre }}</h1>
                     <p><i class="fas fa-map-marker-alt"></i> {{ playa.lugar }}</p>
-                    {% if playa.ola_optima is not None or playa.viento_optimo is not None %}
+                    {% if playa.ola_optima is not None or playa.viento_optimo is not None or playa.marea_optima %}
                         <div class="banner-optimal-row">
                             {% if playa.ola_optima is not None %}
                                 <span class="optimal-pill"><i class="fas fa-water"></i> Ola óptima <i class="fas fa-long-arrow-alt-down" style="transform: rotate({{ playa.ola_optima }}deg)"></i></span>
                             {% endif %}
                             {% if playa.viento_optimo is not None %}
                                 <span class="optimal-pill"><i class="fas fa-wind"></i> Viento óptimo <i class="fas fa-long-arrow-alt-down" style="transform: rotate({{ playa.viento_optimo }}deg)"></i></span>
+                            {% endif %}
+                            {% if playa.marea_optima %}
+                                <span class="optimal-pill"><i class="fas fa-arrow-up"></i> Marea: {{ playa.get_marea_optima_display }}</span>
                             {% endif %}
                         </div>
                     {% endif %}

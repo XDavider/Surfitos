@@ -71,7 +71,7 @@
                             <i class="fas fa-chart-line"></i>
                         </button>
                         {% if not is_guest %}
-                            <button type="button" class="boton boton-editar" onclick="editarPlaya('{{ playa.id }}', '{{ playa.nombre|escapejs }}', '{{ playa.lugar|escapejs }}', {{ playa.latitud }}, {{ playa.longitud }}, {{ playa.ola_optima|default_if_none:'null' }}, {{ playa.viento_optimo|default_if_none:'null' }})" title="Editar playa" aria-label="Editar {{ playa.nombre }}">
+                            <button type="button" class="boton boton-editar" onclick="editarPlaya('{{ playa.id }}', '{{ playa.nombre|escapejs }}', '{{ playa.lugar|escapejs }}', {{ playa.latitud }}, {{ playa.longitud }}, {{ playa.ola_optima|default_if_none:'null' }}, {{ playa.viento_optimo|default_if_none:'null' }}, '{{ playa.marea_optima|default_if_none:''|escapejs }}')" title="Editar playa" aria-label="Editar {{ playa.nombre }}">
                                 <i class="fas fa-pen"></i>
                             </button>
                             <button type="button" class="boton boton-eliminar" onclick="eliminarPlaya('{{ playa.id }}', '{{ playa.nombre|escapejs }}')" title="Eliminar playa" aria-label="Eliminar {{ playa.nombre }}">
@@ -139,6 +139,15 @@
                 </div>
             </div>
 
+            <div class="tide-selector">
+                <span class="compass-title"><i class="fas fa-water"></i> Marea óptima</span>
+                <div class="tide-options">
+                    <button type="button" class="tide-btn" data-tide="pleamar">Pleamar</button>
+                    <button type="button" class="tide-btn" data-tide="media">Media marea</button>
+                    <button type="button" class="tide-btn" data-tide="bajamar">Bajamar</button>
+                </div>
+            </div>
+
             <div class="modal-buttons">
                 <button type="button" class="btn cancelar" onclick="cerrarModal()">Cancelar</button>
                 <button type="button" class="btn guardar" onclick="enviarNuevaPlaya()">Guardar</button>
@@ -158,6 +167,15 @@
             <p id="texto-confirmar-eliminar" class="modal-description">
                 ¿Seguro que quieres eliminar esta playa? Esta acción no se puede deshacer.
             </p>
+            <div class="tide-selector">
+                <span class="compass-title"><i class="fas fa-water"></i> Marea óptima</span>
+                <div class="tide-options">
+                    <button type="button" class="tide-btn" data-tide="pleamar">Pleamar</button>
+                    <button type="button" class="tide-btn" data-tide="media">Media marea</button>
+                    <button type="button" class="tide-btn" data-tide="bajamar">Bajamar</button>
+                </div>
+            </div>
+
             <div class="modal-buttons">
                 <button type="button" class="btn cancelar" onclick="cerrarModalEliminar()">Cancelar</button>
                 <button type="button" id="btnConfirmarEliminar" class="btn eliminar" onclick="confirmarEliminarPlaya()">Eliminar</button>

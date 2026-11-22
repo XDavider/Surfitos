@@ -41,6 +41,7 @@ def agregar_playa(request):
 
             ola_optima = data.get('ola_optima')
             viento_optimo = data.get('viento_optimo')
+            marea_optima = (data.get('marea_optima') or '').strip() or None
             ola_optima = int(ola_optima) if ola_optima not in (None, '') else None
             viento_optimo = int(viento_optimo) if viento_optimo not in (None, '') else None
 
@@ -52,6 +53,7 @@ def agregar_playa(request):
                     longitud=float(longitud),
                     ola_optima=ola_optima,
                     viento_optimo=viento_optimo,
+                    marea_optima=marea_optima,
                 )
                 return JsonResponse({'ok': True})
 
@@ -104,6 +106,7 @@ def editar_playa(request, playa_id):
                 playa.longitud = float(longitud)
             playa.ola_optima = int(ola_optima) if ola_optima not in (None, '') else None
             playa.viento_optimo = int(viento_optimo) if viento_optimo not in (None, '') else None
+            playa.marea_optima = (data.get('marea_optima') or '').strip() or None
             playa.save()
             return JsonResponse({'ok': True})
         except Playa.DoesNotExist:

@@ -16,12 +16,51 @@ document.addEventListener('DOMContentLoaded', function() {
             boxZoom: false,
             keyboard: false,
             touchZoom: false
+            document.querySelectorAll('.tide-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = btn.dataset.tide;
+            selectedMareaOptima = selectedMareaOptima === val ? null : val;
+            setTideValue(selectedMareaOptima);
         });
+    });
+});
+
+function setTideValue(val) {
+    document.querySelectorAll('.tide-btn').forEach(b => {
+        b.classList.toggle('active', Boolean(val && b.dataset.tide === val));
+    });
+}
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             maxZoom: 18
         }).addTo(miniMap);
-        miniMap.panBy([-95, 0], { animate: false });
+        miniMap.panBy([-95, 0], { animate: false     document.querySelectorAll('.tide-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = btn.dataset.tide;
+            selectedMareaOptima = selectedMareaOptima === val ? null : val;
+            setTideValue(selectedMareaOptima);
+        });
     });
+});
+
+function setTideValue(val) {
+    document.querySelectorAll('.tide-btn').forEach(b => {
+        b.classList.toggle('active', Boolean(val && b.dataset.tide === val));
+    });
+}
+        document.querySelectorAll('.tide-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = btn.dataset.tide;
+            selectedMareaOptima = selectedMareaOptima === val ? null : val;
+            setTideValue(selectedMareaOptima);
+        });
+    });
+});
+
+function setTideValue(val) {
+    document.querySelectorAll('.tide-btn').forEach(b => {
+        b.classList.toggle('active', Boolean(val && b.dataset.tide === val));
+    });
+}
 
     // Añade escuchadores de eventos para los clics en las tarjetas para permitir la navegación al dashboard
     const playaCards = document.querySelectorAll('.playa');
@@ -31,10 +70,49 @@ document.addEventListener('DOMContentLoaded', function() {
             playaContent.addEventListener('click', function() {
                 const id = card.dataset.id;
                 verDashboard(id);
-            });
-        }
+                document.querySelectorAll('.tide-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = btn.dataset.tide;
+            selectedMareaOptima = selectedMareaOptima === val ? null : val;
+            setTideValue(selectedMareaOptima);
+        });
     });
 });
+
+function setTideValue(val) {
+    document.querySelectorAll('.tide-btn').forEach(b => {
+        b.classList.toggle('active', Boolean(val && b.dataset.tide === val));
+    });
+}
+        }
+        document.querySelectorAll('.tide-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = btn.dataset.tide;
+            selectedMareaOptima = selectedMareaOptima === val ? null : val;
+            setTideValue(selectedMareaOptima);
+        });
+    });
+});
+
+function setTideValue(val) {
+    document.querySelectorAll('.tide-btn').forEach(b => {
+        b.classList.toggle('active', Boolean(val && b.dataset.tide === val));
+    });
+}
+    document.querySelectorAll('.tide-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = btn.dataset.tide;
+            selectedMareaOptima = selectedMareaOptima === val ? null : val;
+            setTideValue(selectedMareaOptima);
+        });
+    });
+});
+
+function setTideValue(val) {
+    document.querySelectorAll('.tide-btn').forEach(b => {
+        b.classList.toggle('active', Boolean(val && b.dataset.tide === val));
+    });
+}
 
 let addMap = null;
 let addMarker = null;
@@ -43,6 +121,7 @@ let selectedLon = null;
 let editingPlayaId = null;
 let selectedOlaOptima = null;
 let selectedVientoOptimo = null;
+let selectedMareaOptima = null;
 
 const DIR_LABELS = { 0: 'N', 45: 'NE', 90: 'E', 135: 'SE', 180: 'S', 225: 'SO', 270: 'O', 315: 'NO' };
 
@@ -79,10 +158,62 @@ document.addEventListener('DOMContentLoaded', function() {
                     selectedVientoOptimo = selectedVientoOptimo === deg ? null : deg;
                     setCompassValue('viento', selectedVientoOptimo);
                 }
-            });
+                document.querySelectorAll('.tide-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = btn.dataset.tide;
+            selectedMareaOptima = selectedMareaOptima === val ? null : val;
+            setTideValue(selectedMareaOptima);
         });
     });
 });
+
+function setTideValue(val) {
+    document.querySelectorAll('.tide-btn').forEach(b => {
+        b.classList.toggle('active', Boolean(val && b.dataset.tide === val));
+    });
+}
+            document.querySelectorAll('.tide-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = btn.dataset.tide;
+            selectedMareaOptima = selectedMareaOptima === val ? null : val;
+            setTideValue(selectedMareaOptima);
+        });
+    });
+});
+
+function setTideValue(val) {
+    document.querySelectorAll('.tide-btn').forEach(b => {
+        b.classList.toggle('active', Boolean(val && b.dataset.tide === val));
+    });
+}
+        document.querySelectorAll('.tide-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = btn.dataset.tide;
+            selectedMareaOptima = selectedMareaOptima === val ? null : val;
+            setTideValue(selectedMareaOptima);
+        });
+    });
+});
+
+function setTideValue(val) {
+    document.querySelectorAll('.tide-btn').forEach(b => {
+        b.classList.toggle('active', Boolean(val && b.dataset.tide === val));
+    });
+}
+    document.querySelectorAll('.tide-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = btn.dataset.tide;
+            selectedMareaOptima = selectedMareaOptima === val ? null : val;
+            setTideValue(selectedMareaOptima);
+        });
+    });
+});
+
+function setTideValue(val) {
+    document.querySelectorAll('.tide-btn').forEach(b => {
+        b.classList.toggle('active', Boolean(val && b.dataset.tide === val));
+    });
+}
 
 function abrirModalPlaya(titulo, lat = 43.0, lon = -8.5, zoom = 6, hasPoint = false) {
     document.getElementById('titulo-modal-agregar').innerHTML = `<i class="fas fa-umbrella-beach"></i> ${titulo}`;
@@ -91,7 +222,20 @@ function abrirModalPlaya(titulo, lat = 43.0, lon = -8.5, zoom = 6, hasPoint = fa
 
     setTimeout(() => {
         if (!addMap) {
-            addMap = L.map('mapa-agregar', { center: [lat, lon], zoom, zoomControl: true });
+            addMap = L.map('mapa-agregar', { center: [lat, lon], zoom, zoomControl: true     document.querySelectorAll('.tide-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = btn.dataset.tide;
+            selectedMareaOptima = selectedMareaOptima === val ? null : val;
+            setTideValue(selectedMareaOptima);
+        });
+    });
+});
+
+function setTideValue(val) {
+    document.querySelectorAll('.tide-btn').forEach(b => {
+        b.classList.toggle('active', Boolean(val && b.dataset.tide === val));
+    });
+}
             L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 attribution: 'Tiles &copy; Esri',
                 maxZoom: 19
@@ -107,7 +251,20 @@ function abrirModalPlaya(titulo, lat = 43.0, lon = -8.5, zoom = 6, hasPoint = fa
                 }
                 document.getElementById('coords-seleccionadas').textContent =
                     `Ubicación: ${selectedLat.toFixed(5)}, ${selectedLon.toFixed(5)}`;
-            });
+                document.querySelectorAll('.tide-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = btn.dataset.tide;
+            selectedMareaOptima = selectedMareaOptima === val ? null : val;
+            setTideValue(selectedMareaOptima);
+        });
+    });
+});
+
+function setTideValue(val) {
+    document.querySelectorAll('.tide-btn').forEach(b => {
+        b.classList.toggle('active', Boolean(val && b.dataset.tide === val));
+    });
+}
         } else {
             addMap.setView([lat, lon], zoom);
         }
@@ -126,13 +283,15 @@ function agregarPlaya() {
     editingPlayaId = null;
     selectedOlaOptima = null;
     selectedVientoOptimo = null;
+    selectedMareaOptima = null;
     setCompassValue('ola', null);
     setCompassValue('viento', null);
+    setTideValue(null);
     abrirModalPlaya('Añadir Playa');
 }
 
 // Muestra el modal precargado para editar una playa existente
-function editarPlaya(id, nombre, lugar, lat, lon, olaOptima, vientoOptimo) {
+function editarPlaya(id, nombre, lugar, lat, lon, olaOptima, vientoOptimo, mareaOptima) {
     if (window.event) window.event.stopPropagation();
     editingPlayaId = id;
     document.getElementById("inputNombre").value = nombre;
@@ -141,8 +300,10 @@ function editarPlaya(id, nombre, lugar, lat, lon, olaOptima, vientoOptimo) {
     selectedLon = lon;
     selectedOlaOptima = olaOptima;
     selectedVientoOptimo = vientoOptimo;
+    selectedMareaOptima = mareaOptima || null;
     setCompassValue('ola', olaOptima);
     setCompassValue('viento', vientoOptimo);
+    setTideValue(selectedMareaOptima);
     abrirModalPlaya('Editar Playa', lat, lon, 12, true);
 }
 
@@ -227,7 +388,20 @@ function confirmarEliminarPlaya() {
     .catch(() => {
         cerrarModalEliminar();
         showToast("Error al conectar con el servidor", true);
+        document.querySelectorAll('.tide-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = btn.dataset.tide;
+            selectedMareaOptima = selectedMareaOptima === val ? null : val;
+            setTideValue(selectedMareaOptima);
+        });
     });
+});
+
+function setTideValue(val) {
+    document.querySelectorAll('.tide-btn').forEach(b => {
+        b.classList.toggle('active', Boolean(val && b.dataset.tide === val));
+    });
+}
 }
 
 // Abre un mapa con Leaflet en un modal para mostrar la ubicación de la playa
@@ -246,7 +420,20 @@ function verEnMapa(lat, lon, nombre, lugar) {
             center: [lat, lon],
             zoom: 13,
             zoomControl: true
+            document.querySelectorAll('.tide-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = btn.dataset.tide;
+            selectedMareaOptima = selectedMareaOptima === val ? null : val;
+            setTideValue(selectedMareaOptima);
         });
+    });
+});
+
+function setTideValue(val) {
+    document.querySelectorAll('.tide-btn').forEach(b => {
+        b.classList.toggle('active', Boolean(val && b.dataset.tide === val));
+    });
+}
         
         // Mosaicos satélite (Esri World Imagery)
         L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -260,7 +447,20 @@ function verEnMapa(lat, lon, nombre, lugar) {
             html: `<i class="fas fa-map-marker-alt" style="color: #ec6ead; font-size: 24px; text-shadow: 0 0 5px rgba(0,0,0,0.5);"></i>`,
             iconSize: [24, 24],
             iconAnchor: [12, 24]
+            document.querySelectorAll('.tide-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = btn.dataset.tide;
+            selectedMareaOptima = selectedMareaOptima === val ? null : val;
+            setTideValue(selectedMareaOptima);
         });
+    });
+});
+
+function setTideValue(val) {
+    document.querySelectorAll('.tide-btn').forEach(b => {
+        b.classList.toggle('active', Boolean(val && b.dataset.tide === val));
+    });
+}
         
         // Add a marker at the beach location
         const marker = L.marker([lat, lon], { icon: markerIcon }).addTo(map);
@@ -333,7 +533,8 @@ function enviarNuevaPlaya() {
             latitud: selectedLat,
             longitud: selectedLon,
             ola_optima: selectedOlaOptima,
-            viento_optimo: selectedVientoOptimo
+            viento_optimo: selectedVientoOptimo,
+            marea_optima: selectedMareaOptima
         })
     })
     .then(res => res.json())
@@ -358,7 +559,20 @@ function enviarNuevaPlaya() {
         // Reset button state
         saveButton.innerHTML = originalText;
         saveButton.disabled = false;
+        document.querySelectorAll('.tide-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = btn.dataset.tide;
+            selectedMareaOptima = selectedMareaOptima === val ? null : val;
+            setTideValue(selectedMareaOptima);
+        });
     });
+});
+
+function setTideValue(val) {
+    document.querySelectorAll('.tide-btn').forEach(b => {
+        b.classList.toggle('active', Boolean(val && b.dataset.tide === val));
+    });
+}
 }
 
 // Toast notification function
@@ -402,7 +616,20 @@ window.addEventListener('click', function(event) {
     if (event.target === modal) {
         cerrarModal();
     }
+    document.querySelectorAll('.tide-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = btn.dataset.tide;
+            selectedMareaOptima = selectedMareaOptima === val ? null : val;
+            setTideValue(selectedMareaOptima);
+        });
+    });
 });
+
+function setTideValue(val) {
+    document.querySelectorAll('.tide-btn').forEach(b => {
+        b.classList.toggle('active', Boolean(val && b.dataset.tide === val));
+    });
+}
 
 // Add keyboard support for modal
 document.addEventListener('keydown', function(event) {
@@ -413,4 +640,17 @@ document.addEventListener('keydown', function(event) {
     if (event.key === 'Enter' && document.getElementById('modalAgregar').classList.contains('show')) {
         enviarNuevaPlaya();
     }
+    document.querySelectorAll('.tide-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const val = btn.dataset.tide;
+            selectedMareaOptima = selectedMareaOptima === val ? null : val;
+            setTideValue(selectedMareaOptima);
+        });
+    });
 });
+
+function setTideValue(val) {
+    document.querySelectorAll('.tide-btn').forEach(b => {
+        b.classList.toggle('active', Boolean(val && b.dataset.tide === val));
+    });
+}
